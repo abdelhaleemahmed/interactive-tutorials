@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YAML Vim Configuration Tutorial</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 40px 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 5px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+        
+        .nav-tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            min-width: 120px;
+        }
+        
+        .nav-tab.active {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .content-section {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+        
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .vim-editor {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .vim-header {
+            background: #333;
+            color: #fff;
+            padding: 8px 15px;
+            margin: -20px -20px 15px -20px;
+            font-size: 14px;
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .line-numbers {
+            color: #858585;
+            margin-right: 15px;
+            user-select: none;
+        }
+        
+        .yaml-content {
+            position: relative;
+        }
+        
+        .indent-guide {
+            position: absolute;
+            width: 1px;
+            height: 100%;
+            background: #404040;
+            left: 20px;
+        }
+        
+        .highlight {
+            background: rgba(255, 255, 0, 0.3);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .error {
+            background: rgba(255, 0, 0, 0.3);
+            border-bottom: 2px wavy red;
+        }
+        
+        .keyboard-shortcut {
+            background: #f0f0f0;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-family: monospace;
+            display: inline-block;
+            margin: 2px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .technique-demo {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .technique-demo h4 {
+            color: #495057;
+            margin-bottom: 10px;
+        }
+        
+        .demo-button {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .demo-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.2);
+            height: 4px;
+            border-radius: 2px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(45deg, #00c851, #007e33);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 2px;
+        }
+        
+        .tips-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .tips-box h4 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .workflow-step {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .workflow-step h5 {
+            color: #1976d2;
+            margin-bottom: 8px;
+        }
+        
+        .interactive-example {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .yaml-preview {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            margin: 10px 0;
+            position: relative;
+        }
+        
+        .syntax-highlight .key { color: #81c784; }
+        .syntax-highlight .string { color: #ffcc02; }
+        .syntax-highlight .number { color: #ff7043; }
+        .syntax-highlight .comment { color: #78909c; font-style: italic; }
+        
+        @media (max-width: 768px) {
+            .container { padding: 10px; }
+            .header h1 { font-size: 2rem; }
+            .nav-tabs { flex-wrap: wrap; }
+            .nav-tab { min-width: 100px; font-size: 14px; }
+            .content-section { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 YAML Vim Mastery Tutorial</h1>
+            <p>Interactive guide to master YAML editing in Vim</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+        
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('basics')">Basics</button>
+            <button class="nav-tab" onclick="showSection('navigation')">Navigation</button>
+            <button class="nav-tab" onclick="showSection('indentation')">Indentation</button>
+            <button class="nav-tab" onclick="showSection('validation')">Validation</button>
+            <button class="nav-tab" onclick="showSection('advanced')">Advanced</button>
+            <button class="nav-tab" onclick="showSection('examples')">Examples</button>
+        </div>
+        
+        <div id="basics" class="content-section active">
+            <h2>🎯 Basic YAML Editing</h2>
+            
+            <div class="technique-demo">
+                <h4>Starting a New YAML File</h4>
+                <p>When you open a YAML file, the configuration automatically applies optimizations:</p>
+                
+                <div class="vim-editor">
+                    <div class="vim-header">vim new-config.yaml</div>
+                    <div class="yaml-content">
+                        <span class="line-numbers">1</span><span class="syntax-highlight"><span class="key">services</span>:</span><br>
+                        <span class="line-numbers">2</span>  <span class="syntax-highlight"><span class="key">web</span>:</span><br>
+                        <span class="line-numbers">3</span>    <span class="syntax-highlight"><span class="key">image</span>: <span class="string">nginx</span></span><br>
+                        <span class="line-numbers">4</span>    <span class="syntax-highlight"><span class="key">ports</span>:</span><br>
+                        <span class="line-numbers">5</span>      - <span class="syntax-highlight"><span class="string">"80:80"</span></span>
+                    </div>
+                </div>
+                
+                <button class="demo-button" onclick="demonstrateAutoIndent()">Demo Auto-Indentation</button>
+                <button class="demo-button" onclick="demonstrateAutoPair()">Demo Auto-Pair</button>
+            </div>
+            
+            <div class="tips-box">
+                <h4>💡 Pro Tips</h4>
+                <ul>
+                    <li>2-space indentation is automatically set for YAML files</li>
+                    <li>Syntax highlighting makes structure easier to see</li>
+                    <li>Line numbers and indentation guides are enabled by default</li>
+                    <li>80-character column marker helps maintain readability</li>
+                </ul>
+            </div>
+            
+            <div class="interactive-example">
+                <h4>🎮 Try It Yourself</h4>
+                <p>Key shortcuts to remember:</p>
+                <div>
+                    <span class="keyboard-shortcut">Tab</span> - Indent current line
+                    <span class="keyboard-shortcut">Shift+Tab</span> - Unindent current line
+                    <span class="keyboard-shortcut">Ctrl+Space</span> - Trigger completion
+                </div>
+            </div>
+        </div>
+        
+        <div id="navigation" class="content-section">
+            <h2>🧭 Navigation Techniques</h2>
+            
+            <div class="technique-demo">
+                <h4>Folding YAML Sections</h4>
+                <p>Manage complex nested structures with folding:</p>
+                
+                <div class="vim-editor" id="foldingDemo">
+                    <div class="vim-header">kubernetes-deployment.yaml</div>
+                    <div class="yaml-content">
+                        <span class="line-numbers">1</span><span class="syntax-highlight"><span class="key">apiVersion</span>: <span class="string">apps/v1</span></span><br>
+                        <span class="line-numbers">2</span><span class="syntax-highlight"><span class="key">kind</span>: <span class="string">Deployment</span></span><br>
+                        <span class="line-numbers">3</span><span class="syntax-highlight"><span class="key">metadata</span>:</span> <span style="color: #666;">[+] --- 5 lines folded ---</span><br>
+                        <span class="line-numbers">9</span><span class="syntax-highlight"><span class="key">spec</span>:</span><br>
+                        <span class="line-numbers">10</span>  <span class="syntax-highlight"><span class="key">replicas</span>: <span class="number">3</span></span><br>
+                        <span class="line-numbers">11</span>  <span class="syntax-highlight"><span class="key">template</span>:</span><br>
+                        <span class="line-numbers">12</span>    <span class="syntax-highlight"><span class="key">spec</span>:</span> <span style="color: #666;">[+] --- 15 lines folded ---</span>
+                    </div>
+                </div>
+                
+                <div style="margin: 10px 0;">
+                    <span class="keyboard-shortcut">za</span> - Toggle fold at cursor
+                    <span class="keyboard-shortcut">zR</span> - Open all folds
+                    <span class="keyboard-shortcut">zM</span> - Close all folds
+                </div>
+                
+                <button class="demo-button" onclick="demonstrateFolding()">Demo Folding</button>
+            </div>
+            
+            <div class="workflow-step">
+                <h5>📋 Efficient Navigation Workflow</h5>
+                <ol>
+                    <li>Open large YAML file</li>
+                    <li>Use <span class="keyboard-shortcut">zM</span> to collapse all sections</li>
+                    <li>Navigate to section of interest</li>
+                    <li>Use <span class="keyboard-shortcut">za</span> to expand only that section</li>
+                </ol>
+            </div>
+            
+            <div class="technique-demo">
+                <h4>Block Navigation</h4>
+                <p>Jump efficiently between YAML blocks:</p>
+                <div>
+                    <span class="keyboard-shortcut">]}</span> - End of current block
+                    <span class="keyboard-shortcut">[{</span> - Beginning of current block
+                    <span class="keyboard-shortcut">%</span> - Jump between matching brackets
+                </div>
+            </div>
+            
+            <div class="technique-demo">
+                <h4>File Navigation</h4>
+                <p>For projects with multiple YAML files:</p>
+                <div>
+                    <span class="keyboard-shortcut">,n</span> - Open NERDTree
+                    <span class="keyboard-shortcut">,f</span> - Fuzzy file finder
+                    <span class="keyboard-shortcut">Ctrl+p</span> - Quick file search
+                </div>
+                <button class="demo-button" onclick="demonstrateFileNav()">Demo File Navigation</button>
+            </div>
+        </div>
+        
+        <div id="indentation" class="content-section">
+            <h2>📏 Indentation Management</h2>
+            
+            <div class="technique-demo">
+                <h4>Visual Selection Indentation</h4>
+                <p>Adjust indentation of multiple lines at once:</p>
+                
+                <div class="vim-editor">
+                    <div class="vim-header">docker-compose.yaml</div>
+                    <div class="yaml-content">
+                        <span class="line-numbers">1</span><span class="syntax-highlight"><span class="key">version</span>: <span class="string">'3.8'</span></span><br>
+                        <span class="line-numbers">2</span><span class="syntax-highlight"><span class="key">services</span>:</span><br>
+                        <span class="line-numbers">3</span><span class="highlight">web:</span><br>
+                        <span class="line-numbers">4</span><span class="highlight">image: nginx</span><br>
+                        <span class="line-numbers">5</span><span class="highlight">ports:</span><br>
+                        <span class="line-numbers">6</span><span class="highlight">- "80:80"</span>
+                    </div>
+                </div>
+                
+                <div class="workflow-step">
+                    <h5>Steps to Indent Multiple Lines:</h5>
+                    <ol>
+                        <li>Enter visual mode with <span class="keyboard-shortcut">V</span></li>
+                        <li>Select lines with <span class="keyboard-shortcut">j</span> or <span class="keyboard-shortcut">k</span></li>
+                        <li>Indent with <span class="keyboard-shortcut">Tab</span> or unindent with <span class="keyboard-shortcut">Shift+Tab</span></li>
+                    </ol>
+                </div>
+                
+                <button class="demo-button" onclick="demonstrateIndentation()">Demo Indentation</button>
+            </div>
+            
+            <div class="technique-demo">
+                <h4>Auto-indent Entire File</h4>
+                <p>Fix indentation throughout the entire file:</p>
+                
+                <div class="vim-editor">
+                    <div class="vim-header">Before: messy-config.yaml</div>
+                    <div class="yaml-content">
+                        <span class="line-numbers">1</span><span class="error">services:</span><br>
+                        <span class="line-numbers">2</span><span class="error">web:</span><br>
+                        <span class="line-numbers">3</span><span class="error">image: nginx</span><br>
+                        <span class="line-numbers">4</span><span class="error">ports:</span><br>
+                        <span class="line-numbers">5</span><span class="error">- "80:80"</span>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin: 15px 0;">
+                    <span class="keyboard-shortcut">gg=G</span> to fix all indentation
+                </div>
+                
+                <div class="vim-editor">
+                    <div class="vim-header">After: fixed-config.yaml</div>
+                    <div class="yaml-content">
+                        <span class="line-numbers">1</span><span class="syntax-highlight"><span class="key">services</span>:</span><br>
+                        <span class="line-numbers">2</span>  <span class="syntax-highlight"><span class="key">web</span>:</span><br>
+                        <span class="line-numbers">3</span>    <span class="syntax-highlight"><span class="key">image</span>: <span class="string">nginx</span></span><br>
+                        <span class="line-numbers">4</span>    <span class="syntax-highlight"><span class="key">ports</span>:</span><br>
+                        <span class="line-numbers">5</span>      - <span class="syntax-highlight"><span class="string">"80:80"</span></span>
+                    </div>
+                </div>
+                
+                <button class="demo-button" onclick="demonstrateAutoIndent()">Demo Auto-indent</button>
+            </div>
+            
+            <div class="tips-box">
+                <h4>🎯 Indentation Best Practices</h4>
+                <ul>
+                    <li>Use 2 spaces for YAML indentation (never tabs)</li>
+                    <li>Enable visual indentation guides for better alignment</li>
+                    <li>Use auto-indent features to maintain consistency</li>
+                    <li>Validate indentation with linters in real-time</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div id="validation" class="content-section">
+            <h2>✅ Validation and Error Checking</h2>
+            
+            <div class="technique-demo">
+                <h4>Automatic Linting with ALE</h4>
+                <p>Real-time YAML validation as you type:</p>
+                
+                <div class="vim-editor">
+                    <div class="vim-header">config.yaml - ALE Enabled</div>
+                    <div class="yaml-content">
+                        <span class="line-numbers">1</span><span class="syntax-highlight"><span class="key">database</span>:</span><br>
+                        <span class="line-numbers">2</span>  <span class="syntax-highlight"><span class="key">host</span>: <span class="string">localhost</span></span><br>
+                        <span class="line-numbers">3</span>  <span class="error">port "5432"</span> <span style="color: red;">⚠️ Missing colon</span><br>
+                        <span class="line-numbers">4</span>  <span class="syntax-highlight"><span class="key">username</span>: <span class="string">admin</span></span><br>
+                        <span class="line-numbers">5</span>  <span class="error">password:</span> <span style="color: red;">⚠️ Missing value</span>
+                    </div>
+                </div>
+                
+                <div class="workflow-step">
+                    <h5>ALE Features:</h5>
+                    <ul>
+                        <li>Syntax errors highlighted in real-time</li>
+                        <li>Error symbols in the gutter</li>
+                        <li>Hover over errors for detailed messages</li>
+                        <li>Integration with YAML linters</li>
+                    </ul>
+                </div>
+                
+                <button class="demo-button" onclick="demonstrateValidation()">Demo Validation</button>
+            </div>
+            
+            <div class="technique-demo">
+                <h4>Manual YAML Formatting</h4>
+                <p>Format and validate with a single command:</p>
+                
+                <div style="text-align: center; margin: 20px 0;">
+                    <span class="keyboard-shortcut">,y</span> - Invoke YAML formatter
+                </div>
+                
+                <div class="yaml-preview" id="formatterDemo">
+<span class="syntax-highlight"><span class="key">services</span>:</span>
+  <span class="syntax-highlight"><span class="key">web</span>:</span>
+    <span class="syntax-highlight"><span class="key">image</span>: <span class="string">nginx:latest</span></span>
+    <span class="syntax-highlight"><span class="key">ports</span>:</span>
+      - <span class="syntax-highlight"><span class="string">"80:80"</span></span>
+      - <span class="syntax-highlight"><span class="string">"443:443"</span></span>
+    <span class="syntax-highlight"><span class="key">environment</span>:</span>
+      <span class="syntax-highlight"><span class="key">NODE_ENV</span>: <span class="string">production</span></span>
+      <span class="syntax-highlight"><span class="key">DEBUG</span>: <span class="string">false</span></span>
+                </div>
+                
+                <button class="demo-button" onclick="demonstrateFormatter()">Demo Formatter</button>
+            </div>
+            
+            <div class="tips-box">
+                <h4>🛡️ Validation Checklist</h4>
+                <ul>
+                    <li>Check for proper indentation (2 spaces per level)</li>
+                    <li>Ensure colons are followed by spaces</li>
+                    <li>Validate array syntax with proper dashes</li>
+                    <li>Check for matching quotes and brackets</li>
+                    <li>Verify no tabs are mixed with spaces</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div id="advanced" class="content-section">
+            <h2>🚀 Advanced Editing Techniques</h2>
+            
+            <div class="technique-demo">
+                <h4>Surrounding Text Operations</h4>
+                <p>Modify, add, or remove surrounding characters efficiently:</p>
+                
+                <div class="vim-editor">
+                    <div class="vim-header">Before Surround Operations</div>
+                    <div class="yaml-content">
+                        <span class="line-numbers">1</span><span class="syntax-highlight"><span class="key">database_url</span>: <span class="highlight">"postgresql://user:pass@localhost"</span></span><br>
+                        <span class="line-numbers">2</span><span class="syntax-highlight"><span class="key">api_keys</span>:</span><br>
+                        <span class="line-numbers">3</span>  - <span class="highlight">secret_key_1</span><br>
+                        <span class="line-numbers">4</span>  - <span class="highlight">secret_key_2</span>
+                    </div>
+                </div>
+                
+                <div style="margin: 15px 0;">
+                    <span class="keyboard-shortcut">cs"'</span> - Change double to single quotes<br>
+                    <span class="keyboard-shortcut">ds"</span> - Delete surrounding quotes<br>
+                    <span class="keyboard-shortcut">ysiw]</span> - Surround word with brackets
+                </div>
+                
+                <button class="demo-button" onclick="demonstrateSurround()">Demo Surrounding</button>
+            </div>
+            
+            <div class="technique-demo">
+                <h4>Multiple-line Editing with Visual Block</h4>
+                <p>Edit multiple lines simultaneously:</p>
+                
+                <div class="vim-editor">
+                    <div class="vim-header">Multi-line Comment Example</div>
+                    <div class="yaml-content">
+                        <span class="line-numbers">1</span><span class="highlight"># services:</span><br>
+                        <span class="line-numbers">2</span><span class="highlight"># web:</span><br>
+                        <span class="line-numbers">3</span><span class="highlight"># image: nginx</span><br>
+                        <span class="line-numbers">4</span><span class="highlight"># ports:</span><br>
+                        <span class="line-numbers">5</span><span class="highlight"># - "80:80"</span>
+                    </div>
+                </div>
+                
+                <div class="workflow-step">
+                    <h5>Visual Block Workflow:</h5>
+                    <ol>
+                        <li>Press <span class="keyboard-shortcut">Ctrl+v</span> for visual block mode</li>
+                        <li>Select column with <span class="keyboard-shortcut">j</span>/<span class="keyboard-shortcut">k</span></li>
+                        <li>Press <span class="keyboard-shortcut">I</span> to insert at beginning</li>
+                        <li>Type changes (e.g., <code># </code> for comments)</li>
+                        <li>Press <span class="keyboard-shortcut">Esc</span> to apply to all lines</li>
+                    </ol>
+                </div>
+                
+                <button class="demo-button" onclick="demonstrateVisualBlock()">Demo Visual Block</button>
+            </div>
+            
+            <div class="technique-demo">
+                <h4>Find and Replace in YAML</h4>
+                <p>Powerful search and replace operations:</p>
+                
+                <div style="text-align: center; margin: 20px 0;">
+                    <span class="keyboard-shortcut">:%s/old_key/new_key/gc</span>
+                </div>
+                
+                <div class="yaml-preview">
+<span class="comment"># Before replacement</span>
+<span class="syntax-highlight"><span class="key">old_database_host</span>: <span class="string">localhost</span></span>
+<span class="syntax-highlight"><span class="key">old_database_port</span>: <span class="number">5432</span></span>
+<span class="syntax-highlight"><span class="key">old_database_name</span>: <span class="string">myapp</span></span>
+
+<span class="comment"># After: :%s/old_/new_/gc</span>
+<span class="syntax-highlight"><span class="key">new_database_host</span>: <span class="string">localhost</span></span>
+<span class="syntax-highlight"><span class="key">new_database_port</span>: <span class="number">5432</span></span>
+<span class="syntax-highlight"><span class="key">new_database_name</span>: <span class="string">myapp</span></span>
+                </div>
+                
+                <button class="demo-button" onclick="demonstrateReplace()">Demo Find & Replace</button>
+            </div>
+        </div>
+        
+        <div id="examples" class="content-section">
+            <h2>🏗️ Real-world Examples</h2>
+            
+            <div class="technique-demo">
+                <h4>Kubernetes Configuration Workflow</h4>
+                <p>Complete workflow for editing Kubernetes YAML files:</p>
+                
+                <div class="yaml-preview" id="k8sExample">
+<span class="syntax-highlight"><span class="key">apiVersion</span>: <span class="string">apps/v1</span></span>
+<span class="syntax-highlight"><span class="key">kind</span>: <span class="string">Deployment</span></span>
+<span class="syntax-highlight"><span class="key">metadata</span>:</span>
+  <span class="syntax-highlight"><span class="key">name</span>: <span class="string">web-app</span></span>
+  <span class="syntax-highlight"><span class="key">labels</span>:</span>
+    <span class="syntax-highlight"><span class="key">app</span>: <span class="string">web</span></span>
+<span class="syntax-highlight"><span class="key">spec</span>:</span>
+  <span class="syntax-highlight"><span class="key">replicas</span>: <span class="number">3</span></span>
+  <span class="syntax-highlight"><span class="key">selector</span>:</span>
+    <span class="syntax-highlight"><span class="key">matchLabels</span>:</span>
+      <span class="syntax-highlight"><span class="key">app</span>: <span class="string">web</span></span>
+  <span class="syntax-highlight"><span class="key">template</span>:</span>
+    <span class="syntax-highlight"><span class="key">metadata</span>:</span>
+      <span class="syntax-highlight"><span class="key">labels</span>:</span>
+        <span class="syntax-highlight"><span class="key">app</span>: <span class="string">web</span></span>
+    <span class="syntax-highlight"><span class="key">spec</span>:</span>
+      <span class="syntax-highlight"><span class="key">containers</span>:</span>
+      - <span class="syntax-highlight"><span class="key">name</span>: <span class="string">web</span></span>
+        <span class="syntax-highlight"><span class="key">image</span>: <span class="string">nginx:1.20</span></span>
+        <span class="syntax-highlight"><span class="key">ports</span>:</span>
+        - <span class="syntax-highlight"><span class="key">containerPort</span>: <span class="number">80</span></span>
+                </div>
+                
+                <div class="workflow-step">
+                    <h5>📋 K8s Editing Workflow:</h5>
+                    <ol>
+                        <li><span class="keyboard-shortcut">:e deployment.yaml</span> - Open file</li>
+                        <li><span class="keyboard-shortcut">,y</span> - Format and validate</li>
+                        <li><span class="keyboard-shortcut">zM</span> - Collapse all sections</li>
+                        <li><span class="keyboard-shortcut">/spec&lt;Enter&gt;</span> - Search for spec</li>
+                        <li><span class="keyboard-shortcut">za</span> - Expand spec section</li>
+                    </ol>
+                </div>
+                
+                <button class="demo-button" onclick="demonstrateK8s()">Demo K8s Workflow</button>
+            </div>
+            
+            <div class="technique-demo">
+                <h4>Docker Compose Best Practices</h4>
+                <p>Working efficiently with docker-compose files:</p>
+                
+                <div class="yaml-preview">
+<span class="syntax-highlight"><span class="key">version</span>: <span class="string">'3.8'</span></span>
+<span class="syntax-highlight"><span class="key">services</span>:</span>
+  <span class="syntax-highlight"><span class="key">webapp</span>:</span>
+    <span class="syntax-highlight"><span class="key">build</span>: <span class="string">.</span></span>
+    <span class="syntax-highlight"><span class="key">ports</span>:</span>
+      - <span class="syntax-highlight"><span class="string">"3000:3000"</span></span>
+    <span class="syntax-highlight"><span class="key">environment</span>:</span>
+      - <span class="syntax-highlight"><span class="string">NODE_ENV=production</span></span>
+      - <span class="syntax-highlight"><span class="string">DB_HOST=postgres</span></span>
+      - <span class="syntax-highlight"><span class="string">DB_USER=admin</span></span>
+      - <span class="syntax-highlight"><span class="string">DB_PASS=secret</span></span>
+    <span class="syntax-highlight"><span class="key">depends_on</span>:</span>
+      - <span class="syntax-highlight"><span class="string">postgres</span></span>
+      - <span class="syntax-highlight"><span class="string">redis</span></span>
+      
+  <span class="syntax-highlight"><span class="key">postgres</span>:</span>
+    <span class="syntax-highlight"><span class="key">image</span>: <span class="string">postgres:13</span></span>
+    <span class="syntax-highlight"><span class="key">environment</span>:</span>
+      - <span class="syntax-highlight"><span class="string">POSTGRES_DB=myapp</span></span>
+      - <span class="syntax-highlight"><span class="string">POSTGRES_USER=admin</span></span>
+      - <span class="syntax-highlight"><span class="string">POSTGRES_PASSWORD=secret</span></span>
+    <span class="syntax-highlight"><span class="key">volumes</span>:</span>
+      - <span class="syntax-highlight"><span class="string">postgres_data:/var/lib/postgresql/data</span></span>
+
+<span class="syntax-highlight"><span class="key">volumes</span>:</span>
+  <span class="syntax-highlight"><span class="key">postgres_data</span>:</span>
+                </div>
+                
+                <div class="tips-box">
+                    <h4>🐳 Docker Compose Tips</h4>
+                    <ul>
+                        <li>Use indentation guides to align environment variables</li>
+                        <li>Use rainbow brackets for matching service blocks</li>
+                        <li>Use column highlighting to maintain consistent formatting</li>
+                        <li>Fold services when working on specific sections</li>
+                    </ul>
+                </div>
+                
+                <button class="demo-button" onclick="demonstrateCompose()">Demo Docker Compose</button>
+            </div>
+            
+            <div class="technique-demo">
+                <h4>CI/CD Pipeline Configuration</h4>
+                <p>GitHub Actions and GitLab CI optimization:</p>
+                
+                <div class="yaml-preview">
+<span class="syntax-highlight"><span class="key">name</span>: <span class="string">CI/CD Pipeline</span></span>
+
+<span class="syntax-highlight"><span class="key">on</span>:</span>
+  <span class="syntax-highlight"><span class="key">push</span>:</span>
+    <span class="syntax-highlight"><span class="key">branches</span>: [<span class="string">main</span>, <span class="string">develop</span>]</span>
+  <span class="syntax-highlight"><span class="key">pull_request</span>:</span>
+    <span class="syntax-highlight"><span class="key">branches</span>: [<span class="string">main</span>]</span>
+
+<span class="syntax-highlight"><span class="key">jobs</span>:</span>
+  <span class="syntax-highlight"><span class="key">test</span>:</span>
+    <span class="syntax-highlight"><span class="key">runs-on</span>: <span class="string">ubuntu-latest</span></span>
+    <span class="syntax-highlight"><span class="key">strategy</span>:</span>
+      <span class="syntax-highlight"><span class="key">matrix</span>:</span>
+        <span class="syntax-highlight"><span class="key">node-version</span>: [<span class="number">14</span>, <span class="number">16</span>, <span class="number">18</span>]</span>
+    
+    <span class="syntax-highlight"><span class="key">steps</span>:</span>
+    - <span class="syntax-highlight"><span class="key">uses</span>: <span class="string">actions/checkout@v3</span></span>
+    - <span class="syntax-highlight"><span class="key">name</span>: <span class="string">Setup Node.js</span></span>
+      <span class="syntax-highlight"><span class="key">uses</span>: <span class="string">actions/setup-node@v3</span></span>
+      <span class="syntax-highlight"><span class="key">with</span>:</span>
+        <span class="syntax-highlight"><span class="key">node-version</span>: <span class="string">${{ matrix.node-version }}</span></span>
+    - <span class="syntax-highlight"><span class="key">run</span>: <span class="string">npm ci</span></span>
+    - <span class="syntax-highlight"><span class="key">run</span>: <span class="string">npm test</span></span>
+                </div>
+                
+                <div class="workflow-step">
+                    <h5>🔄 CI/CD Best Practices:</h5>
+                    <ul>
+                        <li>Use NERDTree to navigate between workflow files</li>
+                        <li>Use folding to focus on specific job stages</li>
+                        <li>Validate syntax with YAML formatter</li>
+                        <li>Use visual block mode for bulk edits to similar steps</li>
+                    </ul>
+                </div>
+                
+                <button class="demo-button" onclick="demonstrateCI()">Demo CI/CD</button>
+            </div>
+            
+            <div class="technique-demo">
+                <h4>YAML Anchors and References</h4>
+                <p>Advanced YAML features for reducing duplication:</p>
+                
+                <div class="yaml-preview">
+<span class="comment"># Define common configuration</span>
+<span class="syntax-highlight"><span class="key">common</span>: <span class="string">&common_config</span></span>
+  <span class="syntax-highlight"><span class="key">logging</span>: <span class="string">true</span></span>
+  <span class="syntax-highlight"><span class="key">timeout</span>: <span class="number">30</span></span>
+  <span class="syntax-highlight"><span class="key">retry_attempts</span>: <span class="number">3</span></span>
+
+<span class="syntax-highlight"><span class="key">services</span>:</span>
+  <span class="syntax-highlight"><span class="key">service1</span>:</span>
+    <span class="syntax-highlight"><span class="string">&lt;&lt;</span>: <span class="string">*common_config</span></span>  <span class="comment"># Inherit common config</span>
+    <span class="syntax-highlight"><span class="key">port</span>: <span class="number">8080</span></span>
+    <span class="syntax-highlight"><span class="key">name</span>: <span class="string">web-service</span></span>
+
+  <span class="syntax-highlight"><span class="key">service2</span>:</span>
+    <span class="syntax-highlight"><span class="string">&lt;&lt;</span>: <span class="string">*common_config</span></span>  <span class="comment"># Inherit common config</span>
+    <span class="syntax-highlight"><span class="key">port</span>: <span class="number">9090</span></span>
+    <span class="syntax-highlight"><span class="key">name</span>: <span class="string">api-service</span></span>
+                </div>
+                
+                <button class="demo-button" onclick="demonstrateAnchors()">Demo YAML Anchors</button>
+            </div>
+            
+            <div class="tips-box">
+                <h4>🎯 Performance Tips for Large Files</h4>
+                <ul>
+                    <li>Disable cursor highlighting for very large files: <span class="keyboard-shortcut">:set nocursorline</span></li>
+                    <li>Use lazy redraw for smoother scrolling: <span class="keyboard-shortcut">:set lazyredraw</span></li>
+                    <li>Use marks for quick navigation: <span class="keyboard-shortcut">ma</span> to set, <span class="keyboard-shortcut">'a</span> to jump</li>
+                    <li>Use line numbers for direct jumping: <span class="keyboard-shortcut">:123</span> goes to line 123</li>
+                </ul>
+            </div>
+            
+            <div class="workflow-step">
+                <h5>🎓 Mastery Checklist</h5>
+                <ul>
+                    <li>✅ Master basic YAML syntax and indentation</li>
+                    <li>✅ Use folding effectively for large files</li>
+                    <li>✅ Leverage real-time validation and error checking</li>
+                    <li>✅ Apply advanced editing techniques (surround, visual block)</li>
+                    <li>✅ Optimize workflows for specific use cases (K8s, Docker, CI/CD)</li>
+                    <li>✅ Use YAML anchors for configuration reuse</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentProgress = 0;
+        
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected section and activate tab
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+            
+            // Update progress
+            const sectionOrder = ['basics', 'navigation', 'indentation', 'validation', 'advanced', 'examples'];
+            const progressPercentage = ((sectionOrder.indexOf(sectionId) + 1) / sectionOrder.length) * 100;
+            document.getElementById('progressFill').style.width = progressPercentage + '%';
+        }
+        
+        function demonstrateAutoIndent() {
+            const demo = document.getElementById('formatterDemo');
+            demo.innerHTML = `<span style="color: #ff6b6b;">services:</span>
+<span style="color: #ff6b6b;">web:</span>
+<span style="color: #ff6b6b;">image: nginx</span>
+
+<span style="color: #4ecdc4;">↓ After gg=G ↓</span>
+
+<span class="syntax-highlight"><span class="key">services</span>:</span>
+  <span class="syntax-highlight"><span class="key">web</span>:</span>
+    <span class="syntax-highlight"><span class="key">image</span>: <span class="string">nginx</span></span>`;
+            
+            setTimeout(() => {
+                demo.innerHTML = `<span class="syntax-highlight"><span class="key">services</span>:</span>
+  <span class="syntax-highlight"><span class="key">web</span>:</span>
+    <span class="syntax-highlight"><span class="key">image</span>: <span class="string">nginx:latest</span></span>
+    <span class="syntax-highlight"><span class="key">ports</span>:</span>
+      - <span class="syntax-highlight"><span class="string">"80:80"</span></span>
+      - <span class="syntax-highlight"><span class="string">"443:443"</span></span>
+    <span class="syntax-highlight"><span class="key">environment</span>:</span>
+      <span class="syntax-highlight"><span class="key">NODE_ENV</span>: <span class="string">production</span></span>
+      <span class="syntax-highlight"><span class="key">DEBUG</span>: <span class="string">false</span></span>`;
+            }, 2000);
+        }
+        
+        function demonstrateAutoPair() {
+            alert('Demo: When you type " the editor automatically adds the closing " and positions cursor between them!\n\nSame with {}, [], and other pairs.');
+        }
+        
+        function demonstrateFolding() {
+            const demo = document.getElementById('foldingDemo');
+            const collapsed = demo.innerHTML.includes('folded');
+            
+            if (collapsed) {
+                demo.innerHTML = `<div class="vim-header">kubernetes-deployment.yaml</div>
+                    <div class="yaml-content">
+                        <span class="line-numbers">1</span><span class="syntax-highlight"><span class="key">apiVersion</span>: <span class="string">apps/v1</span></span><br>
+                        <span class="line-numbers">2</span><span class="syntax-highlight"><span class="key">kind</span>: <span class="string">Deployment</span></span><br>
+                        <span class="line-numbers">3</span><span class="syntax-highlight"><span class="key">metadata</span>:</span><br>
+                        <span class="line-numbers">4</span>  <span class="syntax-highlight"><span class="key">name</span>: <span class="string">web-app</span></span><br>
+                        <span class="line-numbers">5</span>  <span class="syntax-highlight"><span class="key">namespace</span>: <span class="string">default</span></span><br>
+                        <span class="line-numbers">6</span>  <span class="syntax-highlight"><span class="key">labels</span>:</span><br>
+                        <span class="line-numbers">7</span>    <span class="syntax-highlight"><span class="key">app</span>: <span class="string">web</span></span><br>
+                        <span class="line-numbers">8</span>    <span class="syntax-highlight"><span class="key">version</span>: <span class="string">v1</span></span><br>
+                        <span class="line-numbers">9</span><span class="syntax-highlight"><span class="key">spec</span>:</span><br>
+                        <span class="line-numbers">10</span>  <span class="syntax-highlight"><span class="key">replicas</span>: <span class="number">3</span></span><br>
+                        <span class="line-numbers">11</span>  <span class="syntax-highlight"><span class="key">template</span>:</span><br>
+                        <span class="line-numbers">12</span>    <span class="syntax-highlight"><span class="key">spec</span>:</span><br>
+                        <span class="line-numbers">13</span>      <span class="syntax-highlight"><span class="key">containers</span>:</span><br>
+                        <span class="line-numbers">14</span>      - <span class="syntax-highlight"><span class="key">name</span>: <span class="string">web</span></span><br>
+                        <span class="line-numbers">15</span>        <span class="syntax-highlight"><span class="key">image</span>: <span class="string">nginx</span></span>
+                    </div>`;
+            } else {
+                demo.innerHTML = `<div class="vim-header">kubernetes-deployment.yaml</div>
+                    <div class="yaml-content">
+                        <span class="line-numbers">1</span><span class="syntax-highlight"><span class="key">apiVersion</span>: <span class="string">apps/v1</span></span><br>
+                        <span class="line-numbers">2</span><span class="syntax-highlight"><span class="key">kind</span>: <span class="string">Deployment</span></span><br>
+                        <span class="line-numbers">3</span><span class="syntax-highlight"><span class="key">metadata</span>:</span> <span style="color: #666;">[+] --- 5 lines folded ---</span><br>
+                        <span class="line-numbers">9</span><span class="syntax-highlight"><span class="key">spec</span>:</span><br>
+                        <span class="line-numbers">10</span>  <span class="syntax-highlight"><span class="key">replicas</span>: <span class="number">3</span></span><br>
+                        <span class="line-numbers">11</span>  <span class="syntax-highlight"><span class="key">template</span>:</span><br>
+                        <span class="line-numbers">12</span>    <span class="syntax-highlight"><span class="key">spec</span>:</span> <span style="color: #666;">[+] --- 15 lines folded ---</span>
+                    </div>`;
+            }
+        }
+        
+        function demonstrateFileNav() {
+            alert('Demo: File Navigation\n\n,n - Opens NERDTree sidebar for project navigation\n,f - Opens fuzzy finder for quick file search\nCtrl+p - Alternative file search\n\nThese shortcuts make managing multiple YAML files effortless!');
+        }
+        
+        function demonstrateIndentation() {
+            alert('Demo: Visual Selection Indentation\n\n1. Press V to enter visual line mode\n2. Use j/k to select multiple lines\n3. Press Tab to indent or Shift+Tab to unindent\n\nThis allows you to fix indentation issues across multiple lines simultaneously!');
+        }
+        
+        function demonstrateValidation() {
+            alert('Demo: ALE Validation\n\nALE (Asynchronous Lint Engine) provides:\n• Real-time syntax checking\n• Error highlighting as you type\n• Gutter symbols for quick error identification\n• Integration with yamllint and other YAML validators\n\nErrors are caught before you save!');
+        }
+        
+        function demonstrateFormatter() {
+            alert('Demo: YAML Formatter\n\nPress ,y to:\n• Validate YAML syntax\n• Reformat indentation consistently\n• Check for common YAML errors\n• Ensure proper spacing and structure\n\nThis single command keeps your YAML files clean and valid!');
+        }
+        
+        function demonstrateSurround() {
+            alert('Demo: Surround Operations\n\ncs"\'  - Change "text" to \'text\'\nds"   - Delete surrounding quotes\nysiw] - Surround current word with [brackets]\n\nThese operations work seamlessly with YAML strings and values!');
+        }
+        
+        function demonstrateVisualBlock() {
+            alert('Demo: Visual Block Mode\n\nCtrl+v enters visual block mode:\n1. Select column of text\n2. Press I to insert at beginning\n3. Type your changes (like # for comments)\n4. Press Esc to apply to all selected lines\n\nPerfect for bulk commenting or editing YAML structures!');
+        }
+        
+        function demonstrateReplace() {
+            alert('Demo: Find and Replace\n\n:%s/old/new/gc\n\ng - Replace all occurrences on each line\nc - Confirm each replacement\n\nExample: :%s/old_/new_/gc replaces all "old_" prefixes with "new_" throughout the file!');
+        }
+        
+        function demonstrateK8s() {
+            alert('Demo: Kubernetes Workflow\n\n1. :e deployment.yaml - Open file\n2. ,y - Format and validate\n3. zM - Collapse all sections\n4. /spec<Enter> - Search for spec section\n5. za - Expand just that section\n\nThis workflow helps you focus on specific parts of complex K8s configurations!');
+        }
+        
+        function demonstrateCompose() {
+            alert('Demo: Docker Compose Tips\n\n• Use indentation guides to align environment variables\n• Rainbow brackets help match service blocks\n• Column highlighting maintains consistent formatting\n• Folding lets you focus on specific services\n\nThese features make complex compose files manageable!');
+        }
+        
+        function demonstrateCI() {
+            alert('Demo: CI/CD Best Practices\n\n• Use NERDTree to navigate workflow files\n• Fold job stages for better focus\n• Validate with YAML formatter\n• Visual block mode for bulk step edits\n\nStreamline your CI/CD pipeline editing!');
+        }
+        
+        function demonstrateAnchors() {
+            alert('Demo: YAML Anchors\n\n&anchor_name - Define an anchor\n*anchor_name - Reference an anchor\n<<: *anchor_name - Merge anchor contents\n\nAnchors eliminate duplication in complex YAML configurations!');
+        }
+        
+        // Initialize progress
+        document.getElementById('progressFill').style.width = '16.67%';
+        
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.altKey) {
+                const sections = ['basics', 'navigation', 'indentation', 'validation', 'advanced', 'examples'];
+                const currentSection = document.querySelector('.content-section.active').id;
+                const currentIndex = sections.indexOf(currentSection);
+                
+                if (e.key === 'ArrowRight' && currentIndex < sections.length - 1) {
+                    showSection(sections[currentIndex + 1]);
+                    document.querySelector(`.nav-tab:nth-child(${currentIndex + 2})`).click();
+                } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                    showSection(sections[currentIndex - 1]);
+                    document.querySelector(`.nav-tab:nth-child(${currentIndex})`).click();
+                }
+            }
+        });
+        
+        // Add smooth scrolling for better UX
+        document.querySelectorAll('.demo-button').forEach(button => {
+            button.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>

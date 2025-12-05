@@ -1,0 +1,460 @@
+/* Linux Environment - Global Styles */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* --- Light Mode Variables (Sepia/Paper Theme) --- */
+    --bg-light: #FBF8F4; /* Soft, warm off-white */
+    --text-light: #4A453E; /* Softened dark brown text */
+    --accent: #667eea;
+    --code-light: #E8E5DF;
+    --border-light: #D6D0C4; 
+
+    /* --- Dark Mode Variables (Palette 2: Soothing Amethyst) --- */
+    --bg-dark: #1A1C2C; 
+    --container-dark: #282A3A; 
+    --text-dark: #EDEDED;
+    --accent-dark: #C28FFF; 
+    --secondary-dark: #95D1FF;
+    --code-dark: #212338; 
+    --border-dark: #404258; 
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg-light);
+    color: var(--text-light);
+    min-height: 100vh;
+    padding: 20px;
+    line-height: 1.6;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 30px 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    background: var(--bg-light); /* Default light mode container background */
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+body.dark-mode .container {
+    background: var(--container-dark);
+    color: var(--text-dark);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Navigation */
+.breadcrumb {
+    color: var(--accent);
+    font-size: 0.95rem;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border-light);
+}
+
+body.dark-mode .breadcrumb {
+    border-bottom-color: var(--border-dark);
+}
+
+.breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-weight: 500;
+}
+
+body.dark-mode .breadcrumb a {
+    color: var(--accent-dark);
+}
+
+.breadcrumb a:hover {
+    color: #764ba2; /* Kept a light-mode specific hover */
+    text-decoration: underline;
+}
+
+body.dark-mode .breadcrumb a:hover {
+    color: var(--secondary-dark); 
+}
+
+/* Header */
+header {
+    margin-bottom: 40px;
+    padding-bottom: 30px;
+    border-bottom: 2px solid var(--border-light);
+}
+
+h1 {
+    font-size: 2.2rem;
+    color: var(--text-light);
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+body.dark-mode h1 {
+    color: var(--text-dark);
+}
+
+h2 {
+    font-size: 1.6rem;
+    color: var(--accent);
+    margin-top: 35px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border-light);
+    font-weight: 600;
+}
+
+body.dark-mode h2 {
+    color: var(--accent-dark);
+    border-bottom-color: var(--border-dark);
+}
+
+h3 {
+    font-size: 1.2rem;
+    color: #764ba2;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+body.dark-mode h3 {
+    color: var(--secondary-dark);
+}
+
+h4, h5, h6 {
+    color: var(--text-light);
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+body.dark-mode h4, body.dark-mode h5, body.dark-mode h6 {
+    color: var(--text-dark);
+}
+
+
+/* Content Styling */
+p {
+    margin-bottom: 15px;
+    line-height: 1.8;
+    color: var(--text-light);
+}
+
+body.dark-mode p {
+    color: var(--text-dark);
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+body.dark-mode a {
+    color: var(--accent-dark);
+    border-bottom-color: rgba(194, 143, 255, 0.3); /* Soothing Amethyst RGBA */
+}
+
+a:hover {
+    color: #764ba2;
+    border-bottom-color: #764ba2;
+}
+
+body.dark-mode a:hover {
+    color: var(--secondary-dark);
+    border-bottom-color: var(--secondary-dark);
+}
+
+/* Lists */
+ul, ol {
+    margin: 15px 0;
+    padding-left: 30px;
+    color: var(--text-light);
+}
+
+body.dark-mode ul, body.dark-mode ol {
+    color: var(--text-dark);
+}
+
+
+li {
+    margin-bottom: 8px;
+    line-height: 1.8;
+}
+
+li code {
+    background: var(--code-light);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+/* Code */
+code, kbd, pre, samp {
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+    border-radius: 4px;
+}
+
+code {
+    padding: 3px 7px;
+    font-size: 0.9em;
+    background: var(--code-light);
+    color: #d63384; /* Light mode inline code color */
+    font-weight: 500;
+}
+
+body.dark-mode code {
+    background: var(--code-dark);
+    color: var(--accent-dark); /* Use accent color for inline code highlights */
+}
+
+pre {
+    background: #282c34;
+    color: #abb2bf;
+    padding: 16px;
+    margin: 20px 0;
+    border-radius: 8px;
+    overflow-x: auto;
+    border-left: 4px solid var(--accent);
+    line-height: 1.4;
+    font-size: 0.95em;
+}
+
+body.dark-mode pre {
+    background: var(--code-dark);
+    color: var(--text-dark); /* Ensure pre text color matches main text */
+    border-left-color: var(--accent-dark);
+}
+
+pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+    font-size: inherit;
+}
+
+/* Tables */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 20px 0;
+    background: var(--bg-light);
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+body.dark-mode table {
+    background: var(--container-dark);
+    border-color: var(--border-dark);
+}
+
+table th {
+    background: var(--code-light);
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-light);
+    border-bottom: 2px solid var(--border-light);
+}
+
+body.dark-mode table th {
+    background: color-mix(in srgb, var(--code-dark) 80%, black); /* Make table header a bit darker */
+    color: var(--text-dark);
+    border-bottom-color: var(--border-dark);
+}
+
+table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text-light);
+}
+
+body.dark-mode table td {
+    border-bottom-color: var(--border-dark);
+    color: var(--text-dark);
+}
+
+table tr:hover {
+    background: var(--code-light);
+}
+
+body.dark-mode table tr:hover {
+    background: var(--code-dark);
+}
+
+/* Blockquotes */
+blockquote {
+    border-left: 4px solid var(--accent);
+    padding-left: 20px;
+    margin: 20px 0;
+    color: var(--text-light);
+    font-style: italic;
+    background: var(--code-light);
+    padding: 15px 15px 15px 20px;
+    border-radius: 4px;
+}
+
+body.dark-mode blockquote {
+    border-left-color: var(--accent-dark);
+    background: var(--code-dark);
+    color: var(--text-dark);
+}
+
+/* Strong/Emphasis */
+strong {
+    font-weight: 600;
+    color: var(--text-light);
+}
+
+body.dark-mode strong {
+    color: var(--text-dark);
+}
+
+em {
+    font-style: italic;
+}
+
+/* Back to Index Link */
+.back-to-index {
+    margin-top: 50px;
+    padding-top: 30px;
+    border-top: 2px solid var(--border-light);
+    text-align: center;
+}
+
+body.dark-mode .back-to-index {
+    border-top-color: var(--border-dark);
+}
+
+.back-to-index a {
+    display: inline-block;
+    background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 10px 25px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.back-to-index a:hover {
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    color: var(--text-light);
+    padding: 30px 0;
+    margin-top: 50px;
+    border-top: 2px solid var(--border-light);
+    font-size: 0.9rem;
+}
+
+body.dark-mode footer {
+    color: var(--text-dark);
+    border-top-color: var(--border-dark);
+}
+
+footer a {
+    color: var(--accent);
+}
+
+/* Dark Mode Toggle */
+.theme-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.6);
+}
+
+body.dark-mode .theme-toggle {
+    background: var(--accent-dark);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 1.6rem;
+    }
+
+    h2 {
+        font-size: 1.3rem;
+    }
+
+    .breadcrumb {
+        font-size: 0.9rem;
+    }
+
+    table {
+        font-size: 0.9rem;
+    }
+
+    table th, table td {
+        padding: 8px;
+    }
+
+    .theme-toggle {
+        width: 45px;
+        height: 45px;
+        font-size: 1.1em;
+    }
+}
+
+/* Images */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 20px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+body.dark-mode img {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Markdown generated content fixes */
+.markdown-body {
+    display: none;
+}

@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux Command Line Tutorial</title>
+    <!-- Local Tailwind CSS -->
+    <link href="./css/tailwind.min.css" rel="stylesheet">
+    <!-- Inter font from Google Fonts (still external, consider local or removing for full offline) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Local xterm.js CSS -->
+    <link rel="stylesheet" href="./css/xterm.css" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c; /* Dark background for the page */
+            color: #e2e8f0; /* Light text color */
+            line-height: 1.6;
+            padding: 2rem;
+            max-width: 960px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+        h1, h2, h3 {
+            color: #63b3ed; /* Blue color for headings */
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        h1 { font-size: 2.5rem; }
+        h2 { font-size: 2rem; }
+        h3 { font-size: 1.5rem; }
+        p {
+            margin-bottom: 1rem;
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.5rem;
+        }
+        code {
+            background-color: #2d3748; /* Darker gray for inline code */
+            padding: 0.2em 0.4em;
+            border-radius: 0.25rem;
+            font-family: 'monospace', monospace;
+            font-size: 0.9em;
+            color: #a0aec0; /* Lighter gray for code text */
+        }
+        pre {
+            background-color: #0d1117; /* Even darker for code blocks */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+            font-family: 'monospace', monospace;
+            font-size: 0.9em;
+            color: #c6d0e0; /* Lightest gray for code block text */
+        }
+        strong {
+            color: #90cdf4; /* Lighter blue for strong text */
+        }
+        hr {
+            border-color: #4a5568; /* Gray border for horizontal rule */
+            margin: 2rem 0;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.75rem; }
+            h3 { font-size: 1.25rem; }
+        }
+
+        /* Styles for the embedded terminal */
+        .terminal-wrapper {
+            width: 100%;
+            max-width: 900px; /* Max width for the terminal */
+            height: 500px; /* Fixed height for the terminal */
+            background-color: #1e1e1e; /* Dark background for terminal */
+            border-radius: 0.5rem; /* Rounded corners */
+            overflow: hidden; /* Hide scrollbars if content overflows */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+            display: flex;
+            flex-direction: column;
+            margin: 2rem auto; /* Center the terminal */
+        }
+        #terminal {
+            flex-grow: 1; /* Allow terminal to fill available space */
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        /* Override xterm.js default font to match theme */
+        .xterm-rows {
+            font-family: 'monospace', monospace !important;
+            font-size: 14px;
+        }
+        @media (max-width: 768px) {
+            .terminal-wrapper {
+                height: 400px; /* Smaller height on mobile */
+            }
+            .xterm-rows {
+                font-size: 12px; /* Smaller font on mobile */
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <h1 class="text-blue-400 mb-4">Getting Started with the Linux Command Line</h1>
+    <p>
+        Welcome to the fascinating world of the Linux command line! While graphical interfaces are intuitive, the command line (often called the terminal or shell) offers immense power, efficiency, and a deeper understanding of how your computer works. Many developers, system administrators, and even casual users find it an indispensable tool.
+    </p>
+    <p>
+        This page features an interactive terminal right in your browser, allowing you to try out basic Linux commands without installing anything!
+    </p>
+
+    <h2 class="text-blue-400 mt-8 mb-4">Why Learn the Command Line?</h2>
+    <ul class="list-disc ml-6">
+        <li><strong>Efficiency:</strong> Perform complex tasks with a few keystrokes.</li>
+        <li><strong>Automation:</strong> Script repetitive tasks.</li>
+        <li><strong>Remote Access:</strong> Manage servers and systems remotely.</li>
+        <li><strong>Power:</strong> Access system features not available through a GUI.</li>
+        <li><strong>Understanding:</strong> Gain a deeper insight into operating systems.</li>
+    </ul>
+
+    <h2 class="text-blue-400 mt-8 mb-4">Your Interactive Terminal</h2>
+    <p>
+        Below is a simulated Linux terminal. It behaves much like a real one for basic commands. Feel free to type commands and press Enter to see the output. Remember, this is a simulation, so no real changes are made to your computer.
+    </p>
+
+    <hr>
+
+    <!-- Embedded Interactive Terminal -->
+    <div class="terminal-wrapper">
+        <div id="terminal"></div>
+    </div>
+
+    <!-- Local xterm.js JavaScript library -->
+    <script src="./js/xterm.js"></script>
+    <!-- Local xterm.js Fit Addon -->
+    <script src="./js/xterm-addon-fit.js"></script>
+
+    <!-- Import modular command logic -->
+    <script type="module">
+        import { commandHandlers } from './js/commandRegistry.js';
+        import { writePrompt, currentPath, getCurrentDir, resolvePath, getPathObject, updateCurrentPath } from './js/terminalUtils.js';
+        import { ShellParser } from './js/shellParser.js';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const terminalContainer = document.getElementById('terminal');
+            const term = new Terminal({
+                cursorBlink: true,
+                convertEol: true,
+                fontFamily: 'monospace',
+                fontSize: 14,
+                theme: {
+                    background: '#1e1e1e',
+                    foreground: '#abb2bf',
+                    cursor: '#abb2bf',
+                    selection: 'rgba(128, 128, 128, 0.4)',
+                    black: '#21252b',
+                    red: '#e06c75',
+                    green: '#98c379',
+                    yellow: '#e5c07b',
+                    blue: '#61afef',
+                    magenta: '#c678dd',
+                    cyan: '#56b6c2',
+                    white: '#abb2bf',
+                    brightBlack: '#5c6370',
+                    brightRed: '#e06c75',
+                    brightGreen: '#98c379',
+                    brightYellow: '#e5c07b',
+                    brightBlue: '#61afef',
+                    brightMagenta: '#c678dd',
+                    brightCyan: '#56b6c2',
+                    brightWhite: '#ffffff'
+                }
+            });
+
+            const fitAddon = new FitAddon.FitAddon();
+            term.loadAddon(fitAddon);
+            term.open(terminalContainer);
+            fitAddon.fit();
+            window.addEventListener('resize', () => {
+                fitAddon.fit();
+            });
+
+            // Initialize command handlers with the term instance
+            const handlers = commandHandlers(term);
+            const parser = new ShellParser();
+
+            let currentCommand = '';
+            const commandHistory = [];
+            let historyIndex = -1;
+            let cursorPos = 0;  // Track cursor position within the current command
+
+            function handleCommand(command) {
+                let output = '';
+
+                // Check if command contains pipes or redirections
+                if (parser.needsShellParsing(command)) {
+                    output = handlePipedCommand(command);
+                } else {
+                    // Simple command without pipes or redirections
+                    const parts = command.split(/\s+/).filter(p => p.length > 0);
+                    const cmd = parts[0];
+                    const args = parts.slice(1);
+
+                    const handler = handlers[cmd];
+
+                    if (handler) {
+                        output = handler(args);
+                    } else if (cmd === '') {
+                        output = '';
+                    } else {
+                        output = `bash: ${cmd}: command not found`;
+                    }
+                }
+
+                if (output) {
+                    term.write(output + '\r\n');
+                }
+            }
+
+            function handlePipedCommand(commandLine) {
+                const parsed = parser.parse(commandLine);
+                const { commands, redirections, hasPipes } = parsed;
+
+                let output = '';
+
+                // Process each command in the pipeline
+                for (let i = 0; i < commands.length; i++) {
+                    const cmd = commands[i];
+                    const handler = handlers[cmd.name];
+
+                    if (!handler) {
+                        return `bash: ${cmd.name}: command not found`;
+                    }
+
+                    try {
+                        // For piped commands, we need special handling
+                        if (i === 0) {
+                            // First command executes normally
+                            output = handler(cmd.args);
+                        } else {
+                            // Subsequent commands in pipeline
+                            // We need to pass the previous output as input
+                            // This is simplified - in real shell, this would be via stdin
+                            output = executePipeStep(handler, cmd, output);
+                        }
+                    } catch (error) {
+                        return `Error executing ${cmd.name}: ${error.message}`;
+                    }
+                }
+
+                // Handle output redirection if present
+                if (redirections.output) {
+                    // Write output to file
+                    return handleOutputRedirect(output, redirections.output);
+                } else if (redirections.append) {
+                    // Append output to file
+                    return handleAppendRedirect(output, redirections.append);
+                }
+
+                return output;
+            }
+
+            function executePipeStep(handler, cmd, pipeInput) {
+                // For text processing commands that work on content,
+                // we simulate passing output as input
+                // This works for commands like grep, sort, uniq, wc on piped input
+
+                const cmdName = cmd.name;
+
+                // Commands that can work with piped input
+                const pipeableCommands = ['grep', 'sort', 'uniq', 'wc', 'head', 'tail'];
+
+                if (pipeableCommands.includes(cmdName)) {
+                    // For these commands, simulate processing the piped input
+                    // We'll need to extend command implementations to accept string input
+                    return executePipeableCommand(handler, cmd, pipeInput);
+                } else {
+                    // Other commands just execute normally
+                    return handler(cmd.args);
+                }
+            }
+
+            function executePipeableCommand(handler, cmd, pipeInput) {
+                // Process piped input through the command
+                // This is a simplified implementation
+                const lines = pipeInput.split('\n').filter(l => l.trim());
+
+                if (cmd.name === 'grep') {
+                    const pattern = cmd.args[0];
+                    return lines.filter(l => l.includes(pattern)).join('\r\n');
+                } else if (cmd.name === 'sort') {
+                    const reverse = cmd.args.includes('-r');
+                    const numeric = cmd.args.includes('-n');
+
+                    let sorted = [...lines];
+                    if (numeric) {
+                        sorted.sort((a, b) => {
+                            const numA = parseFloat(a.trim());
+                            const numB = parseFloat(b.trim());
+                            return reverse ? numB - numA : numA - numB;
+                        });
+                    } else {
+                        sorted.sort((a, b) => reverse ? b.localeCompare(a) : a.localeCompare(b));
+                    }
+                    return sorted.join('\r\n');
+                } else if (cmd.name === 'uniq') {
+                    const countMode = cmd.args.includes('-c');
+                    const duplicateOnly = cmd.args.includes('-d');
+                    const uniqueOnly = cmd.args.includes('-u');
+
+                    const lineCount = {};
+                    lines.forEach(line => {
+                        lineCount[line] = (lineCount[line] || 0) + 1;
+                    });
+
+                    const result = [];
+                    Object.entries(lineCount).forEach(([line, count]) => {
+                        let shouldInclude = false;
+                        if (uniqueOnly && count === 1) {
+                            shouldInclude = true;
+                        } else if (duplicateOnly && count > 1) {
+                            shouldInclude = true;
+                        } else if (!uniqueOnly && !duplicateOnly) {
+                            shouldInclude = true;
+                        }
+
+                        if (shouldInclude) {
+                            result.push(countMode ? `${count} ${line}` : line);
+                        }
+                    });
+
+                    return result.join('\r\n');
+                } else if (cmd.name === 'wc') {
+                    const countLines = cmd.args.includes('-l') || cmd.args.length === 0;
+                    const countWords = cmd.args.includes('-w') || cmd.args.length === 0;
+                    const countBytes = cmd.args.includes('-c') || cmd.args.length === 0;
+
+                    let parts = [];
+                    if (countLines) parts.push(lines.length.toString().padStart(7));
+                    if (countWords) {
+                        const words = pipeInput.match(/\b\w+\b/g)?.length || 0;
+                        parts.push(words.toString().padStart(7));
+                    }
+                    if (countBytes) parts.push(pipeInput.length.toString().padStart(7));
+
+                    return parts.join(' ');
+                }
+
+                return handler(cmd.args);
+            }
+
+            function handleOutputRedirect(output, filename) {
+                // In a real implementation, this would write to a file in the virtual filesystem
+                // For now, we'll just indicate that output was redirected
+                return `Output redirected to: ${filename}`;
+            }
+
+            function handleAppendRedirect(output, filename) {
+                // In a real implementation, this would append to a file
+                return `Output appended to: ${filename}`;
+            }
+
+            function redrawLine() {
+                // Redraw the current command line with cursor at the right position
+                term.write('\x1B[2K\r');  // Clear line and go to start
+                writePrompt(term);
+                term.write(currentCommand);
+                // Move cursor back to correct position
+                const charsAfterCursor = currentCommand.length - cursorPos;
+                if (charsAfterCursor > 0) {
+                    term.write(`\x1B[${charsAfterCursor}D`);  // Move left N positions
+                }
+            }
+
+            term.onData(e => {
+                const charCode = e.charCodeAt(0);
+
+                if (e === '\r') {
+                    term.write('\r\n');
+                    if (currentCommand.trim().length > 0) {
+                        commandHistory.push(currentCommand.trim());
+                        historyIndex = commandHistory.length;
+                    }
+                    handleCommand(currentCommand.trim());
+                    currentCommand = '';
+                    cursorPos = 0;
+                    writePrompt(term); // Pass term instance to writePrompt
+                } else if (e === '\x7F') {
+                    // Backspace - delete character before cursor
+                    if (cursorPos > 0) {
+                        currentCommand = currentCommand.slice(0, cursorPos - 1) + currentCommand.slice(cursorPos);
+                        cursorPos--;
+                        redrawLine();
+                    }
+                } else if (e === '\x1B[A') {
+                    // Up arrow - previous command in history
+                    if (historyIndex > 0) {
+                        historyIndex--;
+                        currentCommand = commandHistory[historyIndex];
+                        cursorPos = currentCommand.length;
+                        redrawLine();
+                    }
+                } else if (e === '\x1B[B') {
+                    // Down arrow - next command in history
+                    if (historyIndex < commandHistory.length - 1) {
+                        historyIndex++;
+                        currentCommand = commandHistory[historyIndex];
+                        cursorPos = currentCommand.length;
+                        redrawLine();
+                    } else if (historyIndex === commandHistory.length - 1) {
+                        historyIndex = commandHistory.length;
+                        currentCommand = '';
+                        cursorPos = 0;
+                        redrawLine();
+                    }
+                } else if (e === '\x1B[C') {
+                    // Right arrow - move cursor right
+                    if (cursorPos < currentCommand.length) {
+                        cursorPos++;
+                        term.write('\x1B[C');  // Move cursor right
+                    }
+                } else if (e === '\x1B[D') {
+                    // Left arrow - move cursor left
+                    if (cursorPos > 0) {
+                        cursorPos--;
+                        term.write('\x1B[D');  // Move cursor left
+                    }
+                } else if (e === '\x1B[H') {
+                    // Home key - move to beginning of line
+                    if (cursorPos > 0) {
+                        term.write(`\x1B[${cursorPos}D`);  // Move left N positions
+                        cursorPos = 0;
+                    }
+                } else if (e === '\x1B[F') {
+                    // End key - move to end of line
+                    if (cursorPos < currentCommand.length) {
+                        term.write(`\x1B[${currentCommand.length - cursorPos}C`);  // Move right N positions
+                        cursorPos = currentCommand.length;
+                    }
+                } else if (e === '\t') {
+                    const currentDir = getCurrentDir();
+                    if (!currentDir || !currentDir.children) return;
+
+                    const commandParts = currentCommand.split(/\s+/);
+                    const lastPart = commandParts.pop() || '';
+                    const itemsInDir = Object.keys(currentDir.children);
+
+                    const matches = itemsInDir.filter(item => item.startsWith(lastPart));
+
+                    if (matches.length === 1) {
+                        const completion = matches[0].substring(lastPart.length);
+                        term.write(completion);
+                        currentCommand += completion;
+                        cursorPos = currentCommand.length;
+                        if (currentDir.children[matches[0]].type === 'directory') {
+                            term.write('/');
+                            currentCommand += '/';
+                            cursorPos = currentCommand.length;
+                        }
+                    } else if (matches.length > 1) {
+                        term.write('\r\n');
+                        term.write(matches.join('\t') + '\r\n');
+                        writePrompt(term);
+                        term.write(currentCommand);
+                        cursorPos = currentCommand.length;
+                    }
+                }
+                else if (charCode >= 32 && charCode <= 126) {
+                    // Regular character - insert at cursor position
+                    currentCommand = currentCommand.slice(0, cursorPos) + e + currentCommand.slice(cursorPos);
+                    cursorPos++;
+                    redrawLine();
+                }
+            });
+
+            term.write('Welcome to the simulated Linux terminal!\r\n');
+            term.write('Type "help" to see available commands.\r\n\r\n');
+            writePrompt(term);
+        });
+    </script>
+    <hr>
+
+    <h2 class="text-blue-400 mt-8 mb-4">Basic Navigation Commands: A Hands-On Tutorial</h2>
+    <p>
+        Let's start by exploring the file system using some fundamental navigation commands.
+    </p>
+
+    <h3 class="text-blue-300 mt-6 mb-3">1. Where Am I? (<code class="bg-gray-700">pwd</code>)</h3>
+    <p>
+        The first thing you often want to know is your current location in the file system.
+    </p>
+    <ul>
+        <li><strong>Command:</strong> <code class="bg-gray-700">pwd</code> (Print Working Directory)</li>
+        <li><strong>Try it:</strong>
+            <pre><code>pwd</code></pre>
+        </li>
+        <li><strong>Expected Output:</strong> You should see <code class="bg-gray-700">/home/user</code>. This is your simulated "home" directory.</li>
+    </ul>
+
+    <h3 class="text-blue-300 mt-6 mb-3">2. What's Here? (<code class="bg-gray-700">ls</code>)</h3>
+    <p>
+        Now that you know where you are, let's see what files and directories are in your current location.
+    </p>
+    <ul>
+        <li><strong>Command:</strong> <code class="bg-gray-700">ls</code> (List)</li>
+        <li><strong>Try it:</strong>
+            <pre><code>ls</code></pre>
+        </li>
+        <li><strong>Expected Output:</strong> You'll see a list like <code class="bg-gray-700">documents/ downloads/ projects/ README.txt</code>.
+            <ul>
+                <li>Notice the <code class="bg-gray-700">/</code> at the end of <code class="bg-gray-700">documents/</code>, <code class="bg-gray-700">downloads/</code>, and <code class="bg-gray-700">projects/</code>. This is a common convention to indicate that these are directories (folders). <code class="bg-gray-700">README.txt</code> is a file.</li>
+            </ul>
+        </li>
+        <li><strong>Detailed Listing (<code class="bg-gray-700">ls -l</code>):</strong> For more information about the items, use the <code class="bg-gray-700">-l</code> (long format) option.</li>
+        <li><strong>Try it:</strong>
+            <pre><code>ls -l</code></pre>
+        </li>
+        <li><strong>Expected Output:</strong> You'll see a much more detailed output, including:
+            <ul>
+                <li>Permissions (e.g., <code class="bg-gray-700">drwxr-xr-x</code> for directories, <code class="bg-gray-700">-rw-r--r--</code> for files)</li>
+                <li>Number of links (usually <code class="bg-gray-700">1</code>)</li>
+                <li>Owner (<code class="bg-gray-700">user</code>)</li>
+                <li>Group (<code class="bg-gray-700">user</code>)</li>
+                <li>Size (in bytes)</li>
+                <li>Last modified date and time</li>
+                <li>Name of the file or directory</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h3 class="text-blue-300 mt-6 mb-3">3. Moving Around (<code class="bg-gray-700">cd</code>)</h3>
+    <p>
+        The <code class="bg-gray-700">cd</code> command (Change Directory) is how you navigate between directories.
+    </p>
+    <ul>
+        <li><strong>Going into a directory:</strong>
+            <ul>
+                <li><strong>Command:</strong> <code class="bg-gray-700">cd &lt;directory_name&gt;</code></li>
+                <li><strong>Try it:</strong> Let's go into the <code class="bg-gray-700">documents</code> directory.
+                    <pre><code>cd documents</code></pre>
+                </li>
+                <li><strong>Expected Output:</strong> Your prompt will change to <code class="bg-gray-700">/home/user/documents$</code>. This indicates your new current location.</li>
+                <li>Now, use <code class="bg-gray-700">ls</code> again to see what's inside <code class="bg-gray-700">documents</code>:
+                    <pre><code>ls</code></pre>
+                    You should see <code class="bg-gray-700">notes.md</code> and <code class="bg-gray-700">report.txt</code>.
+                </li>
+            </ul>
+        </li>
+        <li><strong>Going up one level:</strong>
+            <ul>
+                <li><strong>Command:</strong> <code class="bg-gray-700">cd ..</code> (two dots represent the parent directory)</li>
+                <li><strong>Try it:</strong>
+                    <pre><code>cd ..</code></pre>
+                </li>
+                <li><strong>Expected Output:</strong> Your prompt will change back to <code class="bg-gray-700">/home/user$</code>.</li>
+            </ul>
+        </li>
+        <li><strong>Going to your home directory:</strong>
+            <ul>
+                <li><strong>Command:</strong> <code class="bg-gray-700">cd</code> (without any arguments) or <code class="bg-gray-700">cd ~</code></li>
+                <li><strong>Try it:</strong> First, go into <code class="bg-gray-700">projects/my_blog</code>:
+                    <pre><code>cd projects/my_blog</code></pre>
+                </li>
+                <li>Now, go back to your home directory:
+                    <pre><code>cd</code></pre>
+                </li>
+                <li><strong>Expected Output:</strong> You'll be back at <code class="bg-gray-700">/home/user$</code>.</li>
+            </ul>
+        </li>
+        <li><strong>Going to the "root" directory (conceptual):</strong>
+            <ul>
+                <li><strong>Command:</strong> <code class="bg-gray-700">cd /</code></li>
+                <li><strong>Try it:</strong>
+                    <pre><code>cd /
+pwd</code></pre>
+                </li>
+                <li><strong>Expected Output:</strong> <code class="bg-gray-700">pwd</code> will show <code class="bg-gray-700">/</code>. In this simulation, <code class="bg-gray-700">/</code> acts as the top-level container for <code class="bg-gray-700">home</code>.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h3 class="text-blue-300 mt-6 mb-3">4. Viewing File Content (<code class="bg-gray-700">cat</code>)</h3>
+    <p>
+        Once you've found a file, you might want to see what's inside it.
+    </p>
+    <ul>
+        <li><strong>Command:</strong> <code class="bg-gray-700">cat &lt;file_name&gt;</code> (Concatenate and print)</li>
+        <li><strong>Try it:</strong> Let's view the <code class="bg-gray-700">README.txt</code> file in your home directory. Make sure you are in <code class="bg-gray-700">/home/user</code> first (<code class="bg-gray-700">cd</code> if needed).
+            <pre><code>cat README.txt</code></pre>
+        </li>
+        <li><strong>Expected Output:</strong> The content of <code class="bg-gray-700">README.txt</code> will be displayed.</li>
+        <li><strong>Try another file:</strong> Go into the <code class="bg-gray-700">documents</code> directory and view <code class="bg-gray-700">notes.md</code>.
+            <pre><code>cd documents
+cat notes.md</code></pre>
+        </li>
+    </ul>
+
+    <h2 class="text-blue-400 mt-8 mb-4">Basic File and Directory Manipulation</h2>
+    <p>
+        Now that you can navigate and view content, let's try creating and modifying things!
+    </p>
+
+    <h3 class="text-blue-300 mt-6 mb-3">5. Creating Directories (<code class="bg-gray-700">mkdir</code>)</h3>
+    <ul>
+        <li><strong>Command:</strong> <code class="bg-gray-700">mkdir &lt;directory_name&gt;</code> (Make Directory)</li>
+        <li><strong>Try it:</strong> Let's create a new directory called <code class="bg-gray-700">my_work</code>.
+            <pre><code>mkdir my_work
+ls</code></pre>
+            You should now see <code class="bg-gray-700">my_work/</code> in the list.
+        </li>
+    </ul>
+
+    <h3 class="text-blue-300 mt-6 mb-3">6. Creating Empty Files (<code class="bg-gray-700">touch</code>)</h3>
+    <ul>
+        <li><strong>Command:</strong> <code class="bg-gray-700">touch &lt;file_name&gt;</code></li>
+        <li><strong>Purpose:</strong> Creates an empty file if it doesn't exist, or updates its timestamp if it does.</li>
+        <li><strong>Try it:</strong>
+            <pre><code>touch new_document.txt
+ls -l</code></pre>
+            You'll see <code class="bg-gray-700">new_document.txt</code> with size <code class="bg-gray-700">0</code> and the current date.
+        </li>
+    </ul>
+
+    <h3 class="text-blue-300 mt-6 mb-3">7. Removing Files and Directories (<code class="bg-gray-700">rm</code>, <code class="bg-gray-700">rmdir</code>)</h3>
+    <ul>
+        <li><strong>Removing a file (<code class="bg-gray-700">rm</code>):</strong>
+            <ul>
+                <li><strong>Command:</strong> <code class="bg-gray-700">rm &lt;file_name&gt;</code></li>
+                <li><strong>Try it:</strong>
+                    <pre><code>rm new_document.txt
+ls</code></pre>
+                    <code class="bg-gray-700">new_document.txt</code> should be gone.
+                </li>
+            </ul>
+        </li>
+        <li><strong>Removing an empty directory (<code class="bg-gray-700">rmdir</code>):</strong>
+            <ul>
+                <li><strong>Command:</strong> <code class="bg-gray-700">rmdir &lt;directory_name&gt;</code></li>
+                <li><strong>Try it:</strong>
+                    <pre><code>mkdir temp_dir
+rmdir temp_dir</code></pre>
+                    <code class="bg-gray-700">temp_dir</code> should be created and then removed.
+                </li>
+                <li><strong>What if it's not empty?</strong> Try <code class="bg-gray-700">mkdir another_temp</code> then <code class="bg-gray-700">touch another_temp/file.txt</code>. Now try <code class="bg-gray-700">rmdir another_temp</code>. You'll get an error: <code class="bg-gray-700">rmdir: failed to remove 'another_temp': Directory not empty</code>. This is a safety feature!</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h3 class="text-blue-300 mt-6 mb-3">8. Moving and Renaming (<code class="bg-gray-700">mv</code>)</h3>
+    <ul>
+        <li><strong>Command:</strong> <code class="bg-gray-700">mv &lt;source&gt; &lt;destination&gt;</code></li>
+        <li><strong>Purpose:</strong>
+            <ul>
+                <li>If <code class="bg-gray-700">destination</code> is a new name, it renames <code class="bg-gray-700">source</code>.</li>
+                <li>If <code class="bg-gray-700">destination</code> is an existing directory, it moves <code class="bg-gray-700">source</code> into that directory.</li>
+            </ul>
+        </li>
+        <li><strong>Try it:</strong>
+            <pre><code>touch old_name.txt
+mv old_name.txt new_name.txt
+ls</code></pre>
+            <code class="bg-gray-700">old_name.txt</code> is now <code class="bg-gray-700">new_name.txt</code>.
+        </li>
+        <li>Now, move <code class="bg-gray-700">new_name.txt</code> into <code class="bg-gray-700">documents/</code>:
+            <pre><code>mv new_name.txt documents/
+ls
+cd documents
+ls</code></pre>
+            You'll see <code class="bg-gray-700">new_name.txt</code> inside <code class="bg-gray-700">documents/</code>.
+        </li>
+    </ul>
+
+    <h3 class="text-blue-300 mt-6 mb-3">9. Copying Files (<code class="bg-gray-700">cp</code>)</h3>
+    <ul>
+        <li><strong>Command:</strong> <code class="bg-gray-700">cp &lt;source&gt; &lt;destination&gt;</code></li>
+        <li><strong>Purpose:</strong> Creates a copy of a file.</li>
+        <li><strong>Try it:</strong>
+            <pre><code>cd ~ # Go back to home if you're not there
+cp README.txt README_backup.txt
+ls</code></pre>
+            You'll now have both <code class="bg-gray-700">README.txt</code> and <code class="bg-gray-700">README_backup.txt</code>.
+        </li>
+    </ul>
+
+    <h2 class="text-blue-400 mt-8 mb-4">Experiment and Learn!</h2>
+    <p>
+        This interactive terminal is a sandbox for you to play in. Don't be afraid to try commands, make mistakes, and learn from them.
+    </p>
+    <ul>
+        <li>Use the <strong>Up/Down arrow keys</strong> to cycle through your command history.</li>
+        <li>Press <strong>Tab</strong> for auto-completion of commands and file/directory names.</li>
+        <li>Type <code class="bg-gray-700">help</code> to see a quick reference of all supported commands.</li>
+        <li>Type <code class="bg-gray-700">clear</code> to clear the terminal screen.</li>
+    </ul>
+    <p>
+        The more you practice, the more comfortable and powerful you'll become with the Linux command line. Happy learning!
+    </p>
+
+</body>
+</html>

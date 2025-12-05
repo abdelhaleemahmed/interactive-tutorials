@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>README - Linux Environment</title>
+    <link rel="stylesheet" href="./assets/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="https://abdelhaleemahmed.github.io/">Portfolio</a> →
+            <a href="../">Tutorials</a> →
+            <a href="./">Linux Environment</a> →
+            <span>README</span>
+        </nav>
+
+        <main>
+            <h1 id="my-linux-environment---qemu-alpine-linux-vm">My Linux
+Environment - QEMU Alpine Linux VM</h1>
+<p>A complete, self-contained QEMU-based Alpine Linux virtual machine
+environment for Windows, Linux, and macOS systems.</p>
+<h2 id="overview">Overview</h2>
+<p>This environment provides a lightweight, portable Alpine Linux
+virtual machine that can be launched directly from your local
+filesystem. It includes:</p>
+<ul>
+<li><strong>QEMU Emulator</strong> - Complete x86-64 architecture
+emulation</li>
+<li><strong>Alpine Linux VM</strong> - Pre-configured minimal Linux
+distribution</li>
+<li><strong>Launch Scripts</strong> - Easy startup scripts for Windows
+(batch) and Linux (bash)</li>
+<li><strong>512MB Base Configuration</strong> - Optimized for learning
+and development</li>
+</ul>
+<h2 id="directory-structure">Directory Structure</h2>
+<pre><code>my_linux_environment/
+├── README.md                           # This file
+├── SETUP.md                           # Setup and installation guide
+├── USAGE.md                           # Usage instructions
+├── ARCHITECTURE.md                    # Technical architecture details
+│
+├── machine/
+│   └── vm_disk/
+│       └── alpine_disk.qcow2          # Alpine Linux disk image (~500MB+ compressed)
+│
+├── qemu/
+│   ├── bin/                           # QEMU binaries and libraries
+│   │   ├── qemu-system-x86_64.exe     # Main QEMU x86-64 emulator
+│   │   ├── KERNEL.ELF                 # Linux kernel for boot
+│   │   ├── COPYING                    # GPL license
+│   │   ├── COPYING.LIB                # LGPL license
+│   │   └── [150+ library DLLs]        # GTK, GStreamer, OpenSSL, etc.
+│   └── lib/
+│       └── gdk-pixbuf-2.0/            # Pixel buffer libraries
+│
+├── start_linux.bat                    # Windows batch launcher
+├── start_linux.sh                     # Linux/bash launcher
+└── start_linux - Copy.bat             # Backup launcher</code></pre>
+<h2 id="quick-start">Quick Start</h2>
+<h3 id="windows">Windows</h3>
+<pre class="batch"><code>Double-click: start_linux.bat</code></pre>
+<h3 id="linuxmac">Linux/Mac</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x start_linux.sh</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./start_linux.sh</span></span></code></pre></div>
+<h2 id="key-features">Key Features</h2>
+<p>✅ <strong>Self-Contained</strong> - Everything needed included in
+this directory ✅ <strong>Portable</strong> - No installation required,
+works on USB drives ✅ <strong>Minimal</strong> - Alpine Linux uses
+~150MB total disk space ✅ <strong>Cross-Platform</strong> - Works on
+Windows, Linux, and macOS ✅ <strong>Isolated</strong> - Complete VM
+isolation, safe for experimentation ✅ <strong>Pre-Configured</strong> -
+QEMU settings optimized for development</p>
+<h2 id="system-requirements">System Requirements</h2>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 27%" />
+<col style="width: 39%" />
+</colgroup>
+<thead>
+<tr>
+<th>Component</th>
+<th>Minimum</th>
+<th>Recommended</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RAM</td>
+<td>1 GB total</td>
+<td>4 GB total</td>
+</tr>
+<tr>
+<td>Disk Space</td>
+<td>1 GB free</td>
+<td>2 GB free</td>
+</tr>
+<tr>
+<td>OS</td>
+<td>Windows 7+ / Linux kernel 3.10+ / macOS 10.13+</td>
+<td>Modern versions</td>
+</tr>
+<tr>
+<td>CPU</td>
+<td>Any x86-64</td>
+<td>Multi-core recommended</td>
+</tr>
+</tbody>
+</table>
+<h2 id="whats-inside">What’s Inside</h2>
+<h3 id="alpine-linux-vm">Alpine Linux VM</h3>
+<ul>
+<li><strong>Size</strong>: ~500MB+ (QCOW2 compressed format)</li>
+<li><strong>Architecture</strong>: x86-64</li>
+<li><strong>Boot Type</strong>: Direct disk boot</li>
+<li><strong>Access</strong>: Serial console via stdio (Windows) or
+nographic mode (Linux)</li>
+<li><strong>Memory</strong>: 512MB allocated</li>
+</ul>
+<h3 id="qemu-emulator">QEMU Emulator</h3>
+<ul>
+<li><strong>Version</strong>: Pre-built QEMU for x86-64 emulation</li>
+<li><strong>Libraries Included</strong>:
+<ul>
+<li>Graphics: GTK3, Cairo, Pixman</li>
+<li>Media: GStreamer, libavif, libwebp, libopus</li>
+<li>Compression: ZLIB, BZIP2, LZMA, LZ4</li>
+<li>Security: OpenSSL, GnuTLS, LibGcrypt</li>
+<li>System: Glib, Pango, HarfBuzz</li>
+<li>Audio: Jack, PulseAudio support</li>
+</ul></li>
+</ul>
+<h2 id="architecture-configuration">Architecture &amp;
+Configuration</h2>
+<h3 id="windows-launch-configuration">Windows Launch Configuration</h3>
+<pre class="batch"><code>QEMU_BIN_DIR=.\qemu\bin
+IMAGE_PATH=.\machine\vm_disk\alpine_disk.qcow2
+Memory: 512MB
+Boot: From disk (hda)
+Serial: TCP port 4444 + stdio output</code></pre>
+<h3 id="linux-launch-configuration">Linux Launch Configuration</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="va">QEMU_BIN_DIR</span><span class="op">=</span>./qemu</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="va">IMAGE_PATH</span><span class="op">=</span>./machine/vm_disk/alpine_disk.qcow2</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Memory:</span> 512MB</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Boot:</span> From disk</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Acceleration:</span> WHPX <span class="er">(</span><span class="ex">Windows</span><span class="kw">)</span> <span class="ex">/</span> KVM <span class="er">(</span><span class="ex">Linux</span><span class="kw">)</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Console:</span> Nographic serial output</span></code></pre></div>
+<h2 id="usage-scenarios">Usage Scenarios</h2>
+<ol type="1">
+<li><strong>Learning Linux</strong> - Safe environment to learn Alpine
+Linux commands</li>
+<li><strong>Development</strong> - Testing applications in isolated
+Linux environment</li>
+<li><strong>Educational</strong> - Teaching systems administration
+without hypervisor overhead</li>
+<li><strong>Portable Lab</strong> - Carry complete Linux environment on
+USB drive</li>
+<li><strong>Security Testing</strong> - Isolated sandbox for testing and
+experiments</li>
+</ol>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="vm-wont-start">VM Won’t Start</h3>
+<ul>
+<li>Check that <code>alpine_disk.qcow2</code> exists in
+<code>machine/vm_disk/</code></li>
+<li>Verify QEMU executable exists at
+<code>qemu/bin/qemu-system-x86_64</code></li>
+<li>Ensure you have 512MB+ free RAM</li>
+</ul>
+<h3 id="serial-console-issues">Serial Console Issues</h3>
+<ul>
+<li>On Windows: Monitor console output in terminal</li>
+<li>On Linux: Use keyboard shortcuts Ctrl+A then x to exit</li>
+<li>Press Enter to proceed after VM exits</li>
+</ul>
+<h3 id="performance-issues">Performance Issues</h3>
+<ul>
+<li>Allocate more RAM by editing startup scripts (-m parameter)</li>
+<li>Use QEMU hardware acceleration if available</li>
+<li>Close other applications to free system resources</li>
+</ul>
+<h2 id="license">License</h2>
+<p>This environment combines: - <strong>QEMU</strong>: GPL v2 / LGPL
+v2.1 (see COPYING files) - <strong>Alpine Linux</strong>: GPL and
+various open-source licenses - <strong>Libraries</strong>: Various
+(LGPL, GPL, Apache, BSD, MIT)</p>
+<h2 id="next-steps">Next Steps</h2>
+<ol type="1">
+<li>Read <strong>SETUP.md</strong> for detailed setup instructions</li>
+<li>Read <strong>USAGE.md</strong> for detailed usage and commands</li>
+<li>Read <strong>ARCHITECTURE.md</strong> for technical details</li>
+<li>Start the VM and begin exploring!</li>
+</ol>
+<h2 id="support-documentation">Support &amp; Documentation</h2>
+<ul>
+<li>Alpine Linux Docs: https://wiki.alpinelinux.org/</li>
+<li>QEMU Documentation: https://www.qemu.org/documentation/</li>
+<li>Linux Command Reference: https://linux.die.net/</li>
+</ul>
+<hr />
+<p><strong>Created</strong>: July 29-30, 2025 <strong>Latest
+Update</strong>: July 30, 2025 <strong>Maintained By</strong>: Ahmed
+Abdelhaleem</p>
+        </main>
+
+        <div class="back-to-index">
+            <a href="./index.html">← Back to Environment Hub</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Linux Practical Learning Environment | <a href="https://abdelhaleemahmed.github.io/">Ahmed Abdelhaleem's Portfolio</a></p>
+    </footer>
+
+    <button class="theme-toggle" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
+    <script src="./assets/theme.js"></script>
+</body>
+</html>

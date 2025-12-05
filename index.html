@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Tutorials - Ahmed Abdelhaleem</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            margin-bottom: 5px;
+        }
+
+        .breadcrumb {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+            margin-top: 15px;
+        }
+
+        .breadcrumb a {
+            color: white;
+            text-decoration: none;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+            transition: border-color 0.3s ease;
+        }
+
+        .breadcrumb a:hover {
+            border-bottom-color: white;
+        }
+
+        .tutorials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .tutorial-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            border-top: 4px solid #667eea;
+        }
+
+        .tutorial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .tutorial-card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .tutorial-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .tutorial-description {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .tutorial-topics {
+            margin: 15px 0;
+            font-size: 0.9rem;
+        }
+
+        .tutorial-topics li {
+            color: #555;
+            margin-bottom: 5px;
+            margin-left: 20px;
+        }
+
+        .tutorial-link {
+            display: inline-block;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .tutorial-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .tutorial-link.coming-soon {
+            background: #ccc;
+            color: #666;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .tutorial-link.coming-soon:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .badge.live {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .badge.coming {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        footer {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: none;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+            transition: border-color 0.3s ease;
+        }
+
+        footer a:hover {
+            border-bottom-color: white;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            header p {
+                font-size: 1rem;
+            }
+
+            .tutorials-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .tutorial-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Interactive Tutorials</h1>
+            <p>Learn by doing - hands-on tutorials for developers</p>
+            <div class="breadcrumb">
+                <a href="https://abdelhaleemahmed.github.io/">← Back to Portfolio</a>
+            </div>
+        </header>
+
+        <div class="tutorials-grid">
+            <!-- YAML & Vim Mastery -->
+            <div class="tutorial-card">
+                <div class="tutorial-icon">🚀</div>
+                <h2>YAML & Vim Mastery</h2>
+                <div>
+                    <span class="badge live">✓ Live</span>
+                </div>
+                <p class="tutorial-description">
+                    Master YAML editing in Vim with an interactive guide covering everything from basics to advanced techniques. Perfect for DevOps engineers and system administrators.
+                </p>
+                <ul class="tutorial-topics">
+                    <li>📍 6 interactive sections</li>
+                    <li>🎯 Real-world examples (K8s, Docker, CI/CD)</li>
+                    <li>⌨️ 20+ keyboard shortcuts</li>
+                    <li>📊 Progress tracking</li>
+                </ul>
+                <a href="./yaml-vim/index.html" class="tutorial-link">Start Tutorial →</a>
+            </div>
+
+            <!-- Vim Mind Map -->
+            <div class="tutorial-card">
+                <div class="tutorial-icon">⌨️</div>
+                <h2>Vim Mind Map</h2>
+                <div>
+                    <span class="badge live">✓ Live</span>
+                </div>
+                <p class="tutorial-description">
+                    Interactive reference document with a comprehensive mind map of Vim commands and shortcuts. Search, explore, and reference organized by modes and advanced features.
+                </p>
+                <ul class="tutorial-topics">
+                    <li>📍 Searchable command reference</li>
+                    <li>⌨️ 50+ commands organized by mode</li>
+                    <li>🎯 MODES, CORE CONCEPTS & ADVANCED FEATURES</li>
+                    <li>📊 Complete keyboard shortcut reference</li>
+                </ul>
+                <a href="./vim-mastery/index.html" class="tutorial-link">View Mind Map →</a>
+            </div>
+
+            <!-- C Programming -->
+            <div class="tutorial-card">
+                <div class="tutorial-icon">💻</div>
+                <h2>C Programming</h2>
+                <div>
+                    <span class="badge coming">Coming Soon</span>
+                </div>
+                <p class="tutorial-description">
+                    From fundamentals to systems programming. Learn core C concepts with practical examples and exercises.
+                </p>
+                <ul class="tutorial-topics">
+                    <li>🎯 Programming fundamentals</li>
+                    <li>⚙️ Systems programming</li>
+                    <li>🔧 Embedded systems concepts</li>
+                    <li>📝 Hands-on projects</li>
+                </ul>
+                <a href="#" class="tutorial-link coming-soon">Coming Soon</a>
+            </div>
+
+            <!-- Linux Administration -->
+            <div class="tutorial-card">
+                <div class="tutorial-icon">🐧</div>
+                <h2>Linux Administration</h2>
+                <div>
+                    <span class="badge live">✓ Live</span>
+                </div>
+                <p class="tutorial-description">
+                    Master Linux command line administration with an interactive terminal simulator. Learn system administration from fundamentals to advanced techniques.
+                </p>
+                <ul class="tutorial-topics">
+                    <li>💻 Interactive terminal simulator</li>
+                    <li>🔐 User & permission management</li>
+                    <li>📊 System monitoring & processes</li>
+                    <li>⚙️ System configuration</li>
+                </ul>
+                <a href="./linux-admin-complete/tutorial.html" class="tutorial-link">Start Tutorial →</a>
+            </div>
+
+            <!-- Pascal Programming -->
+            <div class="tutorial-card">
+                <div class="tutorial-icon">📖</div>
+                <h2>Pascal Programming</h2>
+                <div>
+                    <span class="badge coming">Coming Soon</span>
+                </div>
+                <p class="tutorial-description">
+                    Learn Pascal programming from basics to object-oriented concepts. Explore classic programming patterns and techniques.
+                </p>
+                <ul class="tutorial-topics">
+                    <li>🎯 Language fundamentals</li>
+                    <li>🔄 Object-oriented concepts</li>
+                    <li>📐 Design patterns</li>
+                    <li>🏗️ Project structures</li>
+                </ul>
+                <a href="#" class="tutorial-link coming-soon">Coming Soon</a>
+            </div>
+        </div>
+
+        <footer>
+            <p>
+                <strong>Interactive Tutorials</strong> - Part of
+                <a href="https://abdelhaleemahmed.github.io/">Ahmed Abdelhaleem's Portfolio</a>
+            </p>
+            <p style="margin-top: 15px; font-size: 0.9rem; opacity: 0.9;">
+                Last updated: December 3, 2025 |
+                <a href="https://github.com/abdelhaleemahmed">GitHub</a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vim Interactive Mind Map</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.2em;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .control-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            display: flex;
+            flex: 1;
+            max-width: 400px;
+            background: white;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            outline: none;
+            font-size: 1em;
+        }
+
+        .search-box button {
+            background: #4e54c8;
+            color: white;
+            border: none;
+            padding: 0 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-box button:hover {
+            background: #3f43ad;
+        }
+
+        .expand-all, .collapse-all {
+            background: linear-gradient(135deg, #00b894, #00a383);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .expand-all:hover, .collapse-all:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 184, 148, 0.4);
+        }
+
+        .collapse-all {
+            background: linear-gradient(135deg, #ff7675, #d63031);
+        }
+
+        .mindmap {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .main-branch {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            border-radius: 12px;
+            padding: 25px;
+            color: white;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .main-branch::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .main-branch:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .main-branch.advanced {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+        }
+
+        .branch-header {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding: 10px 0;
+        }
+
+        .toggle-icon {
+            margin-right: 15px;
+            transition: transform 0.3s ease;
+            font-size: 1.3em;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .sub-branches {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .collapsed .sub-branches {
+            display: none;
+        }
+
+        .sub-branch {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .sub-branch:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .sub-branch-header {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            padding: 5px 0;
+        }
+
+        .sub-branch-header .toggle-icon {
+            font-size: 1.1em;
+            width: 25px;
+            height: 25px;
+        }
+
+        .command-list {
+            transition: all 0.3s ease;
+        }
+
+        .collapsed-sub .command-list {
+            display: none;
+        }
+
+        .command-group {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .command-group:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+        }
+
+        .command-group strong {
+            display: block;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+            color: #ffeaa7;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .command {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            margin: 8px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 1em;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .command:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+            border-left: 3px solid #ffeaa7;
+        }
+
+        .command-key {
+            font-weight: bold;
+            color: #fff;
+            min-width: 120px;
+        }
+
+        .command-desc {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 0.95em;
+            text-align: right;
+            flex: 1;
+            padding-left: 15px;
+        }
+
+        .help-note {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            color: #2d3436;
+            font-style: italic;
+            text-align: center;
+            font-size: 1.1em;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #e17055;
+        }
+
+        .help-note strong {
+            color: #d63031;
+        }
+
+        .help-note code {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            font-size: 1.2em;
+            grid-column: 1 / -1;
+        }
+
+        .section-counter {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 3px 12px;
+            border-radius: 20px;
+            margin-right: 12px;
+            font-size: 0.8em;
+        }
+
+        .highlight {
+            background-color: #ffeaa7;
+            color: #d63031;
+            padding: 0 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .sub-branches {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2.2em;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .search-box {
+                max-width: 100%;
+            }
+            
+            .branch-header {
+                font-size: 1.3em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .command {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .command-desc {
+                text-align: left;
+                padding-left: 0;
+                padding-top: 5px;
+                width: 100%;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .header p {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-keyboard"></i> VIM Interactive Mind Map</h1>
+            <p>Click on any section to expand/collapse. Hover over commands for details. Use search to find specific commands.</p>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <button class="expand-all" onclick="expandAll()">
+                    <i class="fas fa-expand"></i> Expand All
+                </button>
+                <button class="collapse-all" onclick="collapseAll()">
+                    <i class="fas fa-compress"></i> Collapse All
+                </button>
+            </div>
+            
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search Vim commands...">
+                <button onclick="searchCommands()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="mindmap">
+            <!-- MODES SECTION -->
+            <div class="main-branch" id="modes">
+                <div class="branch-header" onclick="toggleBranch('modes')">
+                    <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                    <span><span class="section-counter">I</span> MODES - The Core of Vim</span>
+                </div>
+                <div class="sub-branches">
+                    <!-- Normal Mode -->
+                    <div class="sub-branch">
+                        <div class="sub-branch-header" onclick="toggleSubBranch(this)">
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                            <span>1. Normal Mode (Command Mode)</span>
+                        </div>
+                        <div class="command-list">
+                            <div class="command-group">
+                                <strong>Navigation:</strong>
+                                <div class="command">
+                                    <span class="command-key">h, j, k, l</span>
+                                    <span class="command-desc">left, down, up, right</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">w, b</span>
+                                    <span class="command-desc">word forward, word backward</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">e, ge</span>
+                                    <span class="command-desc">end of word, end of previous word</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">0, ^, $</span>
+                                    <span class="command-desc">start of line, first non-blank, end of line</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">gg, G</span>
+                                    <span class="command-desc">top of file, bottom of file</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">%</span>
+                                    <span class="command-desc">match parenthesis/bracket</span>
+                                </div>
+                            </div>
+                            <div class="command-group">
+                                <strong>Editing:</strong>
+                                <div class="command">
+                                    <span class="command-key">x, X</span>
+                                    <span class="command-desc">delete char forward, backward</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">dd, dw, de</span>
+                                    <span class="command-desc">delete line, word, end of word</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">cc, cw, ce</span>
+                                    <span class="command-desc">change line, word, end of word</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">r</span>
+                                    <span class="command-desc">replace single character</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">~</span>
+                                    <span class="command-desc">change case of character</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">J</span>
+                                    <span class="command-desc">join lines</span>
+                                </div>
+                            </div>
+                            <div class="command-group">
+                                <strong>Copy/Paste:</strong>
+                                <div class="command">
+                                    <span class="command-key">yy, yw, ye</span>
+                                    <span class="command-desc">yank line, word, end of word</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">p, P</span>
+                                    <span class="command-desc">put/paste after/before cursor</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">"ayy, "ap</span>
+                                    <span class="command-desc">yank/paste with register 'a'</span>
+                                </div>
+                            </div>
+                            <div class="command-group">
+                                <strong>Undo/Redo:</strong>
+                                <div class="command">
+                                    <span class="command-key">u</span>
+                                    <span class="command-desc">undo last change</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">Ctrl+r</span>
+                                    <span class="command-desc">redo last undo</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">.</span>
+                                    <span class="command-desc">repeat last command</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Insert Mode -->
+                    <div class="sub-branch">
+                        <div class="sub-branch-header" onclick="toggleSubBranch(this)">
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                            <span>2. Insert Mode</span>
+                        </div>
+                        <div class="command-list">
+                            <div class="command-group">
+                                <strong>Entering Insert Mode:</strong>
+                                <div class="command">
+                                    <span class="command-key">i</span>
+                                    <span class="command-desc">insert at cursor</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">a</span>
+                                    <span class="command-desc">append after cursor</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">I</span>
+                                    <span class="command-desc">insert at beginning of line</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">A</span>
+                                    <span class="command-desc">append at end of line</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">o</span>
+                                    <span class="command-desc">open new line below</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">O</span>
+                                    <span class="command-desc">open new line above</span>
+                                </div>
+                            </div>
+                            <div class="command-group">
+                                <strong>Exiting Insert Mode:</strong>
+                                <div class="command">
+                                    <span class="command-key">Esc</span>
+                                    <span class="command-desc">return to Normal Mode</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">Ctrl+c</span>
+                                    <span class="command-desc">alternative to Esc</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Mode -->
+                    <div class="sub-branch">
+                        <div class="sub-branch-header" onclick="toggleSubBranch(this)">
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                            <span>3. Visual Mode</span>
+                        </div>
+                        <div class="command-list">
+                            <div class="command-group">
+                                <strong>Entering Visual Mode:</strong>
+                                <div class="command">
+                                    <span class="command-key">v</span>
+                                    <span class="command-desc">character-wise selection</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">V</span>
+                                    <span class="command-desc">line-wise selection</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">Ctrl+v</span>
+                                    <span class="command-desc">block-wise selection</span>
+                                </div>
+                            </div>
+                            <div class="command-group">
+                                <strong>Actions on Selection:</strong>
+                                <div class="command">
+                                    <span class="command-key">d</span>
+                                    <span class="command-desc">delete selected text</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">y</span>
+                                    <span class="command-desc">yank/copy selected text</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">~</span>
+                                    <span class="command-desc">change case of selected text</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">I / A</span>
+                                    <span class="command-desc">insert before/after selection (block mode)</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">&gt;</span>
+                                    <span class="command-desc">indent selection</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">&lt;</span>
+                                    <span class="command-desc">unindent selection</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Command-Line Mode -->
+                    <div class="sub-branch">
+                        <div class="sub-branch-header" onclick="toggleSubBranch(this)">
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                            <span>4. Command-Line Mode</span>
+                        </div>
+                        <div class="command-list">
+                            <div class="command-group">
+                                <strong>File Operations:</strong>
+                                <div class="command">
+                                    <span class="command-key">:w</span>
+                                    <span class="command-desc">save file</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">:q</span>
+                                    <span class="command-desc">quit</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">:wq</span>
+                                    <span class="command-desc">save and quit</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">:q!</span>
+                                    <span class="command-desc">quit without saving</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">:e filename</span>
+                                    <span class="command-desc">edit new file</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">:split / :vsplit</span>
+                                    <span class="command-desc">split window</span>
+                                </div>
+                            </div>
+                            <div class="command-group">
+                                <strong>Search & Replace:</strong>
+                                <div class="command">
+                                    <span class="command-key">/pattern</span>
+                                    <span class="command-desc">search forward</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">?pattern</span>
+                                    <span class="command-desc">search backward</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">n, N</span>
+                                    <span class="command-desc">next, previous match</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">:s/old/new/</span>
+                                    <span class="command-desc">substitute on current line</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">:%s/old/new/g</span>
+                                    <span class="command-desc">substitute throughout file</span>
+                                </div>
+                                <div class="command">
+                                    <span class="command-key">:set ic</span>
+                                    <span class="command-desc">ignore case in searches</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADVANCED FEATURES SECTION -->
+            <div class="main-branch advanced" id="advanced">
+                <div class="branch-header" onclick="toggleBranch('advanced')">
+                    <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                    <span><span class="section-counter">II</span> CORE CONCEPTS & ADVANCED FEATURES</span>
+                </div>
+                <div class="sub-branches">
+                    <!-- Registers -->
+                    <div class="sub-branch">
+                        <div class="sub-branch-header" onclick="toggleSubBranch(this)">
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                            <span>Registers</span>
+                        </div>
+                        <div class="command-list">
+                            <div class="command">
+                                <span class="command-key">"", "0-"9, "a-"z</span>
+                                <span class="command-desc">multiple clipboards</span>
+                            </div>
+                            <div class="command">
+                                <span class="command-key">:registers</span>
+                                <span class="command-desc">view all registers</span>
+                            </div>
+                            <div class="command">
+                                <span class="command-key">"*y</span>
+                                <span class="command-desc">yank to system clipboard</span>
+                            </div>
+                            <div class="command">
+                                <span class="command-key">"+p</span>
+                                <span class="command-desc">paste from system clipboard</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Macros -->
+                    <div class="sub-branch">
+                        <div class="sub-branch-header" onclick="toggleSubBranch(this)">
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                            <span>Macros</span>
+                        </div>
+                        <div class="command-list">
+                            <div class="command">
+                                <span class="command-key">qa</span>
+                                <span class="command-desc">start recording into register 'a'</span>
+                            </div>
+                            <div class="command">
+                                <span class="command-key">q</span>
+                                <span class="command-desc">stop recording</span>
+                            </div>
+                            <div class="command">
+                                <span class="command-key">@a</span>
+                                <span class="command-desc">play macro 'a'</span>
+                            </div>
+                            <div class="command">
+                                <span class="command-key">@@</span>
+                                <span class="command-desc">play last macro</span>
+                            </div>
+                            <div class="command">
+                                <span class="command-key">10@a</span>
+                                <span class="command-desc">play macro 'a' 10 times</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Text Objects -->
+                    <div class="sub-branch">
+                        <div class="sub-branch-header" onclick="toggleSubBranch(this)">
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                            <span>Text Objects</span>
+                        </div>
+                        <div class="command-list">
+                            <div class="command">
+                                <span class="command-key">iw / aw</span>
+                                <span class="command-desc">inner word / a word</span>
+                            </div>
+                            <div class="command">
+                                <span class="command-key">i" / a"</span>
+                                <span class="command-desc">inner quotes / a quotes</span>
+                            </div>
+                            <div class="command">
+                                <span class="command-key">i) / a)</span>
+                                <span class="command-desc">inner parentheses / a parentheses</span>
+                            </div>
+                            <div class="command">
+                                <span class="command-key">ip / ap</span>
+                                <span class="command-desc">inner paragraph / a paragraph</span>
+                            </div>
+                            <div class="command">
+                                <span class="command-key">ciw, dap</span>
+                                <span class="command-desc">examples: change inner word, delete a paragraph</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Windows & Tabs -->
+                    <div class="sub-branch">
+                        <div class="sub-branch-header" onclick="toggleSubBranch(this)">
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                            <span>Windows & Tabs</span>
+                        </div>
+                        <div class="command-list">
+                            <div class="command">
+                                <span class="command-key">:sp / :vsp</span>
+                                <span class="command-desc">split window horizontally / vertically</span>
+                            </div>
+                            <div class="command">
+                                <span class="command-key">Ctrl+w + hjkl</span>
+                                <span class="command-desc">navigate between windows</span>
+                            </div>
+                            <div class="command">
+                                <span class="command-key">Ctrl+w + + / -</span>
+                                <span class="command-desc">increase/decrease window height</span>
+                            </div>
+                            <div class="command">
+                                <span class="command-key">Ctrl+w + &gt; / &lt;</span>
+                                <span class="command-desc">increase/decrease window width</span>
+                            </div>
+                            <div class="command">
+                                <span class="command-key">:tabnew</span>
+                                <span class="command-desc">create new tab</span>
+                            </div>
+                            <div class="command">
+                                <span class="command-key">gt / gT</span>
+                                <span class="command-desc">next tab / previous tab</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Marks & Jumps -->
+                    <div class="sub-branch">
+                        <div class="sub-branch-header" onclick="toggleSubBranch(this)">
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                            <span>Marks & Jumps</span>
+                        </div>
+                        <div class="command-list">
+                            <div class="command">
+                                <span class="command-key">m&lt;letter&gt;</span>
+                                <span class="command-desc">set mark</span>
+                            </div>
+                            <div class="command">
+                                <span class="command-key">`&lt;letter&gt;</span>
+                                <span class="command-desc">jump to mark's exact position</span>
+                            </div>
+                            <div class="command">
+                                <span class="command-key">'&lt;letter&gt;</span>
+                                <span class="command-desc">jump to start of line with mark</span>
+                            </div>
+                            <div class="command">
+                                <span class="command-key">``</span>
+                                <span class="command-desc">jump to last jump location</span>
+                            </div>
+                            <div class="command">
+                                <span class="command-key">Ctrl+o / Ctrl+i</span>
+                                <span class="command-desc">jump to older/newer position in jump list</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Help System -->
+                    <div class="sub-branch">
+                        <div class="sub-branch-header" onclick="toggleSubBranch(this)">
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                            <span>Help System</span>
+                        </div>
+                        <div class="command-list">
+                            <div class="command">
+                                <span class="command-key">:help</span>
+                                <span class="command-desc">access Vim's comprehensive documentation</span>
+                            </div>
+                            <div class="command">
+                                <span class="command-key">:help &lt;topic&gt;</span>
+                                <span class="command-desc">get help on specific topic</span>
+                            </div>
+                            <div class="command">
+                                <span class="command-key">:helpgrep pattern</span>
+                                <span class="command-desc">search through all help files</span>
+                            </div>
+                            <div class="command">
+                                <span class="command-key">Ctrl+] / Ctrl+t</span>
+                                <span class="command-desc">follow tag / go back in help</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="help-note">
+            <i class="fas fa-lightbulb"></i> <strong>Pro Tip:</strong> This mind map is just the beginning. Vim has a steep learning curve but offers unparalleled efficiency once its logic is understood and practiced. Use <code>:help</code> inside Vim for comprehensive documentation! Practice regularly to build muscle memory.
+        </div>
+    </div>
+
+    <script>
+        function toggleBranch(branchId) {
+            const branch = document.getElementById(branchId);
+            branch.classList.toggle('collapsed');
+        }
+
+        function toggleSubBranch(header) {
+            const subBranch = header.parentElement;
+            subBranch.classList.toggle('collapsed-sub');
+        }
+
+        function expandAll() {
+            const branches = document.querySelectorAll('.main-branch, .sub-branch');
+            branches.forEach(branch => {
+                branch.classList.remove('collapsed', 'collapsed-sub');
+            });
+        }
+
+        function collapseAll() {
+            const mainBranches = document.querySelectorAll('.main-branch');
+            const subBranches = document.querySelectorAll('.sub-branch');
+            
+            mainBranches.forEach(branch => {
+                branch.classList.add('collapsed');
+            });
+            
+            subBranches.forEach(branch => {
+                branch.classList.add('collapsed-sub');
+            });
+        }
+
+        function searchCommands() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            if (!searchTerm) return;
+            
+            const commands = document.querySelectorAll('.command');
+            let found = false;
+            
+            commands.forEach(command => {
+                const key = command.querySelector('.command-key').textContent.toLowerCase();
+                const desc = command.querySelector('.command-desc').textContent.toLowerCase();
+                
+                if (key.includes(searchTerm) || desc.includes(searchTerm)) {
+                    found = true;
+                    // Expand all parents
+                    let parent = command.closest('.sub-branch');
+                    if (parent) {
+                        parent.classList.remove('collapsed-sub');
+                        let mainParent = parent.closest('.main-branch');
+                        if (mainParent) {
+                            mainParent.classList.remove('collapsed');
+                        }
+                    }
+                    
+                    // Highlight the matching text
+                    command.innerHTML = command.innerHTML.replace(
+                        new RegExp(searchTerm, 'gi'), 
+                        match => `<span class="highlight">${match}</span>`
+                    );
+                    
+                    // Scroll to the command
+                    command.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                    // Remove any existing highlights
+                    command.innerHTML = command.innerHTML.replace(/<span class="highlight">([^<]*)<\/span>/gi, '$1');
+                }
+            });
+            
+            if (!found) {
+                alert(`No commands found for "${searchTerm}"`);
+            }
+        }
+
+        // Initialize with some sections collapsed for better overview
+        document.addEventListener('DOMContentLoaded', function() {
+            // Keep main sections expanded but collapse some sub-sections initially
+            const subBranches = document.querySelectorAll('.sub-branch');
+            subBranches.forEach((branch, index) => {
+                if (index > 1) { // Keep first two sub-branches expanded
+                    branch.classList.add('collapsed-sub');
+                }
+            });
+            
+            // Add search on Enter key
+            document.getElementById('searchInput').addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    searchCommands();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SETUP - Linux Environment</title>
+    <link rel="stylesheet" href="./assets/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="https://abdelhaleemahmed.github.io/">Portfolio</a> →
+            <a href="../">Tutorials</a> →
+            <a href="./">Linux Environment</a> →
+            <span>SETUP</span>
+        </nav>
+
+        <main>
+            <h1 id="setup-guide---my-linux-environment">Setup Guide - My Linux
+Environment</h1>
+<p>Complete setup and verification instructions for the QEMU Alpine
+Linux environment.</p>
+<h2 id="pre-flight-checklist">Pre-Flight Checklist</h2>
+<p>Before you start, verify:</p>
+<ul class="task-list">
+<li><label><input type="checkbox"></input>You have at least 1 GB of free disk
+space</label></li>
+<li><label><input type="checkbox"></input>You have at least 512 MB available
+RAM</label></li>
+<li><label><input type="checkbox"></input>Your operating system is Windows 7+,
+Linux kernel 3.10+, or macOS 10.13+</label></li>
+<li><label><input type="checkbox"></input>You can read/write files in this
+directory (not on read-only media)</label></li>
+</ul>
+<h2 id="windows-setup">Windows Setup</h2>
+<h3 id="step-1-verify-installation">Step 1: Verify Installation</h3>
+<ol type="1">
+<li><p>Open Command Prompt (cmd.exe)</p></li>
+<li><p>Navigate to this directory:</p>
+<pre class="batch"><code>cd &quot;D:\Haleem\Books\23052025\Added 23072025\my_linux_environment&quot;</code></pre></li>
+<li><p>Verify QEMU exists:</p>
+<pre class="batch"><code>dir qemu\bin\qemu-system-x86_64.exe</code></pre>
+<p>You should see:</p>
+<pre><code>Volume in drive D is ...
+Directory of D:\...my_linux_environment\qemu\bin
+
+qemu-system-x86_64.exe    XX,XXX,XXX  date</code></pre></li>
+<li><p>Verify Alpine disk image exists:</p>
+<pre class="batch"><code>dir machine\vm_disk\alpine_disk.qcow2</code></pre></li>
+</ol>
+<h3 id="step-2-launch-the-vm">Step 2: Launch the VM</h3>
+<p><strong>Option A: Double-click the launcher</strong> - Simply
+double-click <code>start_linux.bat</code> - Wait for QEMU window to
+appear - Alpine Linux will boot</p>
+<p><strong>Option B: Command prompt launch</strong></p>
+<pre class="batch"><code>start_linux.bat</code></pre>
+<h3 id="step-3-alpine-linux-boot">Step 3: Alpine Linux Boot</h3>
+<p>You’ll see output like:</p>
+<pre><code>Starting Minimal Alpine Linux Environment...
+(Press Ctrl+A then c to toggle QEMU monitor. Ctrl+A then x to exit QEMU forcibly.)
+
+Alpine Linux 3.x.x
+...
+(boot messages)
+...
+Alpine login:</code></pre>
+<h3 id="step-4-login">Step 4: Login</h3>
+<p>Default credentials for Alpine Linux:</p>
+<pre><code>Username: root
+Password: (empty - just press Enter)</code></pre>
+<p>Or if password is set:</p>
+<pre><code>Username: alpine
+Password: alpine</code></pre>
+<h3 id="step-5-verify-system">Step 5: Verify System</h3>
+<p>Once logged in, run:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">uname</span> <span class="at">-a</span></span></code></pre></div>
+<p>You should see:</p>
+<pre><code>Linux (hostname) ... x86_64 GNU/Linux</code></pre>
+<h3 id="troubleshooting---windows">Troubleshooting - Windows</h3>
+<p><strong>Error: “QEMU executable not found”</strong> - Verify
+<code>qemu\bin</code> directory exists - Check file permissions on
+qemu-system-x86_64.exe - Antivirus may have quarantined QEMU - check
+security software</p>
+<p><strong>Error: “Alpine Linux disk image not found”</strong> - Verify
+<code>machine\vm_disk\alpine_disk.qcow2</code> exists - Check file size
+is &gt; 100MB (compressed QCOW2 format) - Verify no spaces or special
+characters in path</p>
+<p><strong>VM runs but no output appears</strong> - This is normal on
+some Windows configurations - Try pressing Enter multiple times - The VM
+is likely running but displaying issues</p>
+<hr />
+<h2 id="linuxmac-setup">Linux/Mac Setup</h2>
+<h3 id="step-1-verify-installation-1">Step 1: Verify Installation</h3>
+<ol type="1">
+<li><p>Open terminal</p></li>
+<li><p>Navigate to this directory:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">&quot;D:\Haleem\Books\23052025\Added 23072025\my_linux_environment&quot;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Or on Linux with different path syntax</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">&quot;/path/to/my_linux_environment&quot;</span></span></code></pre></div></li>
+<li><p>Make the launcher executable:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x start_linux.sh</span></code></pre></div></li>
+<li><p>Verify QEMU exists:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-lh</span> qemu/qemu-system-x86_64</span></code></pre></div></li>
+<li><p>Verify Alpine disk image:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-lh</span> machine/vm_disk/alpine_disk.qcow2</span></code></pre></div></li>
+</ol>
+<h3 id="step-2-launch-the-vm-1">Step 2: Launch the VM</h3>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./start_linux.sh</span></span></code></pre></div>
+<p>Or with explicit path:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> start_linux.sh</span></code></pre></div>
+<h3 id="step-3-alpine-linux-boot-1">Step 3: Alpine Linux Boot</h3>
+<p>You’ll see boot messages in your terminal. Wait for:</p>
+<pre><code>Alpine login:</code></pre>
+<h3 id="step-4-login-1">Step 4: Login</h3>
+<pre><code>Username: root
+Password: (just press Enter)</code></pre>
+<h3 id="step-5-verify-system-1">Step 5: Verify System</h3>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">uname</span> <span class="at">-a</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /etc/os-release</span></code></pre></div>
+<h3 id="troubleshooting---linuxmac">Troubleshooting - Linux/Mac</h3>
+<p><strong>Error: “qemu-system-x86_64 not found”</strong> - Ensure
+<code>start_linux.sh</code> is executable:
+<code>chmod +x start_linux.sh</code> - QEMU binaries may need to be
+built for your system - Try: <code>which qemu-system-x86_64</code> to
+see if QEMU is globally installed</p>
+<p><strong>VM exits immediately</strong> - Check available disk space:
+<code>df -h</code> - Check available RAM: <code>free -h</code> - Try
+allocating less memory in start_linux.sh (change -m 512M to -m 256M)</p>
+<p><strong>Serial console freezes</strong> - Press <code>Ctrl+A</code>
+then <code>x</code> to force exit - Try again - may be temporary
+issue</p>
+<hr />
+<h2 id="post-installation-verification">Post-Installation
+Verification</h2>
+<h3 id="quick-performance-test">Quick Performance Test</h3>
+<p>Once logged in, run:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check system info</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">uname</span> <span class="at">-a</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Check disk usage</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="fu">df</span> <span class="at">-h</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Check available memory</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="fu">free</span> <span class="at">-h</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Check CPU</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="fu">nproc</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Check network (if configured)</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="ex">ifconfig</span></span></code></pre></div>
+<h3 id="alpine-package-manager">Alpine Package Manager</h3>
+<p>Test Alpine’s package manager:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Update package lists</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="ex">apk</span> update</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Search for a package</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="ex">apk</span> search vim</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Install a package</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="ex">apk</span> add vim</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co"># List installed packages</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="ex">apk</span> info</span></code></pre></div>
+<h3 id="file-system-test">File System Test</h3>
+<p>Create a test file:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create directory</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> /tmp/test</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create file</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Hello from Alpine Linux&quot;</span> <span class="op">&gt;</span> /tmp/test/hello.txt</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Read it back</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /tmp/test/hello.txt</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="co"># List directory</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-la</span> /tmp/test/</span></code></pre></div>
+<hr />
+<h2 id="common-commands-inside-alpine">Common Commands Inside
+Alpine</h2>
+<div class="sourceCode" id="cb23"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># System information</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">uname</span> <span class="at">-a</span>                 <span class="co"># Kernel info</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /etc/os-release     <span class="co"># OS info</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="ex">lsb_release</span> <span class="at">-a</span>          <span class="co"># LSB info (if installed)</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Package management</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="ex">apk</span> update              <span class="co"># Update package cache</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="ex">apk</span> search package      <span class="co"># Search for package</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="ex">apk</span> add package         <span class="co"># Install package</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="ex">apk</span> del package         <span class="co"># Remove package</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="ex">apk</span> info                <span class="co"># List installed packages</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="co"># File system</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-la</span>                  <span class="co"># List files</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="bu">pwd</span>                     <span class="co"># Current directory</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /path                <span class="co"># Change directory</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> dirname           <span class="co"># Create directory</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-rf</span> path             <span class="co"># Delete</span></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a><span class="co"># System administration</span></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a><span class="fu">ps</span> aux                  <span class="co"># Running processes</span></span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a><span class="ex">top</span>                     <span class="co"># System monitor</span></span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a><span class="fu">ps</span> aux <span class="kw">|</span> <span class="fu">grep</span> process   <span class="co"># Find process</span></span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Network</span></span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a><span class="ex">ifconfig</span>                <span class="co"># Network interfaces</span></span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a><span class="fu">ping</span> 8.8.8.8           <span class="co"># Test network</span></span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> https://example.com  <span class="co"># Fetch URL</span></span></code></pre></div>
+<hr />
+<h2 id="exiting-the-vm">Exiting the VM</h2>
+<h3 id="graceful-shutdown">Graceful Shutdown</h3>
+<p>From inside Alpine:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Shutdown cleanly</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="ex">shutdown</span> <span class="at">-h</span> now</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Or reboot</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="ex">reboot</span></span></code></pre></div>
+<p>The VM will shut down and you’ll return to your command prompt.</p>
+<h3 id="force-exit">Force Exit</h3>
+<p>If VM is unresponsive: - <strong>Windows</strong>: Close the QEMU
+window or press Ctrl+C in command prompt - <strong>Linux/Mac</strong>:
+Press <code>Ctrl+A</code> then <code>x</code> in the terminal</p>
+<hr />
+<h2 id="optimization-tips">Optimization Tips</h2>
+<h3 id="allocate-more-ram">Allocate More RAM</h3>
+<p>Edit <code>start_linux.bat</code> or <code>start_linux.sh</code> and
+change:</p>
+<pre><code>-m 512M</code></pre>
+<p>To a higher value like:</p>
+<pre><code>-m 1024M    # 1 GB
+-m 2048M    # 2 GB</code></pre>
+<p><strong>Note</strong>: Don’t allocate more than half your system
+RAM.</p>
+<h3 id="enable-hardware-acceleration">Enable Hardware Acceleration</h3>
+<p><strong>Windows</strong>: Already enabled with WHPX
+<strong>Linux</strong>: Edit <code>start_linux.sh</code> to add:
+<code>-enable-kvm</code> <strong>Mac</strong>: Add:
+<code>-accel hvf</code> (if using Apple Silicon)</p>
+<h3 id="network-configuration">Network Configuration</h3>
+<p>To enable networking: - Add: <code>-nic user</code> parameter to
+startup scripts - This creates a user-mode network without host network
+access</p>
+<hr />
+<h2 id="backup-restore">Backup &amp; Restore</h2>
+<h3 id="creating-a-snapshot">Creating a Snapshot</h3>
+<p>The QCOW2 format supports snapshots:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create snapshot</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="ex">qemu-img</span> snapshot <span class="at">-c</span> mybackup machine/vm_disk/alpine_disk.qcow2</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co"># List snapshots</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="ex">qemu-img</span> snapshot <span class="at">-l</span> machine/vm_disk/alpine_disk.qcow2</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Restore snapshot</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="ex">qemu-img</span> snapshot <span class="at">-a</span> mybackup machine/vm_disk/alpine_disk.qcow2</span></code></pre></div>
+<h3 id="backup-the-disk-image">Backup the Disk Image</h3>
+<div class="sourceCode" id="cb28"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create backup</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> machine/vm_disk/alpine_disk.qcow2 machine/vm_disk/alpine_disk_backup.qcow2</span></code></pre></div>
+<hr />
+<h2 id="next-steps">Next Steps</h2>
+<ol type="1">
+<li>Verify your setup works with the steps above</li>
+<li>Read <strong>USAGE.md</strong> for detailed usage instructions</li>
+<li>Read <strong>ARCHITECTURE.md</strong> for technical details</li>
+<li>Start experimenting with Alpine Linux!</li>
+</ol>
+<hr />
+<p><strong>Questions?</strong> Refer to: - Alpine Linux Wiki:
+https://wiki.alpinelinux.org/ - QEMU Documentation:
+https://www.qemu.org/documentation/</p>
+        </main>
+
+        <div class="back-to-index">
+            <a href="./index.html">← Back to Environment Hub</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>Linux Practical Learning Environment | <a href="https://abdelhaleemahmed.github.io/">Ahmed Abdelhaleem's Portfolio</a></p>
+    </footer>
+
+    <button class="theme-toggle" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
+    <script src="./assets/theme.js"></script>
+</body>
+</html>
