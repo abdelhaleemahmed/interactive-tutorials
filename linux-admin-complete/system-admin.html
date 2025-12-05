@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Administration - Linux Administration Tutorial</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Breadcrumb Navigation -->
+        <nav class="breadcrumb">
+            <a href="https://abdelhaleemahmed.github.io/">Portfolio</a> /
+            <a href="https://abdelhaleemahmed.github.io/interactive-tutorials/">Tutorials</a> /
+            <a href="./index.html">Linux Administration</a> /
+            <span>System Administration</span>
+        </nav>
+
+        <!-- Header -->
+        <header class="tutorial-header">
+            <h1>⚙️ System Administration</h1>
+            <p class="subtitle">Learn essential system administration and monitoring techniques</p>
+        </header>
+
+        <!-- Content Section -->
+        <section class="content-section">
+            <div class="info-box">
+                <h4>💻 Practice While You Learn!</h4>
+                <p>Click the green <strong>💻 Terminal</strong> button in the bottom-right corner to open an interactive terminal. You can practice all the commands on this page in real-time!</p>
+                <ul>
+                    <li>The terminal stays open as you navigate between pages</li>
+                    <li>Try commands immediately after reading about them</li>
+                    <li>Use ↑/↓ arrows for command history, Tab for auto-complete</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Process Management</h2>
+            <p>
+                Understanding and managing processes is crucial for system administration. Every running program is a process.
+            </p>
+
+            <h3>Viewing Processes</h3>
+            <div class="command-example">
+                <h4>Common Process Commands</h4>
+                <pre><code># List all running processes
+ps aux
+
+# Show processes in a tree structure
+pstree
+
+# Interactive process viewer
+top
+
+# Modern alternative to top
+htop
+
+# List processes for current user
+ps ux
+
+# Find specific process
+ps aux | grep firefox</code></pre>
+            </div>
+
+            <h3>Process Information</h3>
+            <div class="info-box">
+                <h4>Understanding ps aux Output</h4>
+                <ul>
+                    <li><strong>USER:</strong> Process owner</li>
+                    <li><strong>PID:</strong> Process ID (unique identifier)</li>
+                    <li><strong>%CPU:</strong> CPU usage percentage</li>
+                    <li><strong>%MEM:</strong> Memory usage percentage</li>
+                    <li><strong>VSZ:</strong> Virtual memory size</li>
+                    <li><strong>RSS:</strong> Physical memory (RAM) used</li>
+                    <li><strong>STAT:</strong> Process state (R=running, S=sleeping, Z=zombie)</li>
+                    <li><strong>COMMAND:</strong> Command that started the process</li>
+                </ul>
+            </div>
+
+            <h3>Managing Processes</h3>
+            <div class="command-example">
+                <h4>Controlling Processes</h4>
+                <pre><code># Kill process by PID
+kill 1234
+
+# Force kill a process
+kill -9 1234
+
+# Kill process by name
+killall firefox
+
+# Send SIGTERM signal
+kill -15 1234
+
+# Background a running process
+Ctrl+Z        # Suspend
+bg            # Continue in background
+
+# Foreground a background process
+fg
+
+# Run command in background from start
+command &amp;</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ Using kill Carefully</h4>
+                <p><code>kill -9</code> forcefully terminates a process without cleanup. Use regular <code>kill</code> first to allow graceful shutdown.</p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>System Monitoring</h2>
+
+            <h3>System Resources</h3>
+            <div class="command-example">
+                <h4>Monitoring Commands</h4>
+                <pre><code># CPU and memory usage (interactive)
+top
+
+# Disk usage by filesystem
+df -h
+
+# Disk usage by directory
+du -sh /home/user/*
+
+# Memory usage
+free -h
+
+# System uptime and load average
+uptime
+
+# Who is logged in
+who
+
+# Detailed who information
+w</code></pre>
+            </div>
+
+            <h3>Understanding System Load</h3>
+            <div class="info-box">
+                <h4>Load Average Explained</h4>
+                <p>When you run <code>uptime</code>, you see something like:</p>
+                <pre><code>11:30:45 up 5 days, 3:42, 2 users, load average: 0.15, 0.25, 0.30</code></pre>
+                <p>The three numbers represent average system load over 1, 5, and 15 minutes:</p>
+                <ul>
+                    <li><strong>&lt; 1.0:</strong> System has spare capacity</li>
+                    <li><strong>= Number of CPUs:</strong> Fully utilized</li>
+                    <li><strong>&gt; Number of CPUs:</strong> Processes are waiting</li>
+                </ul>
+            </div>
+
+            <h3>Log Files</h3>
+            <div class="command-example">
+                <h4>Viewing System Logs</h4>
+                <pre><code># View system log
+sudo tail -f /var/log/syslog
+
+# View authentication log
+sudo tail -f /var/log/auth.log
+
+# View kernel messages
+dmesg | tail
+
+# View systemd journal
+journalctl -xe
+
+# Follow journal in real-time
+journalctl -f</code></pre>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Package Management</h2>
+            <p>
+                Different Linux distributions use different package managers. Here are the most common ones:
+            </p>
+
+            <h3>Debian/Ubuntu (apt)</h3>
+            <div class="command-example">
+                <h4>APT Package Manager</h4>
+                <pre><code># Update package list
+sudo apt update
+
+# Upgrade all packages
+sudo apt upgrade
+
+# Install a package
+sudo apt install package-name
+
+# Remove a package
+sudo apt remove package-name
+
+# Search for package
+apt search keyword
+
+# Show package information
+apt show package-name</code></pre>
+            </div>
+
+            <h3>Red Hat/CentOS/Rocky (yum/dnf)</h3>
+            <div class="command-example">
+                <h4>YUM/DNF Package Manager</h4>
+                <pre><code># Install package
+sudo yum install package-name
+sudo dnf install package-name
+
+# Update all packages
+sudo yum update
+sudo dnf upgrade
+
+# Remove package
+sudo yum remove package-name
+
+# Search for package
+yum search keyword
+
+# List installed packages
+yum list installed</code></pre>
+            </div>
+
+            <h3>Arch Linux (pacman)</h3>
+            <div class="command-example">
+                <h4>Pacman Package Manager</h4>
+                <pre><code># Update package database and upgrade
+sudo pacman -Syu
+
+# Install package
+sudo pacman -S package-name
+
+# Remove package
+sudo pacman -R package-name
+
+# Search for package
+pacman -Ss keyword
+
+# List installed packages
+pacman -Q</code></pre>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Service Management (systemd)</h2>
+            <p>
+                Modern Linux distributions use systemd to manage services (daemons).
+            </p>
+
+            <div class="command-example">
+                <h4>Managing Services</h4>
+                <pre><code># Start a service
+sudo systemctl start nginx
+
+# Stop a service
+sudo systemctl stop nginx
+
+# Restart a service
+sudo systemctl restart nginx
+
+# Check service status
+sudo systemctl status nginx
+
+# Enable service at boot
+sudo systemctl enable nginx
+
+# Disable service at boot
+sudo systemctl disable nginx
+
+# List all services
+systemctl list-units --type=service
+
+# List failed services
+systemctl --failed</code></pre>
+            </div>
+
+            <div class="info-box">
+                <h4>Service States</h4>
+                <ul>
+                    <li><strong>active (running):</strong> Service is running</li>
+                    <li><strong>active (exited):</strong> Service completed successfully</li>
+                    <li><strong>inactive (dead):</strong> Service is stopped</li>
+                    <li><strong>failed:</strong> Service crashed or failed to start</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Networking Basics</h2>
+
+            <h3>Network Information</h3>
+            <div class="command-example">
+                <h4>Network Commands</h4>
+                <pre><code># Show IP addresses
+ip addr show
+ip a
+
+# Show network interfaces (old method)
+ifconfig
+
+# Show routing table
+ip route show
+
+# Test connectivity
+ping google.com
+
+# Trace route to destination
+traceroute google.com
+
+# DNS lookup
+nslookup google.com
+dig google.com
+
+# Show listening ports
+sudo netstat -tuln
+sudo ss -tuln</code></pre>
+            </div>
+
+            <h3>Firewall Management</h3>
+            <div class="command-example">
+                <h4>UFW (Uncomplicated Firewall)</h4>
+                <pre><code># Enable firewall
+sudo ufw enable
+
+# Disable firewall
+sudo ufw disable
+
+# Allow port
+sudo ufw allow 80/tcp
+sudo ufw allow ssh
+
+# Deny port
+sudo ufw deny 23
+
+# Show status
+sudo ufw status
+
+# Show numbered rules
+sudo ufw status numbered
+
+# Delete rule by number
+sudo ufw delete 2</code></pre>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Practical Scenarios</h2>
+
+            <div class="command-example">
+                <h4>Scenario 1: High CPU Usage</h4>
+                <pre><code># 1. Check what's using CPU
+top
+# Press 'P' to sort by CPU usage
+
+# 2. Identify the problematic process
+# Look at PID of high CPU process
+
+# 3. Investigate the process
+ps aux | grep [PID]
+
+# 4. If needed, kill the process
+kill [PID]</code></pre>
+            </div>
+
+            <div class="command-example">
+                <h4>Scenario 2: Disk Space Full</h4>
+                <pre><code># 1. Check disk usage
+df -h
+
+# 2. Find large directories
+du -sh /home/* | sort -h
+
+# 3. Find large files
+find /home -type f -size +100M -exec ls -lh {} \;
+
+# 4. Clean up package cache (Ubuntu/Debian)
+sudo apt clean
+sudo apt autoremove</code></pre>
+            </div>
+
+            <div class="command-example">
+                <h4>Scenario 3: Service Won't Start</h4>
+                <pre><code># 1. Check service status
+sudo systemctl status servicename
+
+# 2. View recent logs
+sudo journalctl -u servicename -n 50
+
+# 3. Check configuration
+sudo systemctl cat servicename
+
+# 4. Restart service
+sudo systemctl restart servicename</code></pre>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Key Takeaways</h2>
+            <div class="info-box">
+                <ul>
+                    <li>Use <code>top</code> or <code>htop</code> for real-time system monitoring</li>
+                    <li>Understand process states and how to manage them</li>
+                    <li>Regularly check disk space and system logs</li>
+                    <li>Know your distribution's package manager</li>
+                    <li><code>systemctl</code> is the standard for service management</li>
+                    <li>Monitor network connections and firewall rules</li>
+                    <li>Practice troubleshooting in a safe environment first</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Practice Tips</h2>
+            <div class="info-box">
+                <p><strong>Ready to practice?</strong> Head over to the <a href="./interactive-terminal.html">Interactive Terminal</a> to try system administration commands!</p>
+            </div>
+            <ul>
+                <li>Set up a test virtual machine to practice safely</li>
+                <li>Create scheduled tasks to monitor system health</li>
+                <li>Document common troubleshooting steps for your systems</li>
+                <li>Always test commands in a safe environment first</li>
+            </ul>
+        </section>
+
+        <!-- Page Navigation -->
+        <nav class="page-navigation">
+            <a href="./user-management.html" class="nav-button prev">User & Permission Management</a>
+            <a href="./interactive-terminal.html" class="nav-button next">Interactive Terminal</a>
+        </nav>
+    </div>
+
+    <!-- Terminal Toggle Button -->
+    <button class="terminal-toggle-btn" id="terminalToggleBtn" title="Open terminal" aria-label="Toggle terminal">💻</button>
+
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
+
+    <!-- Footer -->
+    <footer class="tutorial-footer">
+        <p>&copy; 2025 Ahmed Abdelhaleem | <a href="https://abdelhaleemahmed.github.io/">Back to Portfolio</a></p>
+    </footer>
+
+    <!-- Terminal Scripts -->
+    <link rel="stylesheet" href="./css/xterm.css" />
+    <script src="./js/xterm.js"></script>
+    <script src="./js/xterm-addon-fit.js"></script>
+    <script type="module" src="./css/terminal-modal.js"></script>
+
+    <script src="./css/theme.js"></script>
+</body>
+</html>
