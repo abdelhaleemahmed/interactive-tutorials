@@ -15,6 +15,7 @@
         // Create modal HTML structure
         const modalHTML = `
             <div class="terminal-modal" id="terminalModal">
+                <div class="terminal-resize-handle" id="terminalResizeHandle"></div>
                 <div class="terminal-modal-header">
                     <h3>💻 Interactive Terminal</h3>
                     <button class="terminal-modal-close" id="terminalModalClose" title="Close terminal">✕</button>
@@ -34,6 +35,59 @@
         const modal = document.getElementById('terminalModal');
         const toggleBtn = document.getElementById('terminalToggleBtn');
         const closeBtn = document.getElementById('terminalModalClose');
+        const resizeHandle = document.getElementById('terminalResizeHandle');
+
+        // Resize functionality
+        let isResizing = false;
+        let startY = 0;
+        let startHeight = 0;
+
+        resizeHandle.addEventListener('mousedown', (e) => {
+            isResizing = true;
+            startY = e.clientY;
+            startHeight = modal.offsetHeight;
+            document.body.style.userSelect = 'none';
+            modal.style.transition = 'none';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+
+            const deltaY = startY - e.clientY;
+            const newHeight = startHeight + deltaY;
+            const minHeight = 200;
+            const maxHeight = window.innerHeight * 0.9;
+
+            if (newHeight >= minHeight && newHeight <= maxHeight) {
+                modal.style.height = newHeight + 'px';
+
+                // Refit terminal after resize
+                if (window.terminalFitAddon && window.terminalInstance) {
+                    window.terminalFitAddon.fit();
+                    // Scroll to bottom to keep prompt visible
+                    window.terminalInstance.scrollToBottom();
+                }
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isResizing) {
+                isResizing = false;
+                document.body.style.userSelect = '';
+                modal.style.transition = '';
+
+                // Final fit and scroll after resize complete
+                if (window.terminalFitAddon && window.terminalInstance) {
+                    setTimeout(() => {
+                        window.terminalFitAddon.fit();
+                        window.terminalInstance.scrollToBottom();
+                    }, 50);
+                }
+
+                // Save height to localStorage
+                localStorage.setItem('terminal-modal-height', modal.style.height);
+            }
+        });
 
         // Toggle terminal modal
         function toggleTerminal() {
@@ -66,6 +120,12 @@
         // Event listeners
         toggleBtn.addEventListener('click', toggleTerminal);
         closeBtn.addEventListener('click', toggleTerminal);
+
+        // Restore previous height
+        const savedHeight = localStorage.getItem('terminal-modal-height');
+        if (savedHeight) {
+            modal.style.height = savedHeight;
+        }
 
         // Restore previous state
         const wasOpen = localStorage.getItem('terminal-modal-open') === 'true';
