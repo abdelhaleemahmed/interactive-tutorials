@@ -1,42 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Terminal - Linux Administration Tutorial</title>
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="stylesheet" href="./css/xterm.css" />
+    <title>الطرفية التفاعلية - دروس إدارة لينكس</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/xterm.css" />
 </head>
 <body>
     <div class="container">
         <!-- Breadcrumb Navigation -->
         <nav class="breadcrumb">
-            <a href="https://abdelhaleemahmed.github.io/">Portfolio</a> /
-            <a href="https://abdelhaleemahmed.github.io/interactive-tutorials/">Tutorials</a> /
-            <a href="./index.html">Linux Administration</a> /
+            <a href="https://abdelhaleemahmed.github.io/">المعرض</a> /
+            <a href="https://abdelhaleemahmed.github.io/interactive-tutorials/">الدروس التعليمية</a> /
+            <a href="./index.html">إدارة لينكس</a> /
             <span>Interactive Terminal</span>
         </nav>
 
         <!-- Header -->
         <header class="tutorial-header">
-            <h1>🚀 Interactive Terminal</h1>
-            <p class="subtitle">Practice Linux commands in a safe, simulated environment</p>
+            <h1>🚀 الطرفية التفاعلية</h1>
+            <p class="subtitle">مارس أوامر لينكس في بيئة محاكاة آمنة</p>
         </header>
 
         <!-- Content Section -->
         <section class="content-section">
-            <h2>Your Interactive Terminal</h2>
-            <p>
-                Below is a simulated Linux terminal that behaves like a real one for basic commands. Feel free to type commands and press Enter to see the output. Remember, this is a simulation, so no real changes are made to your computer.
-            </p>
+            <h2>طرفيتك التفاعلية</h2>
+            <p>أدناه طرفية لينكس محاكاة تتصرف مثل طرفية حقيقية للأوامر الأساسية. لا تتردد في كتابة الأوامر والضغط على Enter لرؤية الناتج. تذكر، هذه محاكاة، لذلك لا يتم إجراء تغييرات حقيقية على جهاز الكمبيوتر الخاص بك.</p>
 
             <div class="info-box">
-                <h4>Getting Started</h4>
+                <h4>البدء</h4>
                 <ul>
-                    <li>Use the <strong>Up/Down arrow keys</strong> to cycle through your command history</li>
-                    <li>Press <strong>Tab</strong> for auto-completion of commands and file/directory names</li>
-                    <li>Type <code>help</code> to see a quick reference of all supported commands</li>
-                    <li>Type <code>clear</code> to clear the terminal screen</li>
+                    
+                    <li>{استخدم <strong>مفاتيح الأسهم لأعلى/لأسفل</strong> للتنقل في سجل الأوامر}</li>
+                    
+                    <li>{اضغط <strong>Tab</strong> للإكمال التلقائي للأوامر وأسماء الملفات/المجلدات}</li>
+                    
+                    <li>{اكتب <code>help</code> لرؤية مرجع سريع لجميع الأوامر المدعومة}</li>
+                    
+                    <li>{اكتب <code>clear</code> لمسح شاشة الطرفية}</li>
+                    
                 </ul>
             </div>
         </section>
@@ -47,82 +50,104 @@
         </div>
 
         <section class="content-section">
-            <h2>Try These Commands</h2>
-            <p>
-                Here are some common commands to get you started. Try them in the terminal above!
-            </p>
+            <h2>جرب هذه الأوامر</h2>
+            <p>إليك بعض الأوامر الشائعة للبدء. جربها في الطرفية أعلاه!</p>
 
+            
             <div class="command-example">
-                <h4>Navigation</h4>
-                <pre><code>pwd              # Print current directory
-ls               # List files and directories
-cd documents     # Change to documents directory
-cd ..            # Go up one directory
-cd ~             # Go to home directory</code></pre>
+                <h4>التنقل</h4>
+                <pre><code>pwd              # طباعة المجلد الحالي
+ls               # سرد الملفات والمجلدات
+cd documents     # الانتقال إلى مجلد documents
+cd ..            # العودة مجلد واحد للأعلى
+cd ~             # الذهاب إلى المجلد الرئيسي</code></pre>
             </div>
-
+            
             <div class="command-example">
-                <h4>File Operations</h4>
-                <pre><code>cat README.txt   # View file contents
-mkdir test       # Create a directory
-touch file.txt   # Create an empty file
-cp file.txt copy.txt  # Copy a file
-mv file.txt newname.txt  # Move/rename file
-rm newname.txt   # Remove a file</code></pre>
+                <h4>عمليات الملفات</h4>
+                <pre><code>cat README.txt   # عرض محتويات الملف
+mkdir test       # إنشاء مجلد
+touch file.txt   # إنشاء ملف فارغ
+cp file.txt copy.txt  # نسخ ملف
+mv file.txt newname.txt  # نقل/إعادة تسمية ملف
+rm newname.txt   # حذف ملف</code></pre>
             </div>
-
+            
             <div class="command-example">
-                <h4>Information</h4>
-                <pre><code>help             # Show available commands
-man ls           # Manual for ls command
-whoami           # Show current user
-date             # Show current date/time
-uptime           # Show system uptime</code></pre>
+                <h4>المعلومات</h4>
+                <pre><code>help             # إظهار الأوامر المتاحة
+man ls           # دليل استخدام أمر ls
+whoami           # إظهار المستخدم الحالي
+date             # إظهار التاريخ/الوقت الحالي
+uptime           # إظهار وقت تشغيل النظام</code></pre>
             </div>
+            
         </section>
 
         <section class="content-section">
-            <h2>Experiment and Learn!</h2>
-            <p>
-                This interactive terminal is a sandbox for you to play in. Don't be afraid to try commands, make mistakes, and learn from them. The more you practice, the more comfortable and powerful you'll become with the Linux command line.
-            </p>
+            <h2>جرب وتعلم!</h2>
+            <p>هذه الطرفية التفاعلية هي صندوق رمل لك للعب فيه. لا تخف من تجربة الأوامر وارتكاب الأخطاء والتعلم منها. كلما مارست أكثر، كلما أصبحت أكثر راحة وقوة مع سطر أوامر لينكس.</p>
 
             <div class="warning-box">
-                <h4>📚 Want to learn more?</h4>
-                <p>Go back to the tutorial modules to learn about specific topics in depth:</p>
+                <h4>📚 تريد معرفة المزيد؟</h4>
+                <p>ارجع إلى وحدات الدروس لتعلم مواضيع محددة بعمق:</p>
                 <ul>
-                    <li><a href="./basic-commands.html">Basic Commands & Navigation</a></li>
-                    <li><a href="./file-system.html">File System Management</a></li>
-                    <li><a href="./user-management.html">User & Permission Management</a></li>
-                    <li><a href="./system-admin.html">System Administration</a></li>
+                    
+                    <li><a href="./basic-commands.html">الأوامر الأساسية والتنقل</a></li>
+                    
+                    <li><a href="./file-system.html">إدارة نظام الملفات</a></li>
+                    
+                    <li><a href="./user-management.html">إدارة المستخدمين والصلاحيات</a></li>
+                    
+                    <li><a href="./system-admin.html">إدارة النظام</a></li>
+                    
                 </ul>
             </div>
         </section>
 
         <!-- Page Navigation -->
         <nav class="page-navigation">
-            <a href="./system-admin.html" class="nav-button prev">System Administration</a>
-            <a href="./index.html" class="nav-button next">Back to Overview</a>
+            <a href="./system-admin.html" class="nav-button prev">إدارة النظام</a>
+            <a href="./index.html" class="nav-button next">العودة إلى النظرة العامة</a>
         </nav>
     </div>
 
-    <!-- Theme Toggle Button -->
-    <button class="theme-toggle" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
+    <!-- Theme Selector (3 themes: Light, Dark, Terminal) -->
+    <div class="theme-selector">
+    
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <div class="lang-btn en active" title="English" data-lang="en">EN</div>
+        <!-- Future languages can be added here -->
+        <div class="lang-btn ar" title="العربية" data-lang="ar">AR</div>
+    </div>
+        <div class="theme-btn light active" title="Light Theme"></div>
+    
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <div class="lang-btn en active" title="English" data-lang="en">EN</div>
+        <!-- Future languages can be added here -->
+        <div class="lang-btn ar" title="العربية" data-lang="ar">AR</div>
+    </div>
+        <div class="theme-btn dark" title="Dark Theme"></div>
+        <div class="theme-btn terminal" title="Terminal Theme"></div>
+    </div>
 
     <!-- Footer -->
     <footer class="tutorial-footer">
-        <p>&copy; 2025 Ahmed Abdelhaleem | <a href="https://abdelhaleemahmed.github.io/">Back to Portfolio</a></p>
+        <p>© 2025 أحمد عبد الحليم | <a href="https://abdelhaleemahmed.github.io/">العودة إلى المعرض</a></p>
     </footer>
 
     <!-- Terminal Scripts -->
-    <script src="./js/xterm.js"></script>
-    <script src="./js/xterm-addon-fit.js"></script>
+    <script src="../js/xterm.js"></script>
+    <script src="../js/xterm-addon-fit.js"></script>
 
     <!-- Import modular command logic -->
     <script type="module">
-        import { commandHandlers } from './js/commandRegistry.js';
-        import { writePrompt, currentPath, getCurrentDir, resolvePath, getPathObject, updateCurrentPath } from './js/terminalUtils.js';
-        import { ShellParser } from './js/shellParser.js';
+        import { commandHandlers } from '../js/commandRegistry.js';
+        import { writePrompt, currentPath, getCurrentDir, resolvePath, getPathObject, updateCurrentPath } from '../js/terminalUtils.js';
+        import { ShellParser } from '../js/shellParser.js';
+        import { getCommandNotFoundMessage, validateCommand } from '../js/commandSuggestions.js';
 
         document.addEventListener('DOMContentLoaded', () => {
             const terminalContainer = document.getElementById('terminal');
@@ -175,6 +200,17 @@ uptime           # Show system uptime</code></pre>
             function handleCommand(command) {
                 let output = '';
 
+                // Strip comments (everything after #)
+                const commentIndex = command.indexOf('#');
+                if (commentIndex !== -1) {
+                    command = command.substring(0, commentIndex).trim();
+                }
+
+                // Skip empty commands
+                if (!command) {
+                    return;
+                }
+
                 if (parser.needsShellParsing(command)) {
                     output = handlePipedCommand(command);
                 } else {
@@ -189,7 +225,7 @@ uptime           # Show system uptime</code></pre>
                     } else if (cmd === '') {
                         output = '';
                     } else {
-                        output = `bash: ${cmd}: command not found`;
+                        output = getCommandNotFoundMessage(cmd, handlers);
                     }
                 }
 
@@ -354,12 +390,17 @@ uptime           # Show system uptime</code></pre>
                 }
             });
 
-            term.write('Welcome to the simulated Linux terminal!\r\n');
-            term.write('Type "help" to see available commands.\r\n\r\n');
+            term.write('مرحباً بك في طرفية لينكس المحاكاة!\r\n');
+            term.write('اكتب "help" لرؤية الأوامر المتاحة.\r\n\r\n');
             writePrompt(term);
         });
     </script>
 
-    <script src="./css/theme.js"></script>
+    <!-- Enhanced Features -->
+    <script src="../css/theme.js"></script>
+    <script src="../css/language-switcher.js"></script>
+    <script src="../css/shortcuts.js"></script>
+    <script src="../css/cheatsheet.js"></script>
+    <script src="../css/code-interactive.js"></script>
 </body>
 </html>

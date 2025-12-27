@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة المستخدمين والصلاحيات - دروس إدارة لينكس</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Breadcrumb Navigation -->
+        <nav class="breadcrumb">
+            <a href="https://abdelhaleemahmed.github.io/">المعرض</a> /
+            <a href="https://abdelhaleemahmed.github.io/interactive-tutorials/">الدروس التعليمية</a> /
+            <a href="./index.html">إدارة لينكس</a> /
+            <span>User & Permission Management</span>
+        </nav>
+
+        <!-- Header -->
+        <header class="tutorial-header">
+            <h1>👥 إدارة المستخدمين والصلاحيات</h1>
+            <p class="subtitle">أتقن مستخدمي لينكس والمجموعات ونظام الصلاحيات القوي</p>
+        </header>
+
+        <!-- Practice Box -->
+        <section class="content-section">
+            <div class="info-box">
+                <h4>💻 مارس أثناء التعلم!</h4>
+                <p>انقر على زر الطرفية 💻 الأخضر في الزاوية السفلية لفتح طرفية تفاعلية. يمكنك ممارسة جميع الأوامر في هذه الصفحة في الوقت الفعلي!</p>
+                <ul>
+                    
+                    <li>تبقى الطرفية مفتوحة أثناء التنقل بين الصفحات</li>
+                    
+                    <li>جرب الأوامر فوراً بعد قراءتها</li>
+                    
+                    <li>استخدم الأسهم ↑/↓ لسجل الأوامر، Tab للإكمال التلقائي</li>
+                    
+                </ul>
+            </div>
+        </section>
+
+        <!-- Understanding Linux Permissions -->
+        <section class="content-section">
+            <h2>فهم صلاحيات لينكس</h2>
+            <p>لينكس هو نظام تشغيل متعدد المستخدمين مع نظام صلاحيات قوي. كل ملف ومجلد له مالك ومجموعة ومجموعة من الصلاحيات التي تحدد من يمكنه القراءة أو الكتابة أو التنفيذ.</p>
+
+            <h3>نظرة عامة على صلاحيات الملفات</h3>
+            <p>{عند تشغيل <code>ls -l</code>، ترى معلومات مفصلة عن الملفات والمجلدات:}</p>
+            <pre><code>ls -l</code></pre>
+            <p><strong>Expected Output:</strong></p>
+            <pre><code>-rw-r--r-- 1 user user 4096 Dec 03 10:30 README.txt
+drwxr-xr-x 2 user user 4096 Dec 03 10:30 documents/</code></pre>
+
+            <p>Let's break down what this means:</p>
+            <div class="command-example">
+                <h4>تحليل سلسلة الصلاحيات</h4>
+                <p>الأحرف العشرة الأولى تظهر النوع والصلاحيات:</p>
+                <ul>
+                    
+                    <li><strong>الحرف الأول:</strong> نوع الملف (- = ملف، d = مجلد، l = رابط)</li>
+                    
+                    <li><strong>الأحرف 2-4:</strong> صلاحيات المالك (قراءة، كتابة، تنفيذ)</li>
+                    
+                    <li><strong>الأحرف 5-7:</strong> صلاحيات المجموعة</li>
+                    
+                    <li><strong>الأحرف 8-10:</strong> صلاحيات الآخرين</li>
+                    
+                </ul>
+            </div>
+
+            <h3>أنواع الصلاحيات</h3>
+            <div class="command-example">
+                <h4>فهم r و w و x</h4>
+                <ul>
+                    
+                    <li><strong>r (قراءة):</strong> عرض محتويات الملف أو سرد محتويات المجلد</li>
+                    
+                    <li><strong>w (كتابة):</strong> تعديل الملف أو إضافة/حذف ملفات في المجلد</li>
+                    
+                    <li><strong>x (تنفيذ):</strong> تشغيل الملف كبرنامج أو الوصول للمجلد</li>
+                    
+                </ul>
+            </div>
+
+            <h3>تغيير الصلاحيات (<span class="tooltip-trigger"><code>chmod</code><span class="rich-tooltip"><span class="tooltip-header"><strong>🔐 chmod - تغيير صلاحيات الملف</strong></span><span class="tooltip-content"><span class="tooltip-description">يعدل صلاحيات الملف أو المجلد للتحكم في من يمكنه القراءة أو الكتابة أو التنفيذ.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">الوضع الرمزي</span><span class="example-code">$ chmod u+x script.sh</span><span class="example-output">▸ منح المالك صلاحية التنفيذ</span></span><span class="example-block"><span class="example-label">الوضع الرقمي</span><span class="example-code">$ chmod 755 file.txt</span><span class="example-output">▸ rwxr-xr-x (المالك: rwx، المجموعة: r-x، الآخرون: r-x)</span></span><span class="example-block"><span class="example-label">نمط شائع</span><span class="example-code">$ chmod 644 document.txt</span><span class="example-output">▸ rw-r--r-- (المالك: rw، المجموعة/الآخرون: r)</span></span></span></span></span></span>)</h3>
+            <div class="command-example">
+                <h4>استخدام الوضع الرمزي</h4>
+                <p>Command: <code>chmod [من][+/-][صلاحيات] اسم_الملف</code></p>
+                <ul>
+                    
+                    <li><strong>من:</strong> u (المستخدم/المالك)، g (المجموعة)، o (الآخرون)، a (الجميع)</li>
+                    
+                    <li><strong>+/-:</strong> إضافة أو إزالة الصلاحيات</li>
+                    
+                    <li><strong>صلاحيات:</strong> r، w، x</li>
+                    
+                </ul>
+
+                <p><strong>Examples:</strong></p>
+                <pre><code># إعطاء المالك صلاحية التنفيذ
+touch script.sh
+chmod u+x script.sh
+ls -l script.sh
+
+# إزالة صلاحية الكتابة للآخرين
+touch document.txt
+chmod o-w document.txt
+ls -l document.txt
+
+# إضافة القراءة والتنفيذ للجميع
+touch public_file.txt
+chmod a+rx public_file.txt
+ls -l public_file.txt
+
+</code></pre>
+            </div>
+
+            <div class="command-example">
+                <h4>استخدام الوضع الرقمي</h4>
+                <p>يمكن تمثيل الصلاحيات كأرقام:</p>
+                <ul>
+                    
+                    <li><strong>4: قراءة (r)</strong></li>
+                    
+                    <li><strong>2: كتابة (w)</strong></li>
+                    
+                    <li><strong>1: تنفيذ (x)</strong></li>
+                    
+                </ul>
+                <p>اجمعها: 7 = 4+2+1 = rwx، 6 = 4+2 = rw-، 5 = 4+1 = r-x</p>
+
+                <p><strong>Examples:</strong></p>
+                <pre><code># rwx للمالك، r-x للمجموعة، r-- للآخرين
+touch file.txt
+chmod 754 file.txt
+ls -l file.txt
+
+# rw- للمالك والمجموعة، r-- للآخرين
+touch document.txt
+chmod 664 document.txt
+ls -l document.txt
+
+# rwx للجميع
+touch script.sh
+chmod 777 script.sh
+ls -l script.sh
+
+</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ تحذير أمني</h4>
+                <p>كن حذراً مع chmod 777! هذا يعطي صلاحيات كاملة للجميع وهو غير آمن عموماً. استخدمه فقط عندما تفهم العواقب تماماً.</p>
+            </div>
+
+            <h3>تغيير الملكية (<span class="tooltip-trigger"><code>chown</code><span class="rich-tooltip"><span class="tooltip-header"><strong>👤 chown - تغيير مالك الملف والمجموعة</strong></span><span class="tooltip-content"><span class="tooltip-description">يغير مالك و/أو مجموعة الملفات والمجلدات. عادة يتطلب صلاحيات sudo.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">تغيير المالك</span><span class="example-code">$ chown john file.txt</span><span class="example-output">▸ يغير المالك إلى 'john'</span></span><span class="example-block"><span class="example-label">تغيير المالك والمجموعة</span><span class="example-code">$ chown john:staff file.txt</span><span class="example-output">▸ يغير المالك إلى 'john' والمجموعة إلى 'staff'</span></span><span class="example-block"><span class="example-label">تغيير المجموعة فقط</span><span class="example-code">$ chown :developers project/</span><span class="example-output">▸ يغير المجموعة إلى 'developers'</span></span></span></span></span></span>)</h3>
+            <div class="command-example">
+                <h4>Command: <code>chown [مالك][:مجموعة] اسم_الملف</code></h4>
+                <p><strong>Examples:</strong></p>
+                <pre><code># تغيير المالك إلى 'john'
+touch file.txt
+sudo chown john file.txt
+ls -l file.txt
+
+# تغيير المالك إلى 'john' والمجموعة إلى 'staff'
+touch file.txt
+sudo chown john:staff file.txt
+ls -l file.txt
+
+# تغيير المجموعة فقط
+sudo groupadd developers
+mkdir project
+sudo chown :developers project/
+ls -ld project/
+
+</code></pre>
+                <p><strong>Note:</strong> يتطلب صلاحيات sudo (المستخدم الخارق). فقط root يمكنه تغيير ملكية الملفات.</p>
+            </div>
+        </section>
+
+        <!-- Users and Groups -->
+        <section class="content-section">
+            <h2>المستخدمون والمجموعات</h2>
+
+            <h3>عرض معلومات المستخدم</h3>
+            <div class="command-example">
+                <h4>الأوامر الشائعة</h4>
+                <pre><code># إظهار المستخدم الحالي
+whoami
+
+# إظهار معرف المستخدم والمجموعات
+id
+
+# سرد جميع المستخدمين (أول 10)
+cat /etc/passwd | head -10
+
+# سرد جميع المجموعات
+cat /etc/group
+
+</code></pre>
+            </div>
+
+            <h3>أوامر إدارة المستخدمين</h3>
+            <div class="info-box">
+                <h4>العمليات الشائعة للمستخدمين (تتطلب sudo)</h4>
+                <ul>
+                    
+                    <li><code>useradd username - إنشاء مستخدم جديد</code></li>
+                    
+                    <li><code>usermod -aG groupname username - إضافة مستخدم إلى مجموعة</code></li>
+                    
+                    <li><code>userdel username - حذف مستخدم</code></li>
+                    
+                    <li><code>passwd username - تغيير كلمة مرور المستخدم</code></li>
+                    
+                    <li><code>su - username - التبديل إلى مستخدم آخر</code></li>
+                    
+                    <li><code>sudo command - تنفيذ أمر كمستخدم خارق</code></li>
+                    
+                </ul>
+            </div>
+
+            <h3>إدارة المجموعات</h3>
+            <div class="command-example">
+                <h4>العمل مع المجموعات</h4>
+                <pre><code># إنشاء مجموعة جديدة
+sudo groupadd developers
+
+# إضافة مستخدم إلى مجموعة
+sudo usermod -aG developers john
+
+# عرض مجموعات المستخدم الحالي
+groups
+
+# عرض مجموعات مستخدم محدد
+groups john
+
+</code></pre>
+            </div>
+        </section>
+
+        <!-- Practical Examples -->
+        <section class="content-section">
+            <h2>أمثلة عملية</h2>
+
+            
+            <div class="command-example">
+                <h4>السيناريو 1: جعل سكريبت قابل للتنفيذ</h4>
+                <pre><code># إنشاء سكريبت
+echo '#!/bin/bash' > myscript.sh
+echo 'echo "Hello, World!"' >> myscript.sh
+
+# جعله قابل للتنفيذ
+chmod +x myscript.sh
+
+# تشغيله
+./myscript.sh
+</code></pre>
+            </div>
+            
+            <div class="command-example">
+                <h4>السيناريو 2: مجلد مشروع مشترك</h4>
+                <pre><code># إنشاء مجلد لمشروع الفريق
+sudo mkdir -p /var/projects/team-app
+
+# إنشاء المستخدمين alice و bob
+sudo useradd -m alice
+sudo useradd -m bob
+
+# إنشاء مجموعة developers
+sudo groupadd developers
+
+# إضافة المستخدمين إلى المجموعة
+sudo usermod -aG developers alice
+sudo usermod -aG developers bob
+
+# تعيين الملكية والصلاحيات
+sudo chown :developers /var/projects/team-app
+sudo chmod 775 /var/projects/team-app
+
+# التحقق من الإعداد
+ls -ld /var/projects/team-app
+groups alice
+groups bob
+</code></pre>
+            </div>
+            
+            <div class="command-example">
+                <h4>السيناريو 3: تأمين الملفات الحساسة</h4>
+                <pre><code># إنشاء ملف مع بيانات حساسة
+touch private.key
+
+# جعله قابل للقراءة من المالك فقط
+chmod 600 private.key
+
+# التحقق من الصلاحيات
+ls -l private.key
+# الناتج: -rw------- 1 user user 0 Dec 03 10:30 private.key
+</code></pre>
+            </div>
+            
+        </section>
+
+        <!-- Key Takeaways -->
+        <section class="content-section">
+            <h2>النقاط الرئيسية</h2>
+            <div class="info-box">
+                <ul>
+                    
+                    <li>كل ملف له مالك ومجموعة ومجموعة صلاحيات</li>
+                    
+                    <li>الصلاحيات تتحكم في الوصول للقراءة (r) والكتابة (w) والتنفيذ (x)</li>
+                    
+                    <li>chmod يغير الصلاحيات، chown يغير الملكية</li>
+                    
+                    <li>الوضع الرقمي (مثل 755) أسرع، الوضع الرمزي (مثل u+x) أوضح</li>
+                    
+                    <li>المجموعات تسمح لعدة مستخدمين بمشاركة الوصول إلى الملفات</li>
+                    
+                    <li>كن دائماً حذراً مع صلاحيات الملفات الحساسة</li>
+                    
+                </ul>
+            </div>
+        </section>
+
+        <!-- Practice Tips -->
+        <section class="content-section">
+            <h2>نصائح الممارسة</h2>
+            <div class="info-box">
+                <p><strong>مستعد للممارسة؟ توجه إلى الطرفية التفاعلية لتجربة أوامر الصلاحيات!</strong></p>
+            </div>
+            <ul>
+                
+                <li>استخدم ls -l بشكل متكرر للتحقق من الصلاحيات الحالية</li>
+                
+                <li>تدرب على ملفات تجريبية قبل تعديل البيانات المهمة</li>
+                
+                <li>تذكر: لا يمكنك منح صلاحيات لا تملكها</li>
+                
+                <li>تعلم كلا من أوضاع chmod الرمزية والرقمية للمرونة</li>
+                
+            </ul>
+        </section>
+
+        <!-- Page Navigation -->
+        <nav class="page-navigation">
+            <a href="./file-system.html" class="nav-button prev">إدارة نظام الملفات</a>
+            <a href="./system-admin.html" class="nav-button next">إدارة النظام</a>
+        </nav>
+    </div>
+
+    <!-- Terminal Toggle Button -->
+    <button class="terminal-toggle-btn" id="terminalToggleBtn" title="💻 الطرفية" aria-label="Toggle terminal">💻</button>
+
+    <!-- Theme Selector (3 themes: Light, Dark, Terminal) -->
+    <div class="theme-selector">
+    
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <div class="lang-btn en active" title="English" data-lang="en">EN</div>
+        <!-- Future languages can be added here -->
+        <div class="lang-btn ar" title="العربية" data-lang="ar">AR</div>
+    </div>
+        <div class="theme-btn light active" title="Light Theme"></div>
+    
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <div class="lang-btn en active" title="English" data-lang="en">EN</div>
+        <!-- Future languages can be added here -->
+        <div class="lang-btn ar" title="العربية" data-lang="ar">AR</div>
+    </div>
+        <div class="theme-btn dark" title="Dark Theme"></div>
+        <div class="theme-btn terminal" title="Terminal Theme"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="tutorial-footer">
+        <p>© 2025 أحمد عبد الحليم | <a href="https://abdelhaleemahmed.github.io/">العودة إلى المعرض</a></p>
+    </footer>
+
+    <!-- Terminal Scripts -->
+    <link rel="stylesheet" href="../css/xterm.css" />
+    <script src="../js/xterm.js"></script>
+    <script src="../js/xterm-addon-fit.js"></script>
+    <script type="module" src="../css/terminal-modal.js"></script>
+
+    <!-- Enhanced Features -->
+    <script src="../css/theme.js"></script>
+    <script src="../css/language-switcher.js"></script>
+    <script src="../css/shortcuts.js"></script>
+    <script src="../css/cheatsheet.js"></script>
+    <script src="../css/code-interactive.js"></script>
+</body>
+</html>

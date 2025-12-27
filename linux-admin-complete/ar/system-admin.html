@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة النظام - دروس إدارة لينكس</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Breadcrumb Navigation -->
+        <nav class="breadcrumb">
+            <a href="https://abdelhaleemahmed.github.io/">المعرض</a> /
+            <a href="https://abdelhaleemahmed.github.io/interactive-tutorials/">الدروس التعليمية</a> /
+            <a href="./index.html">إدارة لينكس</a> /
+            <span>System Administration</span>
+        </nav>
+
+        <!-- Header -->
+        <header class="tutorial-header">
+            <h1>⚙️ إدارة النظام</h1>
+            <p class="subtitle">تعلم تقنيات إدارة النظام والمراقبة الأساسية</p>
+        </header>
+
+        <!-- Practice Box -->
+        <section class="content-section">
+            <div class="info-box">
+                <h4>💻 مارس أثناء التعلم!</h4>
+                <p>انقر على زر الطرفية 💻 الأخضر في الزاوية السفلية لفتح طرفية تفاعلية. يمكنك ممارسة جميع الأوامر في هذه الصفحة في الوقت الفعلي!</p>
+                <ul>
+                    
+                    <li>تبقى الطرفية مفتوحة أثناء التنقل بين الصفحات</li>
+                    
+                    <li>جرب الأوامر فوراً بعد قراءتها</li>
+                    
+                    <li>استخدم الأسهم ↑/↓ لسجل الأوامر، Tab للإكمال التلقائي</li>
+                    
+                </ul>
+            </div>
+        </section>
+
+        <!-- Process Management -->
+        <section class="content-section">
+            <h2>إدارة العمليات</h2>
+            <p>فهم وإدارة العمليات أمر بالغ الأهمية لإدارة النظام. كل برنامج قيد التشغيل هو عملية.</p>
+
+            <h3>عرض العمليات</h3>
+            <div class="command-example">
+                <h4>أوامر العمليات الشائعة</h4>
+                <p>Key commands: <span class="tooltip-trigger"><code>ps</code><span class="rich-tooltip"><span class="tooltip-header"><strong>📊 ps - حالة العمليات</strong></span><span class="tooltip-content"><span class="tooltip-description">يعرض معلومات حول العمليات الجارية. أساسي لمراقبة النظام واستكشاف الأخطاء.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">عرض جميع العمليات</span><span class="example-code">$ ps aux</span><span class="example-output">▸ يعرض جميع العمليات مع معلومات تفصيلية</span></span><span class="example-block"><span class="example-label">عمليات المستخدم الحالي</span><span class="example-code">$ ps ux</span><span class="example-output">▸ يعرض عمليات المستخدم الحالي فقط</span></span><span class="example-block"><span class="example-label">البحث عن عملية محددة</span><span class="example-code">$ ps aux | grep firefox</span><span class="example-output">▸ يبحث عن العمليات التي تحتوي على 'firefox'</span></span></span></span></span></span> <span class="tooltip-trigger"><code>top</code><span class="rich-tooltip"><span class="tooltip-header"><strong>📈 top - مدير المهام</strong></span><span class="tooltip-content"><span class="tooltip-description">عارض عمليات تفاعلي في الوقت الفعلي يعرض استخدام المعالج والذاكرة وإحصائيات النظام.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">تشغيل top</span><span class="example-code">$ top</span><span class="example-output">▸ يفتح مراقب العمليات التفاعلي</span></span><span class="example-block"><span class="example-label">الترتيب حسب المعالج</span><span class="example-code">$ Press 'P' in top</span><span class="example-output">▸ يرتب العمليات حسب استخدام المعالج</span></span><span class="example-block"><span class="example-label">الترتيب حسب الذاكرة</span><span class="example-code">$ Press 'M' in top</span><span class="example-output">▸ يرتب العمليات حسب استخدام الذاكرة</span></span></span></span></span></span></p>
+                <pre><code># سرد جميع العمليات قيد التشغيل
+ps aux
+
+# إظهار العمليات في هيكل شجري
+pstree
+
+# عارض عمليات تفاعلي
+top
+
+# بديل حديث لـ top
+htop
+
+# سرد عمليات المستخدم الحالي
+ps ux
+
+# البحث عن عملية محددة
+ps aux | grep firefox</code></pre>
+            </div>
+
+            <h3>معلومات العملية</h3>
+            <div class="info-box">
+                <h4>فهم ناتج ps aux</h4>
+                <ul>
+                    
+                    <li><strong>USER:</strong> مالك العملية</li>
+                    
+                    <li><strong>PID:</strong> معرف العملية (معرف فريد)</li>
+                    
+                    <li><strong>%CPU:</strong> نسبة استخدام المعالج</li>
+                    
+                    <li><strong>%MEM:</strong> نسبة استخدام الذاكرة</li>
+                    
+                    <li><strong>VSZ:</strong> حجم الذاكرة الافتراضية</li>
+                    
+                    <li><strong>RSS:</strong> الذاكرة الفعلية المستخدمة (RAM)</li>
+                    
+                    <li><strong>STAT:</strong> حالة العملية (R=قيد التشغيل، S=نائمة، Z=زومبي)</li>
+                    
+                    <li><strong>COMMAND:</strong> الأمر الذي بدأ العملية</li>
+                    
+                </ul>
+            </div>
+
+            <h3>إدارة العمليات</h3>
+            <div class="command-example">
+                <h4>التحكم في العمليات</h4>
+                <p>Key commands: <span class="tooltip-trigger"><code>kill</code><span class="rich-tooltip"><span class="tooltip-header"><strong>🛑 kill - إنهاء العملية</strong></span><span class="tooltip-content"><span class="tooltip-description">يرسل إشارات للعمليات، عادة لإنهائها. استخدم PID (معرف العملية) لاستهداف عملية محددة.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">الإنهاء التدريجي</span><span class="example-code">$ kill 1234</span><span class="example-output">▸ يرسل SIGTERM (يسمح بالتنظيف)</span></span><span class="example-block"><span class="example-label">الإنهاء القسري</span><span class="example-code">$ kill -9 1234</span><span class="example-output">▸ يرسل SIGKILL (إنهاء فوري)</span></span><span class="example-block"><span class="example-label">الإنهاء بالاسم</span><span class="example-code">$ killall firefox</span><span class="example-output">▸ ينهي جميع العمليات المسماة 'firefox'</span></span></span></span></span></span> <span class="tooltip-trigger"><code>bg</code><span class="rich-tooltip"><span class="tooltip-header"><strong>⏯️ bg - عملية في الخلفية</strong></span><span class="tooltip-content"><span class="tooltip-description">يستأنف مهمة معلقة في الخلفية، مما يسمح لك بمواصلة استخدام الطرفية.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">استئناف آخر مهمة</span><span class="example-code">$ bg</span><span class="example-output">▸ يستمر في آخر مهمة معلقة في الخلفية</span></span><span class="example-block"><span class="example-label">استئناف مهمة محددة</span><span class="example-code">$ bg %2</span><span class="example-output">▸ يستأنف المهمة رقم 2 في الخلفية</span></span></span></span></span></span> <span class="tooltip-trigger"><code>fg</code><span class="rich-tooltip"><span class="tooltip-header"><strong>▶️ fg - عملية في المقدمة</strong></span><span class="tooltip-content"><span class="tooltip-description">يحضر مهمة من الخلفية إلى المقدمة، مانحاً إياها التحكم في الطرفية.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">إحضار آخر مهمة للمقدمة</span><span class="example-code">$ fg</span><span class="example-output">▸ يحضر آخر مهمة في الخلفية إلى المقدمة</span></span><span class="example-block"><span class="example-label">إحضار مهمة محددة</span><span class="example-code">$ fg %1</span><span class="example-output">▸ يحضر المهمة رقم 1 إلى المقدمة</span></span></span></span></span></span> <span class="tooltip-trigger"><code>jobs</code><span class="rich-tooltip"><span class="tooltip-header"><strong>📋 jobs - عرض المهام في الخلفية</strong></span><span class="tooltip-content"><span class="tooltip-description">يعرض المهام الجارية في الخلفية أو المعلقة في جلسة الصدفة الحالية.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">عرض جميع المهام</span><span class="example-code">$ jobs</span><span class="example-output">▸ يعرض جميع المهام في الخلفية والمعلقة</span></span><span class="example-block"><span class="example-label">العرض مع معرفات العمليات</span><span class="example-code">$ jobs -l</span><span class="example-output">▸ يعرض المهام مع معرفات عملياتها</span></span></span></span></span></span></p>
+                <pre><code># إنهاء عملية بواسطة PID
+kill 1234
+
+# إنهاء قسري لعملية
+kill -9 1234
+
+# إنهاء عملية بالاسم
+killall firefox
+
+# إرسال إشارة SIGTERM
+kill -15 1234
+
+# وضع عملية قيد التشغيل في الخلفية
+Ctrl+Z        # إيقاف مؤقت
+bg            # المتابعة في الخلفية
+
+# جلب عملية خلفية إلى الأمام
+fg
+
+# تشغيل أمر في الخلفية من البداية
+command &</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ استخدام kill بحذر</h4>
+                <p>kill -9 ينهي العملية بالقوة بدون تنظيف. استخدم kill العادي أولاً للسماح بإيقاف أنيق.</p>
+            </div>
+        </section>
+
+        <!-- System Monitoring -->
+        <section class="content-section">
+            <h2>مراقبة النظام</h2>
+
+            <h3>موارد النظام</h3>
+            <div class="command-example">
+                <h4>أوامر المراقبة</h4>
+                <pre><code># استخدام المعالج والذاكرة (تفاعلي)
+top
+
+# استخدام القرص حسب نظام الملفات
+df -h
+
+# استخدام القرص حسب المجلد
+du -sh /home/user/*
+
+# استخدام الذاكرة
+free -h
+
+# وقت تشغيل النظام ومتوسط الحمل
+uptime
+
+# من هو متصل
+who
+
+# معلومات who مفصلة
+w</code></pre>
+            </div>
+
+            <h3>فهم حمل النظام</h3>
+            <div class="info-box">
+                <h4>شرح متوسط الحمل</h4>
+                <p>عند تشغيل uptime، ترى شيئاً مثل:</p>
+                <pre><code>11:30:45 up 5 days, 3:42, 2 users, load average: 0.15, 0.25, 0.30</code></pre>
+                <p>الأرقام الثلاثة تمثل متوسط حمل النظام خلال 1 و 5 و 15 دقيقة:</p>
+                <ul>
+                    
+                    <li><strong>< 1.0: النظام لديه سعة احتياطية</strong></li>
+                    
+                    <li><strong>= عدد المعالجات: مستخدم بالكامل</strong></li>
+                    
+                    <li><strong>> عدد المعالجات: العمليات في الانتظار</strong></li>
+                    
+                </ul>
+            </div>
+
+            <h3>ملفات السجل</h3>
+            <div class="command-example">
+                <h4>عرض سجلات النظام</h4>
+                <pre><code># عرض سجل النظام
+sudo tail -f /var/log/syslog
+
+# عرض سجل المصادقة
+sudo tail -f /var/log/auth.log
+
+# عرض رسائل النواة
+dmesg | tail
+
+# عرض دفتر systemd
+journalctl -xe
+
+# متابعة الدفتر في الوقت الفعلي
+journalctl -f</code></pre>
+            </div>
+        </section>
+
+        <!-- Package Management -->
+        <section class="content-section">
+            <h2>إدارة الحزم</h2>
+            <p>توزيعات لينكس المختلفة تستخدم مديري حزم مختلفين. هنا الأكثر شيوعاً:</p>
+
+            <h3>Debian/Ubuntu (apt)</h3>
+            <div class="command-example">
+                <h4>مدير حزم APT</h4>
+                <pre><code># تحديث قائمة الحزم
+sudo apt update
+
+# ترقية جميع الحزم
+sudo apt upgrade
+
+# تثبيت حزمة
+sudo apt install package-name
+
+# إزالة حزمة
+sudo apt remove package-name
+
+# البحث عن حزمة
+apt search keyword
+
+# إظهار معلومات الحزمة
+apt show package-name</code></pre>
+            </div>
+
+            <h3>Red Hat/CentOS/Rocky (yum/dnf)</h3>
+            <div class="command-example">
+                <h4>مدير حزم YUM/DNF</h4>
+                <pre><code># تثبيت حزمة
+sudo yum install package-name
+sudo dnf install package-name
+
+# تحديث جميع الحزم
+sudo yum update
+sudo dnf upgrade
+
+# إزالة حزمة
+sudo yum remove package-name
+
+# البحث عن حزمة
+yum search keyword
+
+# سرد الحزم المثبتة
+yum list installed</code></pre>
+            </div>
+
+            <h3>Arch Linux (pacman)</h3>
+            <div class="command-example">
+                <h4>مدير حزم Pacman</h4>
+                <pre><code># تحديث قاعدة بيانات الحزم والترقية
+sudo pacman -Syu
+
+# تثبيت حزمة
+sudo pacman -S package-name
+
+# إزالة حزمة
+sudo pacman -R package-name
+
+# البحث عن حزمة
+pacman -Ss keyword
+
+# سرد الحزم المثبتة
+pacman -Q</code></pre>
+            </div>
+        </section>
+
+        <!-- Service Management -->
+        <section class="content-section">
+            <h2>إدارة الخدمات (systemd)</h2>
+            <p>توزيعات لينكس الحديثة تستخدم systemd لإدارة الخدمات (demons).</p>
+
+            <div class="command-example">
+                <h4>إدارة الخدمات</h4>
+                <pre><code># بدء خدمة
+sudo systemctl start nginx
+
+# إيقاف خدمة
+sudo systemctl stop nginx
+
+# إعادة تشغيل خدمة
+sudo systemctl restart nginx
+
+# التحقق من حالة الخدمة
+sudo systemctl status nginx
+
+# تمكين الخدمة عند الإقلاع
+sudo systemctl enable nginx
+
+# تعطيل الخدمة عند الإقلاع
+sudo systemctl disable nginx
+
+# سرد جميع الخدمات
+systemctl list-units --type=service
+
+# سرد الخدمات الفاشلة
+systemctl --failed</code></pre>
+            </div>
+
+            <div class="info-box">
+                <h4>حالات الخدمة</h4>
+                <ul>
+                    
+                    <li><strong>active (running): الخدمة قيد التشغيل</strong></li>
+                    
+                    <li><strong>active (exited): الخدمة أنهت بنجاح</strong></li>
+                    
+                    <li><strong>inactive (dead): الخدمة متوقفة</strong></li>
+                    
+                    <li><strong>failed: الخدمة تعطلت أو فشلت في البدء</strong></li>
+                    
+                </ul>
+            </div>
+        </section>
+
+        <!-- Networking -->
+        <section class="content-section">
+            <h2>أساسيات الشبكات</h2>
+
+            <h3>معلومات الشبكة</h3>
+            <div class="command-example">
+                <h4>أوامر الشبكة</h4>
+                <pre><code># إظهار عناوين IP
+ip addr show
+ip a
+
+# إظهار واجهات الشبكة (الطريقة القديمة)
+ifconfig
+
+# إظهار جدول التوجيه
+ip route show
+
+# اختبار الاتصال
+ping google.com
+
+# تتبع المسار إلى الوجهة
+traceroute google.com
+
+# البحث في DNS
+nslookup google.com
+dig google.com
+
+# إظهار المنافذ المستمعة
+sudo netstat -tuln
+sudo ss -tuln</code></pre>
+            </div>
+
+            <h3>إدارة جدار الحماية</h3>
+            <div class="command-example">
+                <h4>UFW (جدار حماية غير معقد)</h4>
+                <pre><code># تمكين جدار الحماية
+sudo ufw enable
+
+# تعطيل جدار الحماية
+sudo ufw disable
+
+# السماح بمنفذ
+sudo ufw allow 80/tcp
+sudo ufw allow ssh
+
+# رفض منفذ
+sudo ufw deny 23
+
+# إظهار الحالة
+sudo ufw status
+
+# إظهار القواعد المرقمة
+sudo ufw status numbered
+
+# حذف قاعدة بالرقم
+sudo ufw delete 2</code></pre>
+            </div>
+        </section>
+
+        <!-- Practical Scenarios -->
+        <section class="content-section">
+            <h2>سيناريوهات عملية</h2>
+
+            
+            <div class="command-example">
+                <h4>السيناريو 1: استخدام مرتفع للمعالج</h4>
+                <pre><code># 1. التحقق من ما يستخدم المعالج
+top
+# اضغط 'P' للترتيب حسب استخدام المعالج
+
+# 2. تحديد العملية المشكلة
+# انظر إلى PID للعملية ذات استخدام المعالج المرتفع
+
+# 3. التحقق من العملية
+ps aux | grep [PID]
+
+# 4. إذا لزم الأمر، إنهاء العملية
+kill [PID]</code></pre>
+            </div>
+            
+            <div class="command-example">
+                <h4>السيناريو 2: امتلاء مساحة القرص</h4>
+                <pre><code># 1. التحقق من استخدام القرص
+df -h
+
+# 2. البحث عن المجلدات الكبيرة
+du -sh /home/* | sort -h
+
+# 3. البحث عن الملفات الكبيرة
+find /home -type f -size +100M -exec ls -lh {} \;
+
+# 4. تنظيف ذاكرة التخزين المؤقت للحزم (Ubuntu/Debian)
+sudo apt clean
+sudo apt autoremove</code></pre>
+            </div>
+            
+            <div class="command-example">
+                <h4>السيناريو 3: الخدمة لن تبدأ</h4>
+                <pre><code># 1. التحقق من حالة الخدمة
+sudo systemctl status servicename
+
+# 2. عرض السجلات الأخيرة
+sudo journalctl -u servicename -n 50
+
+# 3. التحقق من التكوين
+sudo systemctl cat servicename
+
+# 4. إعادة تشغيل الخدمة
+sudo systemctl restart servicename</code></pre>
+            </div>
+            
+        </section>
+
+        <!-- Key Takeaways -->
+        <section class="content-section">
+            <h2>النقاط الرئيسية</h2>
+            <div class="info-box">
+                <ul>
+                    
+                    <li>استخدم top أو htop لمراقبة النظام في الوقت الفعلي</li>
+                    
+                    <li>افهم حالات العمليات وكيفية إدارتها</li>
+                    
+                    <li>تحقق بانتظام من مساحة القرص وسجلات النظام</li>
+                    
+                    <li>اعرف مدير الحزم الخاص بتوزيعتك</li>
+                    
+                    <li>systemctl هو المعيار لإدارة الخدمات</li>
+                    
+                    <li>راقب اتصالات الشبكة وقواعد جدار الحماية</li>
+                    
+                    <li>تدرب على استكشاف الأخطاء في بيئة آمنة أولاً</li>
+                    
+                </ul>
+            </div>
+        </section>
+
+        <!-- Practice Tips -->
+        <section class="content-section">
+            <h2>نصائح الممارسة</h2>
+            <div class="info-box">
+                <p><strong>مستعد للممارسة؟ توجه إلى الطرفية التفاعلية لتجربة أوامر إدارة النظام!</strong></p>
+            </div>
+            <ul>
+                
+                <li>أنشئ آلة افتراضية للممارسة بأمان</li>
+                
+                <li>أنشئ مهام مجدولة لمراقبة صحة النظام</li>
+                
+                <li>وثق خطوات استكشاف الأخطاء الشائعة لأنظمتك</li>
+                
+                <li>اختبر الأوامر دائماً في بيئة آمنة أولاً</li>
+                
+            </ul>
+        </section>
+
+        <!-- Page Navigation -->
+        <nav class="page-navigation">
+            <a href="./user-management.html" class="nav-button prev">إدارة المستخدمين والصلاحيات</a>
+            <a href="./interactive-terminal.html" class="nav-button next">الطرفية التفاعلية</a>
+        </nav>
+    </div>
+
+    <!-- Terminal Toggle Button -->
+    <button class="terminal-toggle-btn" id="terminalToggleBtn" title="💻 الطرفية" aria-label="Toggle terminal">💻</button>
+
+    <!-- Theme Selector (3 themes: Light, Dark, Terminal) -->
+    <div class="theme-selector">
+    
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <div class="lang-btn en active" title="English" data-lang="en">EN</div>
+        <!-- Future languages can be added here -->
+        <div class="lang-btn ar" title="العربية" data-lang="ar">AR</div>
+    </div>
+        <div class="theme-btn light active" title="Light Theme"></div>
+    
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <div class="lang-btn en active" title="English" data-lang="en">EN</div>
+        <!-- Future languages can be added here -->
+        <div class="lang-btn ar" title="العربية" data-lang="ar">AR</div>
+    </div>
+        <div class="theme-btn dark" title="Dark Theme"></div>
+        <div class="theme-btn terminal" title="Terminal Theme"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="tutorial-footer">
+        <p>© 2025 أحمد عبد الحليم | <a href="https://abdelhaleemahmed.github.io/">العودة إلى المعرض</a></p>
+    </footer>
+
+    <!-- Terminal Scripts -->
+    <link rel="stylesheet" href="../css/xterm.css" />
+    <script src="../js/xterm.js"></script>
+    <script src="../js/xterm-addon-fit.js"></script>
+    <script type="module" src="../css/terminal-modal.js"></script>
+
+    <!-- Enhanced Features -->
+    <script src="../css/theme.js"></script>
+    <script src="../css/language-switcher.js"></script>
+    <script src="../css/shortcuts.js"></script>
+    <script src="../css/cheatsheet.js"></script>
+    <script src="../css/code-interactive.js"></script>
+</body>
+</html>

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File System Management - Linux Administration Tutorial</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Breadcrumb Navigation -->
+        <nav class="breadcrumb">
+            <a href="https://abdelhaleemahmed.github.io/">Portfolio</a> /
+            <a href="https://abdelhaleemahmed.github.io/interactive-tutorials/">Tutorials</a> /
+            <a href="./index.html">Linux Administration</a> /
+            <span>File System Management</span>
+        </nav>
+
+        <!-- Header -->
+        <header class="tutorial-header">
+            <h1>🗂️ File System Management</h1>
+            <p class="subtitle">Master the essential commands for managing files and directories</p>
+        </header>
+
+        <!-- Practice Box -->
+        <section class="content-section">
+            <div class="info-box">
+                <h4>💻 Practice While You Learn!</h4>
+                <p>Click the green <strong>💻 Terminal</strong> button in the bottom-right corner to open an interactive terminal. You can practice all the commands on this page in real-time!</p>
+                <ul>
+                    
+                    <li>The terminal stays open as you navigate between pages</li>
+                    
+                    <li>Try commands immediately after reading about them</li>
+                    
+                    <li>Use ↑/↓ arrows for command history, Tab for auto-complete</li>
+                    
+                </ul>
+            </div>
+        </section>
+
+        <!-- Introduction -->
+        <section class="content-section">
+            <h2>Working with Files and Directories</h2>
+            <p>The file system is the foundation of Linux. Understanding how to create, move, copy, and delete files is essential for any Linux user.</p>
+        </section>
+
+        <!-- mkdir Section -->
+        <section class="content-section">
+            <h3>5. Creating Directories (<span class="tooltip-trigger"><code>mkdir</code><span class="rich-tooltip"><span class="tooltip-header"><strong>📁 mkdir - Make Directory</strong></span><span class="tooltip-content"><span class="tooltip-description">Creates new directories for organizing your files. Essential for building project structures and keeping your system organized.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">Basic Usage</span><span class="example-code">$ mkdir my_folder</span><span class="example-output">▸ Creates a new directory named 'my_folder'</span></span><span class="example-block"><span class="example-label">Create Parent Directories</span><span class="example-code">$ mkdir -p path/to/nested/dir</span><span class="example-output">▸ Creates all parent directories automatically</span></span><span class="example-block"><span class="example-label">Multiple Directories</span><span class="example-code">$ mkdir docs tests src</span><span class="example-output">▸ Creates three directories at once</span></span></span></span></span></span>)</h3>
+            <p>The mkdir command creates directories to organize your files.</p>
+
+            <div class="command-example">
+                <h4>Command: <code>mkdir</code></h4>
+                <p>Try it in the interactive terminal:</p>
+                <pre><code>mkdir my_folder</code></pre>
+                <p><strong>Expected Output:</strong></p>
+                <pre><code>Creates a new directory named 'my_folder'</code></pre>
+            </div>
+
+            <h4>Advanced: Create Nested Directories</h4>
+            <p>Use the <code>-p</code> flag to create parent directories automatically:</p>
+            <div class="command-example">
+                <pre><code>mkdir -p projects/2024/my_app
+ls -R projects</code></pre>
+                <p><strong>Expected Output:</strong></p>
+                <pre><code>projects/
+projects/2024:
+my_app/
+
+projects/2024/my_app:</code></pre>
+            </div>
+        </section>
+
+        <!-- touch Section -->
+        <section class="content-section">
+            <h3>6. Creating Empty Files (<span class="tooltip-trigger"><code>touch</code><span class="rich-tooltip"><span class="tooltip-header"><strong>📄 touch - Create Empty File or Update Timestamp</strong></span><span class="tooltip-content"><span class="tooltip-description">Creates a new empty file or updates the timestamp of an existing file. Quick way to create placeholder files.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">Create New File</span><span class="example-code">$ touch newfile.txt</span><span class="example-output">▸ Creates an empty file</span></span><span class="example-block"><span class="example-label">Update Timestamp</span><span class="example-code">$ touch existingfile.txt</span><span class="example-output">▸ Updates last modified time</span></span><span class="example-block"><span class="example-label">Multiple Files</span><span class="example-code">$ touch file1.txt file2.txt file3.txt</span><span class="example-output">▸ Creates three empty files</span></span></span></span></span></span>)</h3>
+            <p>The touch command creates empty files or updates file timestamps.</p>
+
+            <div class="command-example">
+                <h4>Command: <code>touch</code></h4>
+                <pre><code>touch newfile.txt
+ls</code></pre>
+                <p><strong>Expected Output:</strong></p>
+                <pre><code>newfile.txt</code></pre>
+            </div>
+
+            <h4>Use Cases</h4>
+            <ul>
+                
+                <li>Create placeholder files for later editing</li>
+                
+                <li>Update file modification time (useful for build systems)</li>
+                
+                <li>Quickly create multiple files at once</li>
+                
+            </ul>
+
+            <div class="command-example">
+                <h4>Creating Multiple Files</h4>
+                <pre><code>touch file1.txt file2.txt file3.txt
+ls</code></pre>
+                <p><strong>Expected Output:</strong></p>
+                <pre><code>file1.txt  file2.txt  file3.txt</code></pre>
+            </div>
+        </section>
+
+        <!-- rm Section -->
+        <section class="content-section">
+            <h3>7. Removing Files and Directories (<span class="tooltip-trigger"><code>rm</code><span class="rich-tooltip"><span class="tooltip-header"><strong>🗑️ rm - Remove Files or Directories</strong></span><span class="tooltip-content"><span class="tooltip-description">Deletes files or directories permanently. Be careful - there's no undo!</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">Remove File</span><span class="example-code">$ rm file.txt</span><span class="example-output">▸ Deletes the file permanently</span></span><span class="example-block"><span class="example-label">Remove Directory</span><span class="example-code">$ rm -r folder/</span><span class="example-output">▸ Recursively deletes directory and contents</span></span><span class="example-block"><span class="example-label">Force Remove</span><span class="example-code">$ rm -rf temp/</span><span class="example-output">▸ Force remove without prompts (use carefully!)</span></span></span></span></span></span>)</h3>
+            <p>The rm command deletes files and directories. Be careful - there's no undo!</p>
+
+            <div class="command-example">
+                <h4>Removing a File</h4>
+                <pre><code>touch oldfile.txt
+ls
+rm oldfile.txt
+ls</code></pre>
+                <p><strong>Expected Output:</strong></p>
+                <pre><code>(oldfile.txt is no longer listed)</code></pre>
+            </div>
+
+            <h4>Removing Directories Recursively (<code>rm -r</code>)</h4>
+            <div class="command-example">
+                <pre><code>mkdir test_dir
+touch test_dir/file1.txt
+rm -r test_dir
+ls</code></pre>
+                <p><strong>Expected Output:</strong></p>
+                <pre><code>test_dir is completely removed</code></pre>
+            </div>
+
+            <h4>Force Removal (<code>rm -f</code>)</h4>
+            <p>Use <code>-f</code> to force removal without prompts:</p>
+            <div class="command-example">
+                <pre><code>touch unwanted.txt
+rm -f unwanted.txt
+ls</code></pre>
+                <p><strong>Expected Output:</strong></p>
+                <pre><code>(unwanted.txt removed without confirmation)</code></pre>
+            </div>
+        </section>
+
+        <!-- rmdir Section -->
+        <section class="content-section">
+            <h3>8. Safely Removing Empty Directories (<span class="tooltip-trigger"><code>rmdir</code><span class="rich-tooltip"><span class="tooltip-header"><strong>📁 rmdir - Remove Empty Directory</strong></span><span class="tooltip-content"><span class="tooltip-description">Safely removes empty directories only. Won't delete if directory contains files (safer than rm -r).</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">Remove Empty Directory</span><span class="example-code">$ rmdir empty_folder</span><span class="example-output">▸ Removes the directory if empty</span></span><span class="example-block"><span class="example-label">Safety Feature</span><span class="example-code">$ rmdir folder_with_files</span><span class="example-output">▸ Error: directory not empty (safe!)</span></span></span></span></span></span>)</h3>
+            <p>The rmdir command only removes empty directories - a safer alternative to <code>rm -r</code>.</p>
+
+            <div class="command-example">
+                <h4>Command: <code>rmdir</code></h4>
+                <pre><code>mkdir empty_folder
+rmdir empty_folder</code></pre>
+                <p><strong>Expected Output:</strong></p>
+                <pre><code>Directory removed safely</code></pre>
+            </div>
+
+            <h4>Safety Feature</h4>
+            <div class="command-example">
+                <pre><code>mkdir folder
+touch folder/file.txt
+rmdir folder</code></pre>
+                <p><strong>Expected Output:</strong></p>
+                <pre><code>rmdir: failed to remove 'folder': Directory not empty</code></pre>
+                <p>This error prevents accidental data loss!</p>
+            </div>
+        </section>
+
+        <!-- mv Section -->
+        <section class="content-section">
+            <h3>9. Moving and Renaming (<span class="tooltip-trigger"><code>mv</code><span class="rich-tooltip"><span class="tooltip-header"><strong>↔️ mv - Move or Rename Files</strong></span><span class="tooltip-content"><span class="tooltip-description">Moves files to a new location or renames them. Can also move directories.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">Rename File</span><span class="example-code">$ mv oldname.txt newname.txt</span><span class="example-output">▸ Renames the file</span></span><span class="example-block"><span class="example-label">Move File</span><span class="example-code">$ mv file.txt /path/to/destination/</span><span class="example-output">▸ Moves file to new location</span></span><span class="example-block"><span class="example-label">Move with Wildcards</span><span class="example-code">$ mv *.txt documents/</span><span class="example-output">▸ Moves all .txt files to documents folder</span></span></span></span></span></span>)</h3>
+            <p>The mv command moves files to a new location or renames them.</p>
+
+            <h4>Renaming Files</h4>
+            <div class="command-example">
+                <pre><code>touch oldname.txt
+mv oldname.txt newname.txt
+ls</code></pre>
+                <p><strong>Expected Output:</strong></p>
+                <pre><code>newname.txt</code></pre>
+            </div>
+
+            <h4>Moving Files</h4>
+            <div class="command-example">
+                <pre><code>touch newname.txt
+mkdir documents
+mv newname.txt documents/
+ls documents/</code></pre>
+                <p><strong>Expected Output:</strong></p>
+                <pre><code>newname.txt</code></pre>
+            </div>
+
+            <h4>Using Wildcards</h4>
+            <div class="command-example">
+                <pre><code>touch report1.txt report2.txt code.js
+mkdir backups
+mv *.txt backups/
+ls backups/</code></pre>
+                <p><strong>Expected Output:</strong></p>
+                <pre><code>report1.txt  report2.txt</code></pre>
+            </div>
+        </section>
+
+        <!-- cp Section -->
+        <section class="content-section">
+            <h3>10. Copying Files and Directories (<span class="tooltip-trigger"><code>cp</code><span class="rich-tooltip"><span class="tooltip-header"><strong>📋 cp - Copy Files or Directories</strong></span><span class="tooltip-content"><span class="tooltip-description">Creates a copy of files or directories, leaving the original unchanged.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">Copy File</span><span class="example-code">$ cp source.txt destination.txt</span><span class="example-output">▸ Creates a copy</span></span><span class="example-block"><span class="example-label">Copy Directory</span><span class="example-code">$ cp -r folder/ backup_folder/</span><span class="example-output">▸ Recursively copies entire directory</span></span><span class="example-block"><span class="example-label">Copy to Different Location</span><span class="example-code">$ cp file.txt /path/to/backup/</span><span class="example-output">▸ Copies file to backup directory</span></span></span></span></span></span>)</h3>
+            <p>The cp command creates copies of files or directories.</p>
+
+            <h4>Copying Files</h4>
+            <div class="command-example">
+                <pre><code>touch source.txt
+cp source.txt backup.txt
+ls</code></pre>
+                <p><strong>Expected Output:</strong></p>
+                <pre><code>source.txt  backup.txt</code></pre>
+            </div>
+
+            <h4>Copying Directories (<code>cp -r</code>)</h4>
+            <p>Use the <code>-r</code> flag to copy entire directories:</p>
+            <div class="command-example">
+                <pre><code>mkdir original
+touch original/file.txt
+cp -r original/ copy_of_original/
+ls</code></pre>
+                <p><strong>Expected Output:</strong></p>
+                <pre><code>original/  copy_of_original/</code></pre>
+            </div>
+        </section>
+
+        <!-- File Paths Section -->
+        <section class="content-section">
+            <h2>Understanding File Paths</h2>
+            <div class="info-box">
+                <h4>📍 Absolute vs Relative Paths</h4>
+                <p><strong>Absolute Paths:</strong> Start from root (<code>/</code>)</p>
+                <pre><code>/home/user/documents/file.txt</code></pre>
+
+                <p><strong>Relative Paths:</strong> Start from current directory</p>
+                <pre><code>documents/file.txt         # In current directory
+../other_folder/file.txt   # Go up one level, then down</code></pre>
+
+                <p><strong>Special Path Symbols:</strong></p>
+                <ul>
+                    
+                    <li><code>.</code> - Current directory</li>
+                    
+                    <li><code>..</code> - Parent directory (one level up)</li>
+                    
+                    <li><code>~</code> - Home directory</li>
+                    
+                    <li><code>/</code> - Root directory (top of filesystem)</li>
+                    
+                </ul>
+            </div>
+        </section>
+
+        <!-- File System Concepts -->
+        <section class="content-section">
+            <h2>File System Concepts</h2>
+            <div class="info-box">
+                <p><strong>Hidden Files:</strong> Files starting with <code>.</code> are hidden</p>
+                <pre><code>ls           # Won't show hidden files
+ls -a        # Shows ALL files, including hidden</code></pre>
+
+                <p><strong>File Extensions:</strong> Optional in Linux (not like Windows)</p>
+                <p>Linux uses file permissions and content to determine file types, not extensions.</p>
+
+                <p><strong>Case Sensitivity:</strong> Linux is case-sensitive!</p>
+                <pre><code>File.txt ≠ file.txt ≠ FILE.TXT</code></pre>
+
+                <p><strong>Wildcards:</strong> Match multiple files</p>
+                <ul>
+                    
+                    <li><code>*</code> - Matches any characters</li>
+                    
+                    <li><code>?</code> - Matches single character</li>
+                    
+                    <li><code>[abc]</code> - Matches one of a, b, or c</li>
+                    
+                </ul>
+            </div>
+        </section>
+
+        <!-- Practice Exercises -->
+        <section class="content-section">
+            <h2>Practice Exercises</h2>
+            <div class="exercise-box">
+                <h4>🎯 Try These Challenges!</h4>
+
+                
+                <p><strong>Exercise 1: Build a Project Structure</strong></p>
+                <pre><code>mkdir -p my_project/src my_project/docs my_project/tests
+ls -R my_project</code></pre>
+                <p><em>Goal: Create organized project directories</em></p>
+                
+                <p><strong>Exercise 2: Organize Files</strong></p>
+                <pre><code>touch report1.txt report2.txt code.js notes.md
+mkdir documents code
+mv *.txt documents/
+mv *.js code/
+ls</code></pre>
+                <p><em>Goal: Use wildcards to organize files by type</em></p>
+                
+                <p><strong>Exercise 3: Clean Up</strong></p>
+                <pre><code>mkdir temp_work
+touch temp_work/test1.txt temp_work/test2.txt
+rm -r temp_work
+ls</code></pre>
+                <p><em>Goal: Practice safe deletion with rm -r</em></p>
+                
+                <p><strong>Exercise 4: Copy Directory Structure</strong></p>
+                <pre><code>mkdir original
+touch original/file.txt
+cp -r original/ backup/
+ls -R</code></pre>
+                <p><em>Goal: Understand recursive copying</em></p>
+                
+            </div>
+        </section>
+
+        <!-- Warnings -->
+        <section class="content-section">
+            <div class="warning-box">
+                <h4>⚠️ Safety with rm</h4>
+                <p><strong>Best Practices:</strong></p>
+                <ul>
+                    
+                    <li>Always use <code>ls</code> before <code>rm</code> to verify files</li>
+                    
+                    <li>Use <code>rmdir</code> for empty directories when possible (safer)</li>
+                    
+                    <li>Double-check paths - there's no "undo"!</li>
+                    
+                    <li>Avoid <code>rm -rf /</code> (extremely dangerous)</li>
+                    
+                    <li>Test with non-important files first</li>
+                    
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ Overwrite Warning</h4>
+                <p>If you move a file to a location where a file with the same name already exists, <code>mv</code> will overwrite it without asking!</p>
+            </div>
+        </section>
+
+        <!-- What's Next -->
+        <section class="content-section">
+            <h2>What's Next?</h2>
+            <div class="info-box">
+                <p>Now that you can manage files and directories, you're ready to learn about:</p>
+                <ul>
+                    
+                    <li><strong>File Permissions:</strong> Control who can read, write, and execute</li>
+                    
+                    <li><strong>User Management:</strong> Understand users, groups, and ownership</li>
+                    
+                    <li><strong>System Administration:</strong> Process management and monitoring</li>
+                    
+                </ul>
+                <p>Continue to: <a href="./user-management.html"><strong>User & Permission Management →</strong></a></p>
+            </div>
+        </section>
+
+        <!-- Page Navigation -->
+        <nav class="page-navigation">
+            <a href="./basic-commands.html" class="nav-button prev">Basic Commands</a>
+            <a href="./user-management.html" class="nav-button next">User & Permission Management</a>
+        </nav>
+    </div>
+
+    <!-- Terminal Toggle Button -->
+    <button class="terminal-toggle-btn" id="terminalToggleBtn" title="💻 Terminal" aria-label="Toggle terminal">💻</button>
+
+    <!-- Theme Selector (3 themes: Light, Dark, Terminal) -->
+    <div class="theme-selector">
+    
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <div class="lang-btn en active" title="English" data-lang="en">EN</div>
+        <!-- Future languages can be added here -->
+        <div class="lang-btn ar" title="العربية" data-lang="ar">AR</div>
+    </div>
+        <div class="theme-btn light active" title="Light Theme"></div>
+    
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <div class="lang-btn en active" title="English" data-lang="en">EN</div>
+        <!-- Future languages can be added here -->
+        <div class="lang-btn ar" title="العربية" data-lang="ar">AR</div>
+    </div>
+        <div class="theme-btn dark" title="Dark Theme"></div>
+        <div class="theme-btn terminal" title="Terminal Theme"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="tutorial-footer">
+        <p>© 2025 Ahmed Abdelhaleem | <a href="https://abdelhaleemahmed.github.io/">Back to Portfolio</a></p>
+    </footer>
+
+    <!-- Terminal Scripts -->
+    <link rel="stylesheet" href="../css/xterm.css" />
+    <script src="../js/xterm.js"></script>
+    <script src="../js/xterm-addon-fit.js"></script>
+    <script type="module" src="../css/terminal-modal.js"></script>
+
+    <!-- Enhanced Features -->
+    <script src="../css/theme.js"></script>
+    <script src="../css/language-switcher.js"></script>
+    <script src="../css/shortcuts.js"></script>
+    <script src="../css/cheatsheet.js"></script>
+    <script src="../css/code-interactive.js"></script>
+</body>
+</html>

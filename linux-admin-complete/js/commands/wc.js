@@ -3,8 +3,15 @@
 import { getPathObject, resolvePath, canRead } from '../terminalUtils.js';
 import { noSuchFileError, missingArgumentError } from '../errorMessages.js';
 import { getCurrentUser } from '../userManagement.js';
+import { validateArgs } from '../argumentValidator.js';
 
 export const wcCommand = (args) => {
+    // Validate arguments
+    const validation = validateArgs('wc', args);
+    if (!validation.valid) {
+        return validation.error;
+    }
+
     let output = '';
     const currentUser = getCurrentUser();
 

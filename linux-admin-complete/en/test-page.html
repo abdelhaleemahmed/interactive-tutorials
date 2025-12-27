@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>i18n Test Page - Linux Administration Tutorial</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Breadcrumb Navigation -->
+        <nav class="breadcrumb">
+            <a href="https://abdelhaleemahmed.github.io/">Portfolio</a> /
+            <a href="https://abdelhaleemahmed.github.io/interactive-tutorials/">Tutorials</a> /
+            <a href="./index.html">Linux Administration</a> /
+            <span>i18n Test</span>
+        </nav>
+
+        <!-- Header -->
+        <header class="tutorial-header">
+            <h1>🌍 i18n Proof of Concept</h1>
+            <p class="subtitle">Testing JSON-based content architecture</p>
+        </header>
+
+        <!-- Content Section -->
+        <section class="content-section">
+            <h2>Testing Tooltips from JSON</h2>
+            <p>
+                This page demonstrates the new i18n architecture. All content below comes from JSON files.
+            </p>
+
+            <h3>Command 1: <span class="tooltip-trigger"><code>mkdir</code><span class="rich-tooltip"><span class="tooltip-header"><strong>📁 mkdir - Make Directory</strong></span><span class="tooltip-content"><span class="tooltip-description">Creates new directories for organizing your files. Essential for building project structures and keeping your system organized.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">Basic Usage</span><span class="example-code">$ mkdir my_folder</span><span class="example-output">▸ Creates a new directory named 'my_folder'</span></span><span class="example-block"><span class="example-label">Create Parent Directories</span><span class="example-code">$ mkdir -p path/to/nested/dir</span><span class="example-output">▸ Creates all parent directories automatically</span></span><span class="example-block"><span class="example-label">Multiple Directories</span><span class="example-code">$ mkdir docs tests src</span><span class="example-output">▸ Creates three directories at once</span></span></span></span></span></span></h3>
+            <div class="command-example">
+                <p>The mkdir command creates directories. Hover over the command name above to see the rich tooltip!</p>
+                <pre><code>mkdir my_folder</code></pre>
+            </div>
+
+            <h3>Command 2: <span class="tooltip-trigger"><code>chmod</code><span class="rich-tooltip"><span class="tooltip-header"><strong>🔐 chmod - Change File Mode/Permissions</strong></span><span class="tooltip-content"><span class="tooltip-description">Modifies file or directory permissions to control who can read, write, or execute.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">Symbolic Mode</span><span class="example-code">$ chmod u+x script.sh</span><span class="example-output">▸ Give owner execute permission</span></span><span class="example-block"><span class="example-label">Numeric Mode</span><span class="example-code">$ chmod 755 file.txt</span><span class="example-output">▸ rwxr-xr-x (owner: rwx, group: r-x, others: r-x)</span></span><span class="example-block"><span class="example-label">Common Pattern</span><span class="example-code">$ chmod 644 document.txt</span><span class="example-output">▸ rw-r--r-- (owner: rw, group/others: r)</span></span></span></span></span></span></h3>
+            <div class="command-example">
+                <p>The chmod command changes file permissions. Check out the tooltip for examples.</p>
+                <pre><code>chmod 755 script.sh</code></pre>
+            </div>
+
+            <h3>Command 3: <span class="tooltip-trigger"><code>ls</code><span class="rich-tooltip"><span class="tooltip-header"><strong>📋 ls - List Directory Contents</strong></span><span class="tooltip-content"><span class="tooltip-description">Lists files and directories in the current or specified directory. Essential for navigating and understanding your file system.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">Basic Usage</span><span class="example-code">$ ls</span><span class="example-output">▸ documents/ downloads/ projects/ README.txt</span></span><span class="example-block"><span class="example-label">Long Format</span><span class="example-code">$ ls -l</span><span class="example-output">▸ Shows detailed information (permissions, size, date)</span></span><span class="example-block"><span class="example-label">Show Hidden Files</span><span class="example-code">$ ls -la</span><span class="example-output">▸ Shows all files including hidden ones (starting with .)</span></span></span></span></span></span></h3>
+            <div class="command-example">
+                <p>The ls command lists directory contents. The tooltip shows common flags.</p>
+                <pre><code>ls -la</code></pre>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Key Takeaways</h2>
+            <div class="info-box">
+                <ul>
+                    <li>✅ All tooltips loaded from <code>locales/en/tooltips.json</code></li>
+                    <li>✅ UI strings from <code>locales/en/common.json</code></li>
+                    <li>✅ Single source of truth - no duplication</li>
+                    <li>✅ Ready for Arabic translation</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="tutorial-footer">
+            <p>© 2025 Ahmed Abdelhaleem | <a href="https://abdelhaleemahmed.github.io/">Back to Portfolio</a></p>
+        </footer>
+    </div>
+
+    <!-- Terminal Toggle Button -->
+    <button class="terminal-toggle-btn" id="terminalToggleBtn" title="💻 Terminal" aria-label="Toggle terminal">💻</button>
+
+    <!-- Theme Selector (3 themes: Light, Dark, Terminal) -->
+    <div class="theme-selector">
+    
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <div class="lang-btn en active" title="English" data-lang="en">EN</div>
+        <!-- Future languages can be added here -->
+        <div class="lang-btn ar" title="العربية" data-lang="ar">AR</div>
+    </div>
+        <div class="theme-btn light active" title="Light Theme"></div>
+    
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <div class="lang-btn en active" title="English" data-lang="en">EN</div>
+        <!-- Future languages can be added here -->
+        <div class="lang-btn ar" title="العربية" data-lang="ar">AR</div>
+    </div>
+        <div class="theme-btn dark" title="Dark Theme"></div>
+        <div class="theme-btn terminal" title="Terminal Theme"></div>
+    </div>
+
+    <!-- Terminal Scripts -->
+    <link rel="stylesheet" href="../css/xterm.css" />
+    <script src="../js/xterm.js"></script>
+    <script src="../js/xterm-addon-fit.js"></script>
+    <script type="module" src="../css/terminal-modal.js"></script>
+
+    <!-- Enhanced Features -->
+    <script src="../css/theme.js"></script>
+    <script src="../css/language-switcher.js"></script>
+    <script src="../css/shortcuts.js"></script>
+    <script src="../css/cheatsheet.js"></script>
+    <script src="../css/code-interactive.js"></script>
+</body>
+</html>

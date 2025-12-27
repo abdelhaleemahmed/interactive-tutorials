@@ -1,0 +1,9 @@
+# robots.txt for Linux Administration Tutorial
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://abdelhaleemahmed.github.io/interactive-tutorials/linux-admin-complete/dist/sitemap.xml
+
+# Crawl-delay (optional, be nice to servers)
+Crawl-delay: 1

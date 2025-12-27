@@ -194,8 +194,21 @@
             // Import and initialize command handlers
             import('../js/commandRegistry.js').then(({ commandHandlers }) => {
                 return import('../js/terminalUtils.js').then(utils => {
-                    return import('../js/shellParser.js').then(({ ShellParser }) => {
-                        setupTerminalHandlers(term, commandHandlers(term), utils, new ShellParser());
+                    return import('../js/shellParser.js').then(({ ShellParser, handleOutputRedirection }) => {
+                        return import('../js/commandSuggestions.js').then(suggestions => {
+                            return import('../js/commandHistory.js').then(({ CommandHistory }) => {
+                                return import('../js/progressTracking.js').then(({ getProgressTracker }) => {
+                                    const historyManager = new CommandHistory();
+                                    const progressTracker = getProgressTracker();
+
+                                    // Track page visit on terminal open
+                                    const currentPage = window.location.pathname.split('/').pop().replace('.html', '') || 'index';
+                                    progressTracker.visitPage(currentPage);
+
+                                    setupTerminalHandlers(term, commandHandlers(term, historyManager), utils, new ShellParser(), suggestions, historyManager, progressTracker, handleOutputRedirection);
+                                });
+                            });
+                        });
                     });
                 });
             }).catch(err => {
@@ -205,38 +218,105 @@
             });
         }
 
-        function setupTerminalHandlers(term, handlers, utils, parser) {
+        function setupTerminalHandlers(term, handlers, utils, parser, suggestions, historyManager, progressTracker, handleOutputRedirection) {
             let currentCommand = '';
-            const commandHistory = [];
-            let historyIndex = -1;
             let cursorPos = 0;
 
             function handleCommand(command) {
                 let output = '';
+
+                // Track command execution for progress
+                if (command && command.trim() && progressTracker) {
+                    try {
+                        progressTracker.incrementCommandCount();
+                    } catch (e) {
+                        // Silently fail
+                    }
+                }
 
                 // Handle empty command
                 if (!command || command.trim() === '') {
                     return;
                 }
 
-                if (parser.needsShellParsing(command)) {
-                    output = handlePipedCommand(command);
+                // Strip comments (# not inside quotes)
+                let commentIndex = -1;
+                let inSingleQuote = false;
+                let inDoubleQuote = false;
+                for (let i = 0; i < command.length; i++) {
+                    const char = command[i];
+                    if (char === "'" && !inDoubleQuote) inSingleQuote = !inSingleQuote;
+                    else if (char === '"' && !inSingleQuote) inDoubleQuote = !inDoubleQuote;
+                    else if (char === '#' && !inSingleQuote && !inDoubleQuote) {
+                        commentIndex = i;
+                        break;
+                    }
+                }
+                if (commentIndex !== -1) {
+                    command = command.substring(0, commentIndex).trim();
+                }
+
+                // Skip empty commands after comment removal
+                if (!command) {
+                    return;
+                }
+
+                // Check for background execution (&)
+                let isBackground = false;
+                let trimmedCommand = command.trim();
+                if (trimmedCommand.endsWith('&')) {
+                    isBackground = true;
+                    trimmedCommand = trimmedCommand.slice(0, -1).trim();
+                }
+
+                if (parser.needsShellParsing(trimmedCommand)) {
+                    output = handlePipedCommand(trimmedCommand);
                 } else {
-                    const parts = command.split(/\s+/).filter(p => p.length > 0);
+                    const parts = trimmedCommand.split(/\s+/).filter(p => p.length > 0);
                     const cmd = parts[0];
-                    const args = parts.slice(1);
+                    let args = parts.slice(1);
 
                     // Double-check cmd is not undefined
                     if (!cmd) {
                         return;
                     }
 
+                    // Check if this is a script execution (./script or /path/to/script)
+                    if (cmd.startsWith('./') || cmd.startsWith('/')) {
+                        // Import and execute script
+                        import('../js/commands/executeScript.js').then(({ executeScript }) => {
+                            output = executeScript(cmd, handlers);
+                            if (output) {
+                                term.write(output + '\r\n');
+                            }
+                            utils.writePrompt(term);
+                        }).catch(err => {
+                            term.write(`bash: ${cmd}: command not found\r\n`);
+                            utils.writePrompt(term);
+                        });
+                        return;
+                    }
+
+                    // Expand wildcards in arguments (e.g., *.txt -> file1.txt file2.txt)
+                    if (utils.expandWildcards) {
+                        args = utils.expandWildcards(args);
+                    }
+
                     const handler = handlers[cmd];
 
                     if (handler) {
-                        output = handler(args);
+                        // Pass isBackground flag to handler
+                        const result = handler(args, isBackground);
+
+                        // Check if result is a background job object
+                        if (result && typeof result === 'object' && result.type === 'background') {
+                            // Display job start notification
+                            output = `[${result.jobId}] ${result.pid}`;
+                        } else {
+                            output = result;
+                        }
                     } else {
-                        output = `bash: ${cmd}: command not found`;
+                        output = suggestions.getCommandNotFoundMessage(cmd, handlers);
                     }
                 }
 
@@ -272,10 +352,9 @@
                     }
                 }
 
-                if (redirections.output) {
-                    return `Output redirected to: ${redirections.output}`;
-                } else if (redirections.append) {
-                    return `Output appended to: ${redirections.append}`;
+                // Handle output redirection (> or >>)
+                if (redirections.output || redirections.append) {
+                    return handleOutputRedirection(output, redirections, utils);
                 }
 
                 return output;
@@ -298,6 +377,28 @@
                         return sorted.join('\r\n');
                     } else if (cmdName === 'wc') {
                         return lines.length.toString().padStart(7);
+                    } else if (cmdName === 'head') {
+                        // Parse line count from args (-10 or -n 10)
+                        let lineCount = 10;
+                        for (let i = 0; i < cmd.args.length; i++) {
+                            if (/^-\d+$/.test(cmd.args[i])) {
+                                lineCount = parseInt(cmd.args[i].substring(1), 10);
+                            } else if (cmd.args[i] === '-n' && i + 1 < cmd.args.length) {
+                                lineCount = parseInt(cmd.args[i + 1], 10);
+                            }
+                        }
+                        return lines.slice(0, lineCount).join('\r\n');
+                    } else if (cmdName === 'tail') {
+                        // Parse line count from args (-10 or -n 10)
+                        let lineCount = 10;
+                        for (let i = 0; i < cmd.args.length; i++) {
+                            if (/^-\d+$/.test(cmd.args[i])) {
+                                lineCount = parseInt(cmd.args[i].substring(1), 10);
+                            } else if (cmd.args[i] === '-n' && i + 1 < cmd.args.length) {
+                                lineCount = parseInt(cmd.args[i + 1], 10);
+                            }
+                        }
+                        return lines.slice(-lineCount).join('\r\n');
                     }
                 }
 
@@ -321,14 +422,38 @@
 
                 if (e === '\r') {
                     term.write('\r\n');
-                    if (currentCommand.trim().length > 0) {
-                        commandHistory.push(currentCommand.trim());
-                        historyIndex = commandHistory.length;
+                    let commandToExecute = currentCommand.trim();
+
+                    if (commandToExecute.length > 0) {
+                        // Try to expand history shortcuts (!, !!, !n, !-n, !prefix)
+                        const expanded = historyManager.expand(commandToExecute);
+
+                        if (expanded === null) {
+                            // Expansion failed
+                            term.write(`bash: ${commandToExecute}: event not found\r\n`);
+                            currentCommand = '';
+                            cursorPos = 0;
+                            utils.writePrompt(term);
+                            term.scrollToBottom();
+                            return;
+                        }
+
+                        commandToExecute = expanded;
+
+                        // Show expanded command if it was changed
+                        if (expanded !== currentCommand.trim()) {
+                            term.write(`\x1B[2m${commandToExecute}\x1B[0m\r\n`);
+                        }
+
+                        // Add to history
+                        historyManager.add(commandToExecute);
                     }
-                    handleCommand(currentCommand.trim());
+
+                    handleCommand(commandToExecute);
                     currentCommand = '';
                     cursorPos = 0;
                     utils.writePrompt(term);
+                    term.scrollToBottom();
                 } else if (e === '\x7F') {
                     if (cursorPos > 0) {
                         currentCommand = currentCommand.slice(0, cursorPos - 1) + currentCommand.slice(cursorPos);
@@ -336,22 +461,19 @@
                         redrawLine();
                     }
                 } else if (e === '\x1B[A') {
-                    if (historyIndex > 0) {
-                        historyIndex--;
-                        currentCommand = commandHistory[historyIndex];
+                    // Arrow up - previous command
+                    const prev = historyManager.getPrevious();
+                    if (prev !== null) {
+                        currentCommand = prev;
                         cursorPos = currentCommand.length;
                         redrawLine();
                     }
                 } else if (e === '\x1B[B') {
-                    if (historyIndex < commandHistory.length - 1) {
-                        historyIndex++;
-                        currentCommand = commandHistory[historyIndex];
+                    // Arrow down - next command
+                    const next = historyManager.getNext();
+                    if (next !== null) {
+                        currentCommand = next;
                         cursorPos = currentCommand.length;
-                        redrawLine();
-                    } else if (historyIndex === commandHistory.length - 1) {
-                        historyIndex = commandHistory.length;
-                        currentCommand = '';
-                        cursorPos = 0;
                         redrawLine();
                     }
                 } else if (e === '\x1B[C') {
@@ -365,23 +487,38 @@
                         term.write('\x1B[D');
                     }
                 } else if (e === '\t') {
-                    const currentDir = utils.getCurrentDir();
-                    if (!currentDir || !currentDir.children) return;
+                    const commandParts = currentCommand.trim().split(/\s+/);
+                    const isFirstWord = commandParts.length === 1 && !currentCommand.includes(' ');
+                    const lastPart = commandParts[commandParts.length - 1] || '';
 
-                    const commandParts = currentCommand.split(/\s+/);
-                    const lastPart = commandParts.pop() || '';
-                    const itemsInDir = Object.keys(currentDir.children);
-                    const matches = itemsInDir.filter(item => item.startsWith(lastPart));
+                    let matches = [];
+
+                    if (isFirstWord) {
+                        // Complete command names
+                        const availableCommands = Object.keys(handlers);
+                        matches = availableCommands.filter(cmd => cmd.startsWith(lastPart));
+                    } else {
+                        // Complete file/directory names
+                        const currentDir = utils.getCurrentDir();
+                        if (!currentDir || !currentDir.children) return;
+                        const itemsInDir = Object.keys(currentDir.children);
+                        matches = itemsInDir.filter(item => item.startsWith(lastPart));
+                    }
 
                     if (matches.length === 1) {
                         const completion = matches[0].substring(lastPart.length);
                         term.write(completion);
                         currentCommand += completion;
                         cursorPos = currentCommand.length;
-                        if (currentDir.children[matches[0]].type === 'directory') {
-                            term.write('/');
-                            currentCommand += '/';
-                            cursorPos = currentCommand.length;
+
+                        // Add trailing slash for directories
+                        if (!isFirstWord) {
+                            const currentDir = utils.getCurrentDir();
+                            if (currentDir && currentDir.children && currentDir.children[matches[0]]?.type === 'directory') {
+                                term.write('/');
+                                currentCommand += '/';
+                                cursorPos = currentCommand.length;
+                            }
                         }
                     } else if (matches.length > 1) {
                         term.write('\r\n');
@@ -389,6 +526,7 @@
                         utils.writePrompt(term);
                         term.write(currentCommand);
                         cursorPos = currentCommand.length;
+                        term.scrollToBottom();
                     }
                 } else if (charCode >= 32 && charCode <= 126) {
                     currentCommand = currentCommand.slice(0, cursorPos) + e + currentCommand.slice(cursorPos);

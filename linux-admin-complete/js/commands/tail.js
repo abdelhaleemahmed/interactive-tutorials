@@ -1,45 +1,65 @@
 // js/commands/tail.js
 
 import { getPathObject, resolvePath, canRead } from '../terminalUtils.js';
-import { noSuchFileError, missingArgumentError } from '../errorMessages.js';
+import { noSuchFileError } from '../errorMessages.js';
 import { getCurrentUser } from '../userManagement.js';
+import { validateArgs, getFlagValue } from '../argumentValidator.js';
 
 export const tailCommand = (args) => {
     let output = '';
     const currentUser = getCurrentUser();
+    let lines = 10; // Default number of lines
+    let fileName = null;
 
-    if (args.length === 0) {
-        output = missingArgumentError('tail', 'operand');
-    } else {
-        let fileName = args[0];
-        let lines = 10; // Default number of lines
+    // Parse arguments manually to handle both -n NUM and -NUM syntax
+    for (let i = 0; i < args.length; i++) {
+        const arg = args[i];
 
-        // Handle -n option: tail -n 5 file.txt
-        if (args[0] === '-n' && args[1]) {
-            lines = parseInt(args[1], 10);
-            fileName = args[2];
+        // Check for -NUM shorthand (e.g., -10, -5)
+        if (/^-\d+$/.test(arg)) {
+            lines = parseInt(arg.substring(1), 10);
         }
-
-        if (!fileName) {
-            output = missingArgumentError('tail', 'file');
-        } else {
-            const resolved = resolvePath(fileName);
-            const fileObj = getPathObject(resolved);
-
-            if (!fileObj) {
-                output = noSuchFileError(fileName);
-            } else if (fileObj.type === 'directory') {
-                output = `bash: tail: ${fileName}: Is a directory`;
-            } else if (fileObj.type === 'file') {
-                // Check read permission
-                if (!canRead(fileObj, currentUser)) {
-                    output = `bash: tail: ${fileName}: Permission denied`;
-                } else {
-                    const fileLines = fileObj.content.split('\n');
-                    const tailLines = fileLines.slice(-lines);
-                    output = tailLines.join('\r\n');
-                }
+        // Check for -n flag with value
+        else if (arg === '-n' && i + 1 < args.length) {
+            lines = parseInt(args[i + 1], 10);
+            i++; // Skip next arg since we consumed it
+            if (isNaN(lines)) {
+                return `tail: invalid number of lines: '${args[i]}'`;
             }
+        }
+        // Check for other flags
+        else if (arg.startsWith('-')) {
+            // Other flags can be validated normally
+            const validation = validateArgs('tail', [arg]);
+            if (!validation.valid) {
+                return validation.error;
+            }
+        }
+        // Otherwise it's a filename
+        else {
+            fileName = arg;
+        }
+    }
+
+    if (!fileName) {
+        return 'tail: missing file operand';
+    }
+
+    const resolved = resolvePath(fileName);
+    const fileObj = getPathObject(resolved);
+
+    if (!fileObj) {
+        output = noSuchFileError(fileName);
+    } else if (fileObj.type === 'directory') {
+        output = `bash: tail: ${fileName}: Is a directory`;
+    } else if (fileObj.type === 'file') {
+        // Check read permission
+        if (!canRead(fileObj, currentUser)) {
+            output = `bash: tail: ${fileName}: Permission denied`;
+        } else {
+            const fileLines = fileObj.content.split('\n');
+            const tailLines = fileLines.slice(-lines);
+            output = tailLines.join('\r\n');
         }
     }
 

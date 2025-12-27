@@ -1,6 +1,8 @@
 // js/shellParser.js
 // Parses shell commands with pipes and redirections
 
+import { getCurrentUser } from './userManagement.js';
+
 export class ShellParser {
     constructor() {
         this.pipes = [];
@@ -33,7 +35,8 @@ export class ShellParser {
             // Remove redirection operators from command
             cmdStr = this.removeRedirections(cmdStr);
 
-            const parts = cmdStr.split(/\s+/).filter(p => p.length > 0);
+            // Parse arguments with proper quote handling
+            const parts = this.parseArgs(cmdStr);
             return {
                 name: parts[0],
                 args: parts.slice(1)
@@ -72,10 +75,64 @@ export class ShellParser {
      */
     removeRedirections(cmdStr) {
         // Remove >, >>, < and their filenames
+        // IMPORTANT: Remove >> BEFORE > to avoid leaving a stray >
+        cmdStr = cmdStr.replace(/>>\s*([^\s|>]+)/g, '');   // Remove >> file (check first!)
         cmdStr = cmdStr.replace(/>\s*([^\s|>]+)/g, '');    // Remove > file
-        cmdStr = cmdStr.replace(/>>\s*([^\s|>]+)/g, '');   // Remove >> file
         cmdStr = cmdStr.replace(/<\s*([^\s|]+)/g, '');     // Remove < file
         return cmdStr.trim();
+    }
+
+    /**
+     * Parse command arguments handling quotes properly
+     * Removes quotes but preserves spaces within quoted strings
+     */
+    parseArgs(cmdStr) {
+        const args = [];
+        let current = '';
+        let inSingleQuote = false;
+        let inDoubleQuote = false;
+        let escaped = false;
+
+        for (let i = 0; i < cmdStr.length; i++) {
+            const char = cmdStr[i];
+
+            if (escaped) {
+                current += char;
+                escaped = false;
+                continue;
+            }
+
+            if (char === '\\' && !inSingleQuote) {
+                escaped = true;
+                continue;
+            }
+
+            if (char === "'" && !inDoubleQuote) {
+                inSingleQuote = !inSingleQuote;
+                continue;
+            }
+
+            if (char === '"' && !inSingleQuote) {
+                inDoubleQuote = !inDoubleQuote;
+                continue;
+            }
+
+            if (/\s/.test(char) && !inSingleQuote && !inDoubleQuote) {
+                if (current.length > 0) {
+                    args.push(current);
+                    current = '';
+                }
+                continue;
+            }
+
+            current += char;
+        }
+
+        if (current.length > 0) {
+            args.push(current);
+        }
+
+        return args;
     }
 
     /**
@@ -149,20 +206,64 @@ export const executePipeline = (commands, handlers, fileSystem) => {
  * Handle output redirection
  * Writes output to a file instead of returning it
  */
-export const handleOutputRedirection = (output, redirections, fileSystem, currentPath) => {
-    if (redirections.append) {
-        // Append to file
-        const fileName = redirections.append;
-        // Would need fileSystem methods to append content
-        return `Output appended to: ${fileName}`;
-    } else if (redirections.output) {
-        // Write to file (overwrite)
-        const fileName = redirections.output;
-        // Would need fileSystem methods to write content
-        return `Output redirected to: ${fileName}`;
+export const handleOutputRedirection = (output, redirections, utils) => {
+    if (!redirections.append && !redirections.output) {
+        // No redirection, return output as normal
+        return output;
     }
-    // No redirection, return as normal
+
+    try {
+        const fileName = redirections.append || redirections.output;
+        console.log('[Redirection] Writing to file:', fileName);
+        const resolved = utils.resolvePath(fileName);  // Returns array like ['home', 'user', 'file.txt']
+        console.log('[Redirection] Resolved path:', resolved);
+        const existing = utils.getPathObject(resolved);
+        console.log('[Redirection] Existing file:', existing);
+
+    // Get parent directory
+    const pathParts = [...resolved];  // Copy the array
+    const fileNameOnly = pathParts.pop();
+    const parentDir = utils.getPathObject(pathParts);
+
+    if (!parentDir || parentDir.type !== 'directory') {
+        return `bash: ${fileName}: No such file or directory`;
+    }
+
+    if (redirections.append && existing && existing.type === 'file') {
+        // Append to existing file
+        existing.content += '\n' + output;
+        existing.modified = Date.now();
+        existing.size = existing.content.length;
+        return '';  // Success - no output to terminal
+    } else if (redirections.output || (redirections.append && !existing)) {
+        // Create new file or overwrite existing
+        if (existing && existing.type === 'directory') {
+            return `bash: ${fileName}: Is a directory`;
+        }
+
+        const currentUser = getCurrentUser();
+        const newFile = {
+            type: 'file',
+            content: output,
+            size: output.length,
+            owner: currentUser.username || 'user',
+            group: currentUser.username || 'user',
+            permissions: 0o644,
+            created: Date.now(),
+            modified: Date.now(),
+            date: utils.getCurrentDateFormatted()
+        };
+
+        parentDir.children[fileNameOnly] = newFile;
+        console.log('[Redirection] File created successfully:', fileNameOnly);
+        return '';  // Success - no output to terminal
+    }
+
     return output;
+    } catch (error) {
+        console.error('[Redirection] Error:', error);
+        return `bash: ${error.message}`;
+    }
 };
 
 /**

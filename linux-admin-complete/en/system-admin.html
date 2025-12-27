@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>System Administration - Linux Administration Tutorial</title>
-    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
     <div class="container">
@@ -22,28 +22,32 @@
             <p class="subtitle">Learn essential system administration and monitoring techniques</p>
         </header>
 
-        <!-- Content Section -->
+        <!-- Practice Box -->
         <section class="content-section">
             <div class="info-box">
                 <h4>💻 Practice While You Learn!</h4>
-                <p>Click the green <strong>💻 Terminal</strong> button in the bottom-right corner to open an interactive terminal. You can practice all the commands on this page in real-time!</p>
+                <p>Click the green 💻 Terminal button in the bottom-right corner to open an interactive terminal. You can practice all the commands on this page in real-time!</p>
                 <ul>
+                    
                     <li>The terminal stays open as you navigate between pages</li>
+                    
                     <li>Try commands immediately after reading about them</li>
+                    
                     <li>Use ↑/↓ arrows for command history, Tab for auto-complete</li>
+                    
                 </ul>
             </div>
         </section>
 
+        <!-- Process Management -->
         <section class="content-section">
             <h2>Process Management</h2>
-            <p>
-                Understanding and managing processes is crucial for system administration. Every running program is a process.
-            </p>
+            <p>Understanding and managing processes is crucial for system administration. Every running program is a process.</p>
 
             <h3>Viewing Processes</h3>
             <div class="command-example">
                 <h4>Common Process Commands</h4>
+                <p>Key commands: <span class="tooltip-trigger"><code>ps</code><span class="rich-tooltip"><span class="tooltip-header"><strong>📊 ps - Process Status</strong></span><span class="tooltip-content"><span class="tooltip-description">Displays information about running processes. Essential for system monitoring and troubleshooting.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">List All Processes</span><span class="example-code">$ ps aux</span><span class="example-output">▸ Shows all processes with detailed information</span></span><span class="example-block"><span class="example-label">Current User Processes</span><span class="example-code">$ ps ux</span><span class="example-output">▸ Shows processes for current user only</span></span><span class="example-block"><span class="example-label">Find Specific Process</span><span class="example-code">$ ps aux | grep firefox</span><span class="example-output">▸ Searches for processes containing 'firefox'</span></span></span></span></span></span> <span class="tooltip-trigger"><code>top</code><span class="rich-tooltip"><span class="tooltip-header"><strong>📈 top - Task Manager</strong></span><span class="tooltip-content"><span class="tooltip-description">Interactive real-time process viewer showing CPU, memory usage, and system statistics.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">Launch top</span><span class="example-code">$ top</span><span class="example-output">▸ Opens interactive process monitor</span></span><span class="example-block"><span class="example-label">Sort by CPU</span><span class="example-code">$ Press 'P' in top</span><span class="example-output">▸ Sorts processes by CPU usage</span></span><span class="example-block"><span class="example-label">Sort by Memory</span><span class="example-code">$ Press 'M' in top</span><span class="example-output">▸ Sorts processes by memory usage</span></span></span></span></span></span></p>
                 <pre><code># List all running processes
 ps aux
 
@@ -67,20 +71,30 @@ ps aux | grep firefox</code></pre>
             <div class="info-box">
                 <h4>Understanding ps aux Output</h4>
                 <ul>
+                    
                     <li><strong>USER:</strong> Process owner</li>
+                    
                     <li><strong>PID:</strong> Process ID (unique identifier)</li>
+                    
                     <li><strong>%CPU:</strong> CPU usage percentage</li>
+                    
                     <li><strong>%MEM:</strong> Memory usage percentage</li>
+                    
                     <li><strong>VSZ:</strong> Virtual memory size</li>
+                    
                     <li><strong>RSS:</strong> Physical memory (RAM) used</li>
+                    
                     <li><strong>STAT:</strong> Process state (R=running, S=sleeping, Z=zombie)</li>
+                    
                     <li><strong>COMMAND:</strong> Command that started the process</li>
+                    
                 </ul>
             </div>
 
             <h3>Managing Processes</h3>
             <div class="command-example">
                 <h4>Controlling Processes</h4>
+                <p>Key commands: <span class="tooltip-trigger"><code>kill</code><span class="rich-tooltip"><span class="tooltip-header"><strong>🛑 kill - Terminate Process</strong></span><span class="tooltip-content"><span class="tooltip-description">Sends signals to processes, typically to terminate them. Use PID (Process ID) to target specific process.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">Graceful Termination</span><span class="example-code">$ kill 1234</span><span class="example-output">▸ Sends SIGTERM (allows cleanup)</span></span><span class="example-block"><span class="example-label">Force Kill</span><span class="example-code">$ kill -9 1234</span><span class="example-output">▸ Sends SIGKILL (immediate termination)</span></span><span class="example-block"><span class="example-label">Kill by Name</span><span class="example-code">$ killall firefox</span><span class="example-output">▸ Kills all processes named 'firefox'</span></span></span></span></span></span> <span class="tooltip-trigger"><code>bg</code><span class="rich-tooltip"><span class="tooltip-header"><strong>⏯️ bg - Background Process</strong></span><span class="tooltip-content"><span class="tooltip-description">Resumes a suspended job in the background, allowing you to continue using the terminal.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">Resume Latest Job</span><span class="example-code">$ bg</span><span class="example-output">▸ Continues most recent suspended job in background</span></span><span class="example-block"><span class="example-label">Resume Specific Job</span><span class="example-code">$ bg %2</span><span class="example-output">▸ Resumes job number 2 in background</span></span></span></span></span></span> <span class="tooltip-trigger"><code>fg</code><span class="rich-tooltip"><span class="tooltip-header"><strong>▶️ fg - Foreground Process</strong></span><span class="tooltip-content"><span class="tooltip-description">Brings a background job to the foreground, giving it control of the terminal.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">Bring Latest Job Forward</span><span class="example-code">$ fg</span><span class="example-output">▸ Brings most recent background job to foreground</span></span><span class="example-block"><span class="example-label">Bring Specific Job</span><span class="example-code">$ fg %1</span><span class="example-output">▸ Brings job number 1 to foreground</span></span></span></span></span></span> <span class="tooltip-trigger"><code>jobs</code><span class="rich-tooltip"><span class="tooltip-header"><strong>📋 jobs - List Background Jobs</strong></span><span class="tooltip-content"><span class="tooltip-description">Lists jobs running in the background or suspended in the current shell session.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">List All Jobs</span><span class="example-code">$ jobs</span><span class="example-output">▸ Shows all background and suspended jobs</span></span><span class="example-block"><span class="example-label">List with PIDs</span><span class="example-code">$ jobs -l</span><span class="example-output">▸ Shows jobs with their process IDs</span></span></span></span></span></span></p>
                 <pre><code># Kill process by PID
 kill 1234
 
@@ -101,15 +115,16 @@ bg            # Continue in background
 fg
 
 # Run command in background from start
-command &amp;</code></pre>
+command &</code></pre>
             </div>
 
             <div class="warning-box">
                 <h4>⚠️ Using kill Carefully</h4>
-                <p><code>kill -9</code> forcefully terminates a process without cleanup. Use regular <code>kill</code> first to allow graceful shutdown.</p>
+                <p>kill -9 forcefully terminates a process without cleanup. Use regular kill first to allow graceful shutdown.</p>
             </div>
         </section>
 
+        <!-- System Monitoring -->
         <section class="content-section">
             <h2>System Monitoring</h2>
 
@@ -141,13 +156,17 @@ w</code></pre>
             <h3>Understanding System Load</h3>
             <div class="info-box">
                 <h4>Load Average Explained</h4>
-                <p>When you run <code>uptime</code>, you see something like:</p>
+                <p>When you run uptime, you see something like:</p>
                 <pre><code>11:30:45 up 5 days, 3:42, 2 users, load average: 0.15, 0.25, 0.30</code></pre>
                 <p>The three numbers represent average system load over 1, 5, and 15 minutes:</p>
                 <ul>
-                    <li><strong>&lt; 1.0:</strong> System has spare capacity</li>
-                    <li><strong>= Number of CPUs:</strong> Fully utilized</li>
-                    <li><strong>&gt; Number of CPUs:</strong> Processes are waiting</li>
+                    
+                    <li><strong>< 1.0: System has spare capacity</strong></li>
+                    
+                    <li><strong>= Number of CPUs: Fully utilized</strong></li>
+                    
+                    <li><strong>> Number of CPUs: Processes are waiting</strong></li>
+                    
                 </ul>
             </div>
 
@@ -171,11 +190,10 @@ journalctl -f</code></pre>
             </div>
         </section>
 
+        <!-- Package Management -->
         <section class="content-section">
             <h2>Package Management</h2>
-            <p>
-                Different Linux distributions use different package managers. Here are the most common ones:
-            </p>
+            <p>Different Linux distributions use different package managers. Here are the most common ones:</p>
 
             <h3>Debian/Ubuntu (apt)</h3>
             <div class="command-example">
@@ -240,11 +258,10 @@ pacman -Q</code></pre>
             </div>
         </section>
 
+        <!-- Service Management -->
         <section class="content-section">
             <h2>Service Management (systemd)</h2>
-            <p>
-                Modern Linux distributions use systemd to manage services (daemons).
-            </p>
+            <p>Modern Linux distributions use systemd to manage services (daemons).</p>
 
             <div class="command-example">
                 <h4>Managing Services</h4>
@@ -276,14 +293,20 @@ systemctl --failed</code></pre>
             <div class="info-box">
                 <h4>Service States</h4>
                 <ul>
-                    <li><strong>active (running):</strong> Service is running</li>
-                    <li><strong>active (exited):</strong> Service completed successfully</li>
-                    <li><strong>inactive (dead):</strong> Service is stopped</li>
-                    <li><strong>failed:</strong> Service crashed or failed to start</li>
+                    
+                    <li><strong>active (running): Service is running</strong></li>
+                    
+                    <li><strong>active (exited): Service completed successfully</strong></li>
+                    
+                    <li><strong>inactive (dead): Service is stopped</strong></li>
+                    
+                    <li><strong>failed: Service crashed or failed to start</strong></li>
+                    
                 </ul>
             </div>
         </section>
 
+        <!-- Networking -->
         <section class="content-section">
             <h2>Networking Basics</h2>
 
@@ -342,9 +365,11 @@ sudo ufw delete 2</code></pre>
             </div>
         </section>
 
+        <!-- Practical Scenarios -->
         <section class="content-section">
             <h2>Practical Scenarios</h2>
 
+            
             <div class="command-example">
                 <h4>Scenario 1: High CPU Usage</h4>
                 <pre><code># 1. Check what's using CPU
@@ -360,7 +385,7 @@ ps aux | grep [PID]
 # 4. If needed, kill the process
 kill [PID]</code></pre>
             </div>
-
+            
             <div class="command-example">
                 <h4>Scenario 2: Disk Space Full</h4>
                 <pre><code># 1. Check disk usage
@@ -376,7 +401,7 @@ find /home -type f -size +100M -exec ls -lh {} \;
 sudo apt clean
 sudo apt autoremove</code></pre>
             </div>
-
+            
             <div class="command-example">
                 <h4>Scenario 3: Service Won't Start</h4>
                 <pre><code># 1. Check service status
@@ -391,33 +416,49 @@ sudo systemctl cat servicename
 # 4. Restart service
 sudo systemctl restart servicename</code></pre>
             </div>
+            
         </section>
 
+        <!-- Key Takeaways -->
         <section class="content-section">
             <h2>Key Takeaways</h2>
             <div class="info-box">
                 <ul>
-                    <li>Use <code>top</code> or <code>htop</code> for real-time system monitoring</li>
+                    
+                    <li>Use top or htop for real-time system monitoring</li>
+                    
                     <li>Understand process states and how to manage them</li>
+                    
                     <li>Regularly check disk space and system logs</li>
+                    
                     <li>Know your distribution's package manager</li>
-                    <li><code>systemctl</code> is the standard for service management</li>
+                    
+                    <li>systemctl is the standard for service management</li>
+                    
                     <li>Monitor network connections and firewall rules</li>
+                    
                     <li>Practice troubleshooting in a safe environment first</li>
+                    
                 </ul>
             </div>
         </section>
 
+        <!-- Practice Tips -->
         <section class="content-section">
             <h2>Practice Tips</h2>
             <div class="info-box">
-                <p><strong>Ready to practice?</strong> Head over to the <a href="./interactive-terminal.html">Interactive Terminal</a> to try system administration commands!</p>
+                <p><strong>Ready to practice? Head over to the Interactive Terminal to try system administration commands!</strong></p>
             </div>
             <ul>
+                
                 <li>Set up a test virtual machine to practice safely</li>
+                
                 <li>Create scheduled tasks to monitor system health</li>
+                
                 <li>Document common troubleshooting steps for your systems</li>
+                
                 <li>Always test commands in a safe environment first</li>
+                
             </ul>
         </section>
 
@@ -429,22 +470,45 @@ sudo systemctl restart servicename</code></pre>
     </div>
 
     <!-- Terminal Toggle Button -->
-    <button class="terminal-toggle-btn" id="terminalToggleBtn" title="Open terminal" aria-label="Toggle terminal">💻</button>
+    <button class="terminal-toggle-btn" id="terminalToggleBtn" title="💻 Terminal" aria-label="Toggle terminal">💻</button>
 
-    <!-- Theme Toggle Button -->
-    <button class="theme-toggle" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
+    <!-- Theme Selector (3 themes: Light, Dark, Terminal) -->
+    <div class="theme-selector">
+    
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <div class="lang-btn en active" title="English" data-lang="en">EN</div>
+        <!-- Future languages can be added here -->
+        <div class="lang-btn ar" title="العربية" data-lang="ar">AR</div>
+    </div>
+        <div class="theme-btn light active" title="Light Theme"></div>
+    
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <div class="lang-btn en active" title="English" data-lang="en">EN</div>
+        <!-- Future languages can be added here -->
+        <div class="lang-btn ar" title="العربية" data-lang="ar">AR</div>
+    </div>
+        <div class="theme-btn dark" title="Dark Theme"></div>
+        <div class="theme-btn terminal" title="Terminal Theme"></div>
+    </div>
 
     <!-- Footer -->
     <footer class="tutorial-footer">
-        <p>&copy; 2025 Ahmed Abdelhaleem | <a href="https://abdelhaleemahmed.github.io/">Back to Portfolio</a></p>
+        <p>© 2025 Ahmed Abdelhaleem | <a href="https://abdelhaleemahmed.github.io/">Back to Portfolio</a></p>
     </footer>
 
     <!-- Terminal Scripts -->
-    <link rel="stylesheet" href="./css/xterm.css" />
-    <script src="./js/xterm.js"></script>
-    <script src="./js/xterm-addon-fit.js"></script>
-    <script type="module" src="./css/terminal-modal.js"></script>
+    <link rel="stylesheet" href="../css/xterm.css" />
+    <script src="../js/xterm.js"></script>
+    <script src="../js/xterm-addon-fit.js"></script>
+    <script type="module" src="../css/terminal-modal.js"></script>
 
-    <script src="./css/theme.js"></script>
+    <!-- Enhanced Features -->
+    <script src="../css/theme.js"></script>
+    <script src="../css/language-switcher.js"></script>
+    <script src="../css/shortcuts.js"></script>
+    <script src="../css/cheatsheet.js"></script>
+    <script src="../css/code-interactive.js"></script>
 </body>
 </html>

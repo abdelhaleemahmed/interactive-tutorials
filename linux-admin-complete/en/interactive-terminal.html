@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Terminal - Linux Administration Tutorial</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/xterm.css" />
+</head>
+<body>
+    <div class="container">
+        <!-- Breadcrumb Navigation -->
+        <nav class="breadcrumb">
+            <a href="https://abdelhaleemahmed.github.io/">Portfolio</a> /
+            <a href="https://abdelhaleemahmed.github.io/interactive-tutorials/">Tutorials</a> /
+            <a href="./index.html">Linux Administration</a> /
+            <span>Interactive Terminal</span>
+        </nav>
+
+        <!-- Header -->
+        <header class="tutorial-header">
+            <h1>🚀 Interactive Terminal</h1>
+            <p class="subtitle">Practice Linux commands in a safe, simulated environment</p>
+        </header>
+
+        <!-- Content Section -->
+        <section class="content-section">
+            <h2>Your Interactive Terminal</h2>
+            <p>Below is a simulated Linux terminal that behaves like a real one for basic commands. Feel free to type commands and press Enter to see the output. Remember, this is a simulation, so no real changes are made to your computer.</p>
+
+            <div class="info-box">
+                <h4>Getting Started</h4>
+                <ul>
+                    
+                    <li>{Use the <strong>Up/Down arrow keys</strong> to cycle through your command history}</li>
+                    
+                    <li>{Press <strong>Tab</strong> for auto-completion of commands and file/directory names}</li>
+                    
+                    <li>{Type <code>help</code> to see a quick reference of all supported commands}</li>
+                    
+                    <li>{Type <code>clear</code> to clear the terminal screen}</li>
+                    
+                </ul>
+            </div>
+        </section>
+
+        <!-- Embedded Interactive Terminal -->
+        <div class="terminal-wrapper">
+            <div id="terminal"></div>
+        </div>
+
+        <section class="content-section">
+            <h2>Try These Commands</h2>
+            <p>Here are some common commands to get you started. Try them in the terminal above!</p>
+
+            
+            <div class="command-example">
+                <h4>Navigation</h4>
+                <pre><code>pwd              # Print current directory
+ls               # List files and directories
+cd documents     # Change to documents directory
+cd ..            # Go up one directory
+cd ~             # Go to home directory</code></pre>
+            </div>
+            
+            <div class="command-example">
+                <h4>File Operations</h4>
+                <pre><code>cat README.txt   # View file contents
+mkdir test       # Create a directory
+touch file.txt   # Create an empty file
+cp file.txt copy.txt  # Copy a file
+mv file.txt newname.txt  # Move/rename file
+rm newname.txt   # Remove a file</code></pre>
+            </div>
+            
+            <div class="command-example">
+                <h4>Information</h4>
+                <pre><code>help             # Show available commands
+man ls           # Manual for ls command
+whoami           # Show current user
+date             # Show current date/time
+uptime           # Show system uptime</code></pre>
+            </div>
+            
+        </section>
+
+        <section class="content-section">
+            <h2>Experiment and Learn!</h2>
+            <p>This interactive terminal is a sandbox for you to play in. Don't be afraid to try commands, make mistakes, and learn from them. The more you practice, the more comfortable and powerful you'll become with the Linux command line.</p>
+
+            <div class="warning-box">
+                <h4>📚 Want to learn more?</h4>
+                <p>Go back to the tutorial modules to learn about specific topics in depth:</p>
+                <ul>
+                    
+                    <li><a href="./basic-commands.html">Basic Commands & Navigation</a></li>
+                    
+                    <li><a href="./file-system.html">File System Management</a></li>
+                    
+                    <li><a href="./user-management.html">User & Permission Management</a></li>
+                    
+                    <li><a href="./system-admin.html">System Administration</a></li>
+                    
+                </ul>
+            </div>
+        </section>
+
+        <!-- Page Navigation -->
+        <nav class="page-navigation">
+            <a href="./system-admin.html" class="nav-button prev">System Administration</a>
+            <a href="./index.html" class="nav-button next">Back to Overview</a>
+        </nav>
+    </div>
+
+    <!-- Theme Selector (3 themes: Light, Dark, Terminal) -->
+    <div class="theme-selector">
+    
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <div class="lang-btn en active" title="English" data-lang="en">EN</div>
+        <!-- Future languages can be added here -->
+        <div class="lang-btn ar" title="العربية" data-lang="ar">AR</div>
+    </div>
+        <div class="theme-btn light active" title="Light Theme"></div>
+    
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <div class="lang-btn en active" title="English" data-lang="en">EN</div>
+        <!-- Future languages can be added here -->
+        <div class="lang-btn ar" title="العربية" data-lang="ar">AR</div>
+    </div>
+        <div class="theme-btn dark" title="Dark Theme"></div>
+        <div class="theme-btn terminal" title="Terminal Theme"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="tutorial-footer">
+        <p>© 2025 Ahmed Abdelhaleem | <a href="https://abdelhaleemahmed.github.io/">Back to Portfolio</a></p>
+    </footer>
+
+    <!-- Terminal Scripts -->
+    <script src="../js/xterm.js"></script>
+    <script src="../js/xterm-addon-fit.js"></script>
+
+    <!-- Import modular command logic -->
+    <script type="module">
+        import { commandHandlers } from '../js/commandRegistry.js';
+        import { writePrompt, currentPath, getCurrentDir, resolvePath, getPathObject, updateCurrentPath } from '../js/terminalUtils.js';
+        import { ShellParser } from '../js/shellParser.js';
+        import { getCommandNotFoundMessage, validateCommand } from '../js/commandSuggestions.js';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const terminalContainer = document.getElementById('terminal');
+            const term = new Terminal({
+                cursorBlink: true,
+                convertEol: true,
+                fontFamily: 'Courier New, Courier, monospace',
+                fontSize: 14,
+                theme: {
+                    background: '#1e1e1e',
+                    foreground: '#abb2bf',
+                    cursor: '#abb2bf',
+                    selection: 'rgba(128, 128, 128, 0.4)',
+                    black: '#21252b',
+                    red: '#e06c75',
+                    green: '#98c379',
+                    yellow: '#e5c07b',
+                    blue: '#61afef',
+                    magenta: '#c678dd',
+                    cyan: '#56b6c2',
+                    white: '#abb2bf',
+                    brightBlack: '#5c6370',
+                    brightRed: '#e06c75',
+                    brightGreen: '#98c379',
+                    brightYellow: '#e5c07b',
+                    brightBlue: '#61afef',
+                    brightMagenta: '#c678dd',
+                    brightCyan: '#56b6c2',
+                    brightWhite: '#ffffff'
+                }
+            });
+
+            const fitAddon = new FitAddon.FitAddon();
+            term.loadAddon(fitAddon);
+            term.open(terminalContainer);
+            fitAddon.fit();
+            window.addEventListener('resize', () => {
+                fitAddon.fit();
+            });
+
+            // Initialize command handlers with the term instance
+            const handlers = commandHandlers(term);
+            const parser = new ShellParser();
+
+            let currentCommand = '';
+            const commandHistory = [];
+            let historyIndex = -1;
+            let cursorPos = 0;
+
+            function handleCommand(command) {
+                let output = '';
+
+                // Strip comments (everything after #)
+                const commentIndex = command.indexOf('#');
+                if (commentIndex !== -1) {
+                    command = command.substring(0, commentIndex).trim();
+                }
+
+                // Skip empty commands
+                if (!command) {
+                    return;
+                }
+
+                if (parser.needsShellParsing(command)) {
+                    output = handlePipedCommand(command);
+                } else {
+                    const parts = command.split(/\s+/).filter(p => p.length > 0);
+                    const cmd = parts[0];
+                    const args = parts.slice(1);
+
+                    const handler = handlers[cmd];
+
+                    if (handler) {
+                        output = handler(args);
+                    } else if (cmd === '') {
+                        output = '';
+                    } else {
+                        output = getCommandNotFoundMessage(cmd, handlers);
+                    }
+                }
+
+                if (output) {
+                    term.write(output + '\r\n');
+                }
+            }
+
+            function handlePipedCommand(commandLine) {
+                const parsed = parser.parse(commandLine);
+                const { commands, redirections } = parsed;
+
+                let output = '';
+
+                for (let i = 0; i < commands.length; i++) {
+                    const cmd = commands[i];
+                    const handler = handlers[cmd.name];
+
+                    if (!handler) {
+                        return `bash: ${cmd.name}: command not found`;
+                    }
+
+                    try {
+                        if (i === 0) {
+                            output = handler(cmd.args);
+                        } else {
+                            output = executePipeStep(handler, cmd, output);
+                        }
+                    } catch (error) {
+                        return `Error executing ${cmd.name}: ${error.message}`;
+                    }
+                }
+
+                if (redirections.output) {
+                    return `Output redirected to: ${redirections.output}`;
+                } else if (redirections.append) {
+                    return `Output appended to: ${redirections.append}`;
+                }
+
+                return output;
+            }
+
+            function executePipeStep(handler, cmd, pipeInput) {
+                const cmdName = cmd.name;
+                const pipeableCommands = ['grep', 'sort', 'uniq', 'wc', 'head', 'tail'];
+
+                if (pipeableCommands.includes(cmdName)) {
+                    return executePipeableCommand(handler, cmd, pipeInput);
+                } else {
+                    return handler(cmd.args);
+                }
+            }
+
+            function executePipeableCommand(handler, cmd, pipeInput) {
+                const lines = pipeInput.split('\n').filter(l => l.trim());
+
+                if (cmd.name === 'grep') {
+                    const pattern = cmd.args[0];
+                    return lines.filter(l => l.includes(pattern)).join('\r\n');
+                } else if (cmd.name === 'sort') {
+                    const reverse = cmd.args.includes('-r');
+                    let sorted = [...lines];
+                    sorted.sort((a, b) => reverse ? b.localeCompare(a) : a.localeCompare(b));
+                    return sorted.join('\r\n');
+                } else if (cmd.name === 'wc') {
+                    return lines.length.toString().padStart(7);
+                }
+
+                return handler(cmd.args);
+            }
+
+            function redrawLine() {
+                term.write('\x1B[2K\r');
+                writePrompt(term);
+                term.write(currentCommand);
+                const charsAfterCursor = currentCommand.length - cursorPos;
+                if (charsAfterCursor > 0) {
+                    term.write(`\x1B[${charsAfterCursor}D`);
+                }
+            }
+
+            term.onData(e => {
+                const charCode = e.charCodeAt(0);
+
+                if (e === '\r') {
+                    term.write('\r\n');
+                    if (currentCommand.trim().length > 0) {
+                        commandHistory.push(currentCommand.trim());
+                        historyIndex = commandHistory.length;
+                    }
+                    handleCommand(currentCommand.trim());
+                    currentCommand = '';
+                    cursorPos = 0;
+                    writePrompt(term);
+                } else if (e === '\x7F') {
+                    if (cursorPos > 0) {
+                        currentCommand = currentCommand.slice(0, cursorPos - 1) + currentCommand.slice(cursorPos);
+                        cursorPos--;
+                        redrawLine();
+                    }
+                } else if (e === '\x1B[A') {
+                    if (historyIndex > 0) {
+                        historyIndex--;
+                        currentCommand = commandHistory[historyIndex];
+                        cursorPos = currentCommand.length;
+                        redrawLine();
+                    }
+                } else if (e === '\x1B[B') {
+                    if (historyIndex < commandHistory.length - 1) {
+                        historyIndex++;
+                        currentCommand = commandHistory[historyIndex];
+                        cursorPos = currentCommand.length;
+                        redrawLine();
+                    } else if (historyIndex === commandHistory.length - 1) {
+                        historyIndex = commandHistory.length;
+                        currentCommand = '';
+                        cursorPos = 0;
+                        redrawLine();
+                    }
+                } else if (e === '\x1B[C') {
+                    if (cursorPos < currentCommand.length) {
+                        cursorPos++;
+                        term.write('\x1B[C');
+                    }
+                } else if (e === '\x1B[D') {
+                    if (cursorPos > 0) {
+                        cursorPos--;
+                        term.write('\x1B[D');
+                    }
+                } else if (e === '\t') {
+                    const currentDir = getCurrentDir();
+                    if (!currentDir || !currentDir.children) return;
+
+                    const commandParts = currentCommand.split(/\s+/);
+                    const lastPart = commandParts.pop() || '';
+                    const itemsInDir = Object.keys(currentDir.children);
+
+                    const matches = itemsInDir.filter(item => item.startsWith(lastPart));
+
+                    if (matches.length === 1) {
+                        const completion = matches[0].substring(lastPart.length);
+                        term.write(completion);
+                        currentCommand += completion;
+                        cursorPos = currentCommand.length;
+                        if (currentDir.children[matches[0]].type === 'directory') {
+                            term.write('/');
+                            currentCommand += '/';
+                            cursorPos = currentCommand.length;
+                        }
+                    } else if (matches.length > 1) {
+                        term.write('\r\n');
+                        term.write(matches.join('\t') + '\r\n');
+                        writePrompt(term);
+                        term.write(currentCommand);
+                        cursorPos = currentCommand.length;
+                    }
+                }
+                else if (charCode >= 32 && charCode <= 126) {
+                    currentCommand = currentCommand.slice(0, cursorPos) + e + currentCommand.slice(cursorPos);
+                    cursorPos++;
+                    redrawLine();
+                }
+            });
+
+            term.write('Welcome to the simulated Linux terminal!\r\n');
+            term.write('Type "help" to see available commands.\r\n\r\n');
+            writePrompt(term);
+        });
+    </script>
+
+    <!-- Enhanced Features -->
+    <script src="../css/theme.js"></script>
+    <script src="../css/language-switcher.js"></script>
+    <script src="../css/shortcuts.js"></script>
+    <script src="../css/cheatsheet.js"></script>
+    <script src="../css/code-interactive.js"></script>
+</body>
+</html>

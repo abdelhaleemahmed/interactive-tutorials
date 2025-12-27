@@ -3,8 +3,15 @@
 import { getPathObject, resolvePath, canRead } from '../terminalUtils.js';
 import { noSuchFileError, missingArgumentError } from '../errorMessages.js';
 import { getCurrentUser } from '../userManagement.js';
+import { validateArgs } from '../argumentValidator.js';
 
 export const sortCommand = (args) => {
+    // Validate arguments
+    const validation = validateArgs('sort', args);
+    if (!validation.valid) {
+        return validation.error;
+    }
+
     let output = '';
     const currentUser = getCurrentUser();
 

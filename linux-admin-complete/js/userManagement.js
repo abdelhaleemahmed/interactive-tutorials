@@ -32,7 +32,7 @@ export const users = {
     gid: 1000,
     home: '/home/user',
     shell: '/bin/bash',
-    groups: [1000],
+    groups: ['user', 'sudo', 'www-data'],
     isRoot: false
   },
   'guest': {
@@ -41,7 +41,16 @@ export const users = {
     gid: 1001,
     home: '/home/guest',
     shell: '/bin/bash',
-    groups: [1001],
+    groups: ['guest'],
+    isRoot: false
+  },
+  'john': {
+    username: 'john',
+    uid: 1002,
+    gid: 1002,
+    home: '/home/john',
+    shell: '/bin/bash',
+    groups: ['john'],
     isRoot: false
   }
 };
@@ -90,14 +99,21 @@ export function getGroupName(gid) {
 
 /**
  * Set the currently logged-in user
- * @param {string} username - The username to switch to
+ * @param {string|User} usernameOrUser - The username to switch to or a user object
  * @returns {boolean} True if successful, false if user doesn't exist
  */
-export function setCurrentUser(username) {
-  if (!users[username]) {
+export function setCurrentUser(usernameOrUser) {
+  // If it's an object (user object), set it directly
+  if (typeof usernameOrUser === 'object' && usernameOrUser !== null) {
+    currentUser = usernameOrUser;
+    return true;
+  }
+
+  // Otherwise, treat it as a username string
+  if (!users[usernameOrUser]) {
     return false;
   }
-  currentUser = users[username];
+  currentUser = users[usernameOrUser];
   return true;
 }
 
@@ -186,4 +202,80 @@ export function listLoggedInUsers() {
   // In a real system, this would show multiple sessions
   // For now, just show the current user
   return currentUser.username;
+}
+
+/**
+ * Get the next available UID
+ * @returns {number} The next available UID
+ */
+export function getNextUid() {
+  const uids = Object.values(users).map(u => u.uid);
+  return Math.max(...uids) + 1;
+}
+
+/**
+ * Get the next available GID
+ * @returns {number} The next available GID
+ */
+export function getNextGid() {
+  const gids = Object.keys(groups).map(g => parseInt(g));
+  return Math.max(...gids) + 1;
+}
+
+/**
+ * Add a new user to the system
+ * @param {string} username - The username
+ * @param {Object} options - User options
+ * @param {number} [options.uid] - User ID (auto-generated if not provided)
+ * @param {number} [options.gid] - Primary group ID (auto-generated if not provided)
+ * @param {string} [options.home] - Home directory path
+ * @param {string} [options.shell] - Default shell
+ * @returns {User} The created user object
+ */
+export function addUser(username, options = {}) {
+  const uid = options.uid || getNextUid();
+  const gid = options.gid || uid; // Default: user's GID equals UID
+  const home = options.home || `/home/${username}`;
+  const shell = options.shell || '/bin/bash';
+
+  const newUser = {
+    username: username,
+    uid: uid,
+    gid: gid,
+    home: home,
+    shell: shell,
+    groups: [username],
+    isRoot: false
+  };
+
+  users[username] = newUser;
+
+  // Also add a group with the same name (Linux default behavior)
+  if (!groups[gid]) {
+    groups[gid] = username;
+  }
+
+  return newUser;
+}
+
+/**
+ * Remove a user from the system
+ * @param {string} username - The username to remove
+ * @returns {boolean} True if user was removed, false if not found
+ */
+export function removeUser(username) {
+  if (!users[username]) {
+    return false;
+  }
+  delete users[username];
+  return true;
+}
+
+/**
+ * Check if a user exists
+ * @param {string} username - The username to check
+ * @returns {boolean} True if user exists
+ */
+export function userExists(username) {
+  return !!users[username];
 }

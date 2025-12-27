@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User & Permission Management - Linux Administration Tutorial</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Breadcrumb Navigation -->
+        <nav class="breadcrumb">
+            <a href="https://abdelhaleemahmed.github.io/">Portfolio</a> /
+            <a href="https://abdelhaleemahmed.github.io/interactive-tutorials/">Tutorials</a> /
+            <a href="./index.html">Linux Administration</a> /
+            <span>User & Permission Management</span>
+        </nav>
+
+        <!-- Header -->
+        <header class="tutorial-header">
+            <h1>👥 User & Permission Management</h1>
+            <p class="subtitle">Master Linux users, groups, and the powerful permission system</p>
+        </header>
+
+        <!-- Practice Box -->
+        <section class="content-section">
+            <div class="info-box">
+                <h4>💻 Practice While You Learn!</h4>
+                <p>Click the green 💻 Terminal button in the bottom-right corner to open an interactive terminal. You can practice all the commands on this page in real-time!</p>
+                <ul>
+                    
+                    <li>The terminal stays open as you navigate between pages</li>
+                    
+                    <li>Try commands immediately after reading about them</li>
+                    
+                    <li>Use ↑/↓ arrows for command history, Tab for auto-complete</li>
+                    
+                </ul>
+            </div>
+        </section>
+
+        <!-- Understanding Linux Permissions -->
+        <section class="content-section">
+            <h2>Understanding Linux Permissions</h2>
+            <p>Linux is a multi-user operating system with a robust permission system. Every file and directory has an owner, a group, and a set of permissions that determine who can read, write, or execute it.</p>
+
+            <h3>File Permissions Overview</h3>
+            <p>{When you run <code>ls -l</code>, you see detailed information about files and directories:}</p>
+            <pre><code>ls -l</code></pre>
+            <p><strong>Expected Output:</strong></p>
+            <pre><code>-rw-r--r-- 1 user user 4096 Dec 03 10:30 README.txt
+drwxr-xr-x 2 user user 4096 Dec 03 10:30 documents/</code></pre>
+
+            <p>Let's break down what this means:</p>
+            <div class="command-example">
+                <h4>Permission String Breakdown</h4>
+                <p>The first 10 characters show the type and permissions:</p>
+                <ul>
+                    
+                    <li><strong>1st character:</strong> File type (- = file, d = directory, l = link)</li>
+                    
+                    <li><strong>2nd-4th characters:</strong> Owner permissions (read, write, execute)</li>
+                    
+                    <li><strong>5th-7th characters:</strong> Group permissions</li>
+                    
+                    <li><strong>8th-10th characters:</strong> Others permissions</li>
+                    
+                </ul>
+            </div>
+
+            <h3>Permission Types</h3>
+            <div class="command-example">
+                <h4>Understanding r, w, x</h4>
+                <ul>
+                    
+                    <li><strong>r (read):</strong> View file contents or list directory contents</li>
+                    
+                    <li><strong>w (write):</strong> Modify file or add/remove files in directory</li>
+                    
+                    <li><strong>x (execute):</strong> Run file as program or access directory</li>
+                    
+                </ul>
+            </div>
+
+            <h3>Changing Permissions (<span class="tooltip-trigger"><code>chmod</code><span class="rich-tooltip"><span class="tooltip-header"><strong>🔐 chmod - Change File Mode/Permissions</strong></span><span class="tooltip-content"><span class="tooltip-description">Modifies file or directory permissions to control who can read, write, or execute.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">Symbolic Mode</span><span class="example-code">$ chmod u+x script.sh</span><span class="example-output">▸ Give owner execute permission</span></span><span class="example-block"><span class="example-label">Numeric Mode</span><span class="example-code">$ chmod 755 file.txt</span><span class="example-output">▸ rwxr-xr-x (owner: rwx, group: r-x, others: r-x)</span></span><span class="example-block"><span class="example-label">Common Pattern</span><span class="example-code">$ chmod 644 document.txt</span><span class="example-output">▸ rw-r--r-- (owner: rw, group/others: r)</span></span></span></span></span></span>)</h3>
+            <div class="command-example">
+                <h4>Using Symbolic Mode</h4>
+                <p>Command: <code>chmod [who][+/-][permissions] filename</code></p>
+                <ul>
+                    
+                    <li><strong>who:</strong> u (user/owner), g (group), o (others), a (all)</li>
+                    
+                    <li><strong>+/-:</strong> Add or remove permissions</li>
+                    
+                    <li><strong>permissions:</strong> r, w, x</li>
+                    
+                </ul>
+
+                <p><strong>Examples:</strong></p>
+                <pre><code># Give owner execute permission
+touch script.sh
+chmod u+x script.sh
+ls -l script.sh
+
+# Remove write permission for others
+touch document.txt
+chmod o-w document.txt
+ls -l document.txt
+
+# Add read and execute for everyone
+touch public_file.txt
+chmod a+rx public_file.txt
+ls -l public_file.txt
+
+</code></pre>
+            </div>
+
+            <div class="command-example">
+                <h4>Using Numeric Mode</h4>
+                <p>Permissions can be represented as numbers:</p>
+                <ul>
+                    
+                    <li><strong>4: read (r)</strong></li>
+                    
+                    <li><strong>2: write (w)</strong></li>
+                    
+                    <li><strong>1: execute (x)</strong></li>
+                    
+                </ul>
+                <p>Add them up: 7 = 4+2+1 = rwx, 6 = 4+2 = rw-, 5 = 4+1 = r-x</p>
+
+                <p><strong>Examples:</strong></p>
+                <pre><code># rwx for owner, r-x for group, r-- for others
+touch file.txt
+chmod 754 file.txt
+ls -l file.txt
+
+# rw- for owner and group, r-- for others
+touch document.txt
+chmod 664 document.txt
+ls -l document.txt
+
+# rwx for everyone
+touch script.sh
+chmod 777 script.sh
+ls -l script.sh
+
+</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ Security Warning</h4>
+                <p>Be careful with chmod 777! This gives full permissions to everyone and is generally insecure. Only use it when you fully understand the implications.</p>
+            </div>
+
+            <h3>Changing Ownership (<span class="tooltip-trigger"><code>chown</code><span class="rich-tooltip"><span class="tooltip-header"><strong>👤 chown - Change File Owner and Group</strong></span><span class="tooltip-content"><span class="tooltip-description">Changes the owner and/or group of files and directories. Usually requires sudo privileges.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">Change Owner</span><span class="example-code">$ chown john file.txt</span><span class="example-output">▸ Changes owner to 'john'</span></span><span class="example-block"><span class="example-label">Change Owner and Group</span><span class="example-code">$ chown john:staff file.txt</span><span class="example-output">▸ Changes owner to 'john' and group to 'staff'</span></span><span class="example-block"><span class="example-label">Change Only Group</span><span class="example-code">$ chown :developers project/</span><span class="example-output">▸ Changes group to 'developers'</span></span></span></span></span></span>)</h3>
+            <div class="command-example">
+                <h4>Command: <code>chown [owner][:group] filename</code></h4>
+                <p><strong>Examples:</strong></p>
+                <pre><code># Change owner to 'john'
+touch file.txt
+sudo chown john file.txt
+ls -l file.txt
+
+# Change owner to 'john' and group to 'staff'
+touch file.txt
+sudo chown john:staff file.txt
+ls -l file.txt
+
+# Change only the group
+sudo groupadd developers
+mkdir project
+sudo chown :developers project/
+ls -ld project/
+
+</code></pre>
+                <p><strong>Note:</strong> Requires sudo (superuser) privileges. Only root can change file ownership.</p>
+            </div>
+        </section>
+
+        <!-- Users and Groups -->
+        <section class="content-section">
+            <h2>Users and Groups</h2>
+
+            <h3>Viewing User Information</h3>
+            <div class="command-example">
+                <h4>Common Commands</h4>
+                <pre><code># Show current user
+whoami
+
+# Show user ID and groups
+id
+
+# List all users (first 10)
+cat /etc/passwd | head -10
+
+# List all groups
+cat /etc/group
+
+</code></pre>
+            </div>
+
+            <h3>User Management Commands</h3>
+            <div class="info-box">
+                <h4>Common User Operations (require sudo)</h4>
+                <ul>
+                    
+                    <li><code>useradd username - Create a new user</code></li>
+                    
+                    <li><code>usermod -aG groupname username - Add user to group</code></li>
+                    
+                    <li><code>userdel username - Delete a user</code></li>
+                    
+                    <li><code>passwd username - Change user password</code></li>
+                    
+                    <li><code>su - username - Switch to another user</code></li>
+                    
+                    <li><code>sudo command - Execute command as superuser</code></li>
+                    
+                </ul>
+            </div>
+
+            <h3>Group Management</h3>
+            <div class="command-example">
+                <h4>Working with Groups</h4>
+                <pre><code># Create a new group
+sudo groupadd developers
+
+# Add user to group
+sudo usermod -aG developers john
+
+# View groups for current user
+groups
+
+# View groups for specific user
+groups john
+
+</code></pre>
+            </div>
+        </section>
+
+        <!-- Practical Examples -->
+        <section class="content-section">
+            <h2>Practical Examples</h2>
+
+            
+            <div class="command-example">
+                <h4>Scenario 1: Making a Script Executable</h4>
+                <pre><code># Create a script
+echo '#!/bin/bash' > myscript.sh
+echo 'echo "Hello, World!"' >> myscript.sh
+
+# Make it executable
+chmod +x myscript.sh
+
+# Run it
+./myscript.sh
+</code></pre>
+            </div>
+            
+            <div class="command-example">
+                <h4>Scenario 2: Shared Project Directory</h4>
+                <pre><code># Create directory for team project
+sudo mkdir -p /var/projects/team-app
+
+# Create users alice and bob
+sudo useradd -m alice
+sudo useradd -m bob
+
+# Create developers group
+sudo groupadd developers
+
+# Add users to group
+sudo usermod -aG developers alice
+sudo usermod -aG developers bob
+
+# Set ownership and permissions
+sudo chown :developers /var/projects/team-app
+sudo chmod 775 /var/projects/team-app
+
+# Verify the setup
+ls -ld /var/projects/team-app
+groups alice
+groups bob
+</code></pre>
+            </div>
+            
+            <div class="command-example">
+                <h4>Scenario 3: Securing Sensitive Files</h4>
+                <pre><code># Create a file with sensitive data
+touch private.key
+
+# Make it readable only by owner
+chmod 600 private.key
+
+# Verify permissions
+ls -l private.key
+# Output: -rw------- 1 user user 0 Dec 03 10:30 private.key
+</code></pre>
+            </div>
+            
+        </section>
+
+        <!-- Key Takeaways -->
+        <section class="content-section">
+            <h2>Key Takeaways</h2>
+            <div class="info-box">
+                <ul>
+                    
+                    <li>Every file has an owner, group, and permission set</li>
+                    
+                    <li>Permissions control read (r), write (w), and execute (x) access</li>
+                    
+                    <li>chmod changes permissions, chown changes ownership</li>
+                    
+                    <li>Numeric mode (e.g., 755) is faster, symbolic mode (e.g., u+x) is clearer</li>
+                    
+                    <li>Groups allow multiple users to share access to files</li>
+                    
+                    <li>Always be cautious with permissions on sensitive files</li>
+                    
+                </ul>
+            </div>
+        </section>
+
+        <!-- Practice Tips -->
+        <section class="content-section">
+            <h2>Practice Tips</h2>
+            <div class="info-box">
+                <p><strong>Ready to practice? Head over to the Interactive Terminal to try permission commands!</strong></p>
+            </div>
+            <ul>
+                
+                <li>Use ls -l frequently to check current permissions</li>
+                
+                <li>Practice with test files before modifying important data</li>
+                
+                <li>Remember: you can't give away permissions you don't have</li>
+                
+                <li>Learn both symbolic and numeric chmod modes for flexibility</li>
+                
+            </ul>
+        </section>
+
+        <!-- Page Navigation -->
+        <nav class="page-navigation">
+            <a href="./file-system.html" class="nav-button prev">File System Management</a>
+            <a href="./system-admin.html" class="nav-button next">System Administration</a>
+        </nav>
+    </div>
+
+    <!-- Terminal Toggle Button -->
+    <button class="terminal-toggle-btn" id="terminalToggleBtn" title="💻 Terminal" aria-label="Toggle terminal">💻</button>
+
+    <!-- Theme Selector (3 themes: Light, Dark, Terminal) -->
+    <div class="theme-selector">
+    
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <div class="lang-btn en active" title="English" data-lang="en">EN</div>
+        <!-- Future languages can be added here -->
+        <div class="lang-btn ar" title="العربية" data-lang="ar">AR</div>
+    </div>
+        <div class="theme-btn light active" title="Light Theme"></div>
+    
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <div class="lang-btn en active" title="English" data-lang="en">EN</div>
+        <!-- Future languages can be added here -->
+        <div class="lang-btn ar" title="العربية" data-lang="ar">AR</div>
+    </div>
+        <div class="theme-btn dark" title="Dark Theme"></div>
+        <div class="theme-btn terminal" title="Terminal Theme"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="tutorial-footer">
+        <p>© 2025 Ahmed Abdelhaleem | <a href="https://abdelhaleemahmed.github.io/">Back to Portfolio</a></p>
+    </footer>
+
+    <!-- Terminal Scripts -->
+    <link rel="stylesheet" href="../css/xterm.css" />
+    <script src="../js/xterm.js"></script>
+    <script src="../js/xterm-addon-fit.js"></script>
+    <script type="module" src="../css/terminal-modal.js"></script>
+
+    <!-- Enhanced Features -->
+    <script src="../css/theme.js"></script>
+    <script src="../css/language-switcher.js"></script>
+    <script src="../css/shortcuts.js"></script>
+    <script src="../css/cheatsheet.js"></script>
+    <script src="../css/code-interactive.js"></script>
+</body>
+</html>

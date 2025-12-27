@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Commands & Navigation - Linux Administration Tutorial</title>
+    <link rel="stylesheet" href="../css/style.css?v=25">
+</head>
+<body>
+    <div class="container">
+        <!-- Breadcrumb Navigation -->
+        <nav class="breadcrumb">
+            <a href="https://abdelhaleemahmed.github.io/">Portfolio</a> /
+            <a href="https://abdelhaleemahmed.github.io/interactive-tutorials/">Tutorials</a> /
+            <a href="./index.html">Linux Administration</a> /
+            <span>Basic Commands</span>
+        </nav>
+
+        <!-- Header -->
+        <header class="tutorial-header">
+            <h1>📂 Basic Commands & Navigation</h1>
+            <p class="subtitle">Master fundamental Linux commands for file system navigation</p>
+        </header>
+
+        <!-- Practice Box -->
+        <section class="content-section">
+            <div class="info-box">
+                <h4>💻 Practice While You Learn!</h4>
+                <p>Click the green 💻 Terminal button in the bottom-right corner to open an interactive terminal. You can practice all the commands on this page in real-time!</p>
+                <ul>
+                    
+                    <li>The terminal stays open as you navigate between pages</li>
+                    
+                    <li>Try commands immediately after reading about them</li>
+                    
+                    <li>Use ↑/↓ arrows for command history, Tab for auto-complete</li>
+                    
+                </ul>
+            </div>
+        </section>
+
+        <!-- Introduction -->
+        <section class="content-section">
+            <h2>Why Learn the Command Line?</h2>
+            <p>While graphical interfaces are intuitive, the command line (often called the terminal or shell) offers immense power, efficiency, and a deeper understanding of how your computer works. Many developers, system administrators, and even casual users find it an indispensable tool.</p>
+            <ul>
+                
+                <li><strong>Efficiency:</strong> Perform complex tasks with a few keystrokes.</li>
+                
+                <li><strong>Automation:</strong> Script repetitive tasks.</li>
+                
+                <li><strong>Remote Access:</strong> Manage servers and systems remotely.</li>
+                
+                <li><strong>Power:</strong> Access system features not available through a GUI.</li>
+                
+                <li><strong>Understanding:</strong> Gain a deeper insight into operating systems.</li>
+                
+            </ul>
+        </section>
+
+        <!-- Navigation Commands -->
+        <section class="content-section">
+            <h2>Basic Navigation Commands: A Hands-On Tutorial</h2>
+            <p>Let's start by exploring the file system using some fundamental navigation commands.</p>
+
+            <!-- pwd Section -->
+            <h3>1. Where Am I? (<span class="tooltip-trigger"><code>pwd</code><span class="rich-tooltip"><span class="tooltip-header"><strong>📍 pwd - Print Working Directory</strong></span><span class="tooltip-content"><span class="tooltip-description">Displays the absolute path of your current directory location in the file system.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">Example</span><span class="example-code">$ pwd</span><span class="example-output">▸ /home/user/documents</span></span></span></span></span></span>)</h3>
+            <p>The first thing you often want to know is your current location in the file system.</p>
+            <div class="command-example">
+                <h4>Command: <code>pwd</code> (Print Working Directory)</h4>
+                <p>Try it in the interactive terminal:</p>
+                <pre><code>pwd</code></pre>
+                <p><strong>Expected Output:</strong> You should see /home/user. This is your simulated "home" directory.</p>
+            </div>
+
+            <!-- ls Section -->
+            <h3>2. What's Here? (<span class="tooltip-trigger"><code>ls</code><span class="rich-tooltip"><span class="tooltip-header"><strong>📋 ls - List Directory Contents</strong></span><span class="tooltip-content"><span class="tooltip-description">Lists files and directories in the current or specified directory. Essential for navigating and understanding your file system.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">Basic Usage</span><span class="example-code">$ ls</span><span class="example-output">▸ documents/ downloads/ projects/ README.txt</span></span><span class="example-block"><span class="example-label">Long Format</span><span class="example-code">$ ls -l</span><span class="example-output">▸ Shows detailed information (permissions, size, date)</span></span><span class="example-block"><span class="example-label">Show Hidden Files</span><span class="example-code">$ ls -la</span><span class="example-output">▸ Shows all files including hidden ones (starting with .)</span></span></span></span></span></span>)</h3>
+            <p>Now that you know where you are, let's see what files and directories are in your current location.</p>
+            <div class="command-example">
+                <h4>Command: ls (List)</h4>
+                <p>Try it:</p>
+                <pre><code>ls</code></pre>
+                <p><strong>Expected Output:</strong> You'll see a list like documents/ downloads/ projects/ README.txt.</p>
+                <ul>
+                    
+                    <li>Notice the / at the end of documents/, downloads/, and projects/. This is a common convention to indicate that these are directories (folders). README.txt is a file.</li>
+                    
+                </ul>
+            </div>
+
+            <div class="command-example">
+                <h4>Detailed Listing: ls -l</h4>
+                <p>For more information about the items, use the -l (long format) option:</p>
+                <pre><code>ls -l</code></pre>
+                <p><strong>Expected Output:</strong> You'll see a much more detailed output, including:</p>
+                <ul>
+                    
+                    <li>Permissions (e.g., drwxr-xr-x for directories, -rw-r--r-- for files)</li>
+                    
+                    <li>Number of links (usually 1)</li>
+                    
+                    <li>Owner (user)</li>
+                    
+                    <li>Group (user)</li>
+                    
+                    <li>Size (in bytes)</li>
+                    
+                    <li>Last modified date and time</li>
+                    
+                    <li>Name of the file or directory</li>
+                    
+                </ul>
+            </div>
+
+            <!-- cd Section -->
+            <h3>3. Moving Around (<span class="tooltip-trigger"><code>cd</code><span class="rich-tooltip"><span class="tooltip-header"><strong>🚀 cd - Change Directory</strong></span><span class="tooltip-content"><span class="tooltip-description">Navigate between directories in the file system.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">Common Patterns</span><span class="example-code">$ cd ..</span><span class="example-output">▸ Go up one level</span></span><span class="example-block"><span class="example-label">Go Home</span><span class="example-code">$ cd ~</span><span class="example-output">▸ Go to home directory</span></span><span class="example-block"><span class="example-label">Previous Directory</span><span class="example-code">$ cd -</span><span class="example-output">▸ Go to previous directory</span></span></span></span></span></span>)</h3>
+            <p>The cd command (Change Directory) is how you navigate between directories.</p>
+
+            
+            <div class="command-example">
+                <h4>Going into a directory</h4>
+                <p>Command: <code>cd <directory_name></code></p>
+                
+                <p>Let's go into the documents directory:</p>
+                
+                
+                <pre><code>cd documents</code></pre>
+                <p><strong>Expected Output:</strong> Your prompt will change to /home/user/documents$. This indicates your new current location.</p>
+                
+                
+                <p>Now, use ls again to see what's inside documents:</p>
+                <pre><code>ls</code></pre>
+                <p>You should see notes.md and report.txt.</p>
+                
+                
+            </div>
+            
+            <div class="command-example">
+                <h4>Going up one level</h4>
+                <p>Command: <code>cd ..</code></p>
+                
+                <p>(two dots represent the parent directory)</p>
+                
+                
+                <pre><code>cd ..</code></pre>
+                <p><strong>Expected Output:</strong> Your prompt will change back to /home/user$.</p>
+                
+                
+                
+            </div>
+            
+            <div class="command-example">
+                <h4>Going to your home directory</h4>
+                <p>Command: <code>cd (without any arguments) or cd ~</code></p>
+                
+                
+                
+                
+                
+                <p>First, go into projects/my_blog:</p>
+                <pre><code>cd projects/my_blog</code></pre>
+                
+                
+                <p>Now, go back to your home directory:</p>
+                <pre><code>cd</code></pre>
+                
+                
+                
+            </div>
+            
+            <div class="command-example">
+                <h4>Going to the "root" directory</h4>
+                <p>Command: <code>cd /</code></p>
+                
+                <p>Try it:</p>
+                
+                
+                <pre><code>cd /
+pwd</code></pre>
+                <p><strong>Expected Output:</strong> pwd will show /. In this simulation, / acts as the top-level container for home.</p>
+                
+                
+                
+            </div>
+            
+
+            <!-- cat Section -->
+            <h3>4. Viewing File Content (<span class="tooltip-trigger"><code>cat</code><span class="rich-tooltip"><span class="tooltip-header"><strong>📄 cat - Concatenate and Display Files</strong></span><span class="tooltip-content"><span class="tooltip-description">Display the entire contents of a file to the terminal.</span><span class="tooltip-examples"><span class="example-block"><span class="example-label">Basic Usage</span><span class="example-code">$ cat README.txt</span><span class="example-output">▸ Displays file contents</span></span><span class="example-block"><span class="example-label">Multiple Files</span><span class="example-code">$ cat file1.txt file2.txt</span><span class="example-output">▸ Concatenate and display both files</span></span></span></span></span></span>)</h3>
+            <p>Once you've found a file, you might want to see what's inside it.</p>
+            <div class="command-example">
+                <h4>Command: cat <file_name> (Concatenate and print)</h4>
+                <p>Let's view the README.txt file in your home directory. Make sure you are in /home/user first (cd if needed):</p>
+                <pre><code>cat README.txt</code></pre>
+                <p><strong>Expected Output:</strong> The content of README.txt will be displayed.</p>
+                <p><strong>Try another:</strong> Try another file: Go into the documents directory and view notes.md:</p>
+                <pre><code>cd documents
+cat notes.md</code></pre>
+            </div>
+        </section>
+
+        <!-- Practice Tips -->
+        <section class="content-section">
+            <h2>Practice Tips</h2>
+            <div class="info-box">
+                <p><strong>Ready to practice? Head over to the Interactive Terminal to try all these commands hands-on!</strong></p>
+            </div>
+            <ul>
+                
+                <li>Use the Up/Down arrow keys to cycle through your command history.</li>
+                
+                <li>Press Tab for auto-completion of commands and file/directory names.</li>
+                
+                <li>Type help to see a quick reference of all supported commands.</li>
+                
+                <li>Type clear to clear the terminal screen.</li>
+                
+            </ul>
+        </section>
+
+        <!-- Page Navigation -->
+        <nav class="page-navigation">
+            <a href="./index.html" class="nav-button prev">Back to Overview</a>
+            <a href="./file-system.html" class="nav-button next">File System Management</a>
+        </nav>
+    </div>
+
+    <!-- Terminal Toggle Button -->
+    <button class="terminal-toggle-btn" id="terminalToggleBtn" title="💻 Terminal" aria-label="Toggle terminal">💻</button>
+
+    <!-- Theme Selector (3 themes: Light, Dark, Terminal) -->
+    <div class="theme-selector">
+    
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <div class="lang-btn en active" title="English" data-lang="en">EN</div>
+        <!-- Future languages can be added here -->
+        <div class="lang-btn ar" title="العربية" data-lang="ar">AR</div>
+    </div>
+        <div class="theme-btn light active" title="Light Theme"></div>
+    
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <div class="lang-btn en active" title="English" data-lang="en">EN</div>
+        <!-- Future languages can be added here -->
+        <div class="lang-btn ar" title="العربية" data-lang="ar">AR</div>
+    </div>
+        <div class="theme-btn dark" title="Dark Theme"></div>
+        <div class="theme-btn terminal" title="Terminal Theme"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="tutorial-footer">
+        <p>© 2025 Ahmed Abdelhaleem | <a href="https://abdelhaleemahmed.github.io/">Back to Portfolio</a></p>
+    </footer>
+
+    <!-- Terminal Scripts -->
+    <link rel="stylesheet" href="../css/xterm.css" />
+    <script src="../js/xterm.js"></script>
+    <script src="../js/xterm-addon-fit.js"></script>
+    <script type="module" src="../css/terminal-modal.js"></script>
+
+    <!-- Enhanced Features -->
+    <script src="../css/theme.js"></script>
+    <script src="../css/language-switcher.js"></script>
+    <script src="../css/shortcuts.js"></script>
+    <script src="../css/cheatsheet.js"></script>
+    <script src="../css/code-interactive.js"></script>
+</body>
+</html>

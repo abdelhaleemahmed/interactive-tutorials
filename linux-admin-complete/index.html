@@ -2,213 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="0; url=./en/index.html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Linux Administration Tutorial - Interactive Guide</title>
-    <link rel="stylesheet" href="./css/style.css">
+    <title>Redirecting to Linux Administration Tutorial...</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .loader {
+            text-align: center;
+        }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        a {
+            color: #fff;
+            text-decoration: underline;
+        }
+    </style>
+    <script>
+        // JavaScript redirect as fallback
+        window.location.href = './en/index.html';
+    </script>
 </head>
 <body>
-    <div class="container">
-        <!-- Breadcrumb Navigation -->
-        <nav class="breadcrumb">
-            <a href="https://abdelhaleemahmed.github.io/">Portfolio</a> /
-            <a href="https://abdelhaleemahmed.github.io/interactive-tutorials/">Tutorials</a> /
-            <span>Linux Administration</span>
-        </nav>
-
-        <!-- Header -->
-        <header class="tutorial-header">
-            <h1>🐧 Linux Administration Tutorial</h1>
-            <p class="subtitle">Master Linux command line with interactive examples and hands-on practice</p>
-        </header>
-
-        <!-- Introduction -->
-        <section class="intro-section">
-            <h2>Welcome to Linux Administration</h2>
-            <p>
-                This comprehensive tutorial will guide you through essential Linux administration skills,
-                from basic navigation to advanced system management. Each section includes interactive
-                examples you can try right in your browser.
-            </p>
-            <div class="feature-highlights">
-                <div class="feature">
-                    <div class="feature-icon">💻</div>
-                    <h3>Interactive Terminal</h3>
-                    <p>Practice commands in a real terminal simulator</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">📚</div>
-                    <h3>Step-by-Step Learning</h3>
-                    <p>Structured lessons from basics to advanced topics</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">🎯</div>
-                    <h3>Hands-On Practice</h3>
-                    <p>Real-world examples and exercises</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Tutorial Modules -->
-        <section class="modules-section">
-            <h2>Tutorial Modules</h2>
-            <div class="modules-grid">
-
-                <!-- Module 1: Basic Commands -->
-                <div class="module-card">
-                    <div class="module-number">1</div>
-                    <h3>Basic Commands & Navigation</h3>
-                    <p>Learn fundamental Linux commands for file system navigation and basic operations.</p>
-                    <ul class="module-topics">
-                        <li>pwd, ls, cd commands</li>
-                        <li>Viewing file contents</li>
-                        <li>Understanding the file system</li>
-                        <li>Command options and arguments</li>
-                    </ul>
-                    <a href="./basic-commands.html" class="module-link">Start Module →</a>
-                </div>
-
-                <!-- Module 2: File System -->
-                <div class="module-card">
-                    <div class="module-number">2</div>
-                    <h3>File System Management</h3>
-                    <p>Master file and directory manipulation, including creation, deletion, and organization.</p>
-                    <ul class="module-topics">
-                        <li>Creating directories and files</li>
-                        <li>Moving and copying files</li>
-                        <li>Removing files and directories</li>
-                        <li>File permissions basics</li>
-                    </ul>
-                    <a href="./file-system.html" class="module-link">Start Module →</a>
-                </div>
-
-                <!-- Module 3: User Management -->
-                <div class="module-card">
-                    <div class="module-number">3</div>
-                    <h3>User & Permission Management</h3>
-                    <p>Understand Linux users, groups, and the powerful permission system.</p>
-                    <ul class="module-topics">
-                        <li>User and group concepts</li>
-                        <li>Understanding permissions</li>
-                        <li>chmod, chown commands</li>
-                        <li>Managing user accounts</li>
-                    </ul>
-                    <a href="./user-management.html" class="module-link">Start Module →</a>
-                </div>
-
-                <!-- Module 4: System Administration -->
-                <div class="module-card">
-                    <div class="module-number">4</div>
-                    <h3>System Administration</h3>
-                    <p>Learn essential system administration tasks and monitoring techniques.</p>
-                    <ul class="module-topics">
-                        <li>Process management</li>
-                        <li>System monitoring</li>
-                        <li>Package management</li>
-                        <li>Service configuration</li>
-                    </ul>
-                    <a href="./system-admin.html" class="module-link">Start Module →</a>
-                </div>
-
-                <!-- Module 5: Interactive Terminal -->
-                <div class="module-card featured">
-                    <div class="module-number">🚀</div>
-                    <h3>Interactive Terminal Practice</h3>
-                    <p>Put everything together in an interactive terminal where you can practice all commands.</p>
-                    <ul class="module-topics">
-                        <li>Full terminal simulator</li>
-                        <li>Practice all commands</li>
-                        <li>Real-time feedback</li>
-                        <li>Safe environment to experiment</li>
-                    </ul>
-                    <a href="./interactive-terminal.html" class="module-link">Launch Terminal →</a>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- Learning Path -->
-        <section class="learning-path">
-            <h2>Recommended Learning Path</h2>
-            <div class="path-steps">
-                <div class="path-step">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <h4>Start with Basics</h4>
-                        <p>Begin with basic commands to get comfortable with the terminal</p>
-                    </div>
-                </div>
-                <div class="path-arrow">→</div>
-                <div class="path-step">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <h4>Master File System</h4>
-                        <p>Learn to manipulate files and directories confidently</p>
-                    </div>
-                </div>
-                <div class="path-arrow">→</div>
-                <div class="path-step">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <h4>Understand Permissions</h4>
-                        <p>Grasp the powerful Linux permission system</p>
-                    </div>
-                </div>
-                <div class="path-arrow">→</div>
-                <div class="path-step">
-                    <div class="step-number">4</div>
-                    <div class="step-content">
-                        <h4>System Administration</h4>
-                        <p>Learn to manage and monitor Linux systems</p>
-                    </div>
-                </div>
-                <div class="path-arrow">→</div>
-                <div class="path-step">
-                    <div class="step-number">5</div>
-                    <div class="step-content">
-                        <h4>Practice Everything</h4>
-                        <p>Use the interactive terminal to reinforce your learning</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Quick Links -->
-        <section class="quick-links">
-            <h2>Quick Links</h2>
-            <div class="links-grid">
-                <a href="./basic-commands.html" class="quick-link">
-                    <span class="link-icon">📂</span>
-                    <span class="link-text">Basic Commands</span>
-                </a>
-                <a href="./file-system.html" class="quick-link">
-                    <span class="link-icon">🗂️</span>
-                    <span class="link-text">File System</span>
-                </a>
-                <a href="./user-management.html" class="quick-link">
-                    <span class="link-icon">👥</span>
-                    <span class="link-text">Users & Permissions</span>
-                </a>
-                <a href="./system-admin.html" class="quick-link">
-                    <span class="link-icon">⚙️</span>
-                    <span class="link-text">System Admin</span>
-                </a>
-                <a href="./interactive-terminal.html" class="quick-link featured">
-                    <span class="link-icon">🚀</span>
-                    <span class="link-text">Interactive Terminal</span>
-                </a>
-            </div>
-        </section>
-
+    <div class="loader">
+        <div class="spinner"></div>
+        <h2>Redirecting to tutorial...</h2>
+        <p>If you are not redirected automatically, <a href="./en/index.html">click here</a>.</p>
     </div>
-
-    <!-- Theme Toggle Button -->
-    <button class="theme-toggle" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
-
-    <!-- Footer -->
-    <footer class="tutorial-footer">
-        <p>&copy; 2025 Ahmed Abdelhaleem | <a href="https://abdelhaleemahmed.github.io/">Back to Portfolio</a></p>
-    </footer>
-
-    <script src="./css/theme.js"></script>
 </body>
 </html>
